@@ -2,7 +2,6 @@ import Header from "@/components/header";
 import ProcessingView from "@/components/processing-view";
 import { OpenBDBookData, OpenBDGetResponseData } from "@/Interfaces/openbd/get";
 import * as openbd from "@/libs/openbd";
-import styles from "@/styles/Home.module.css";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -62,13 +61,9 @@ const Home: NextPage = () => {
     }
     if (!bookData) {
       return (
-        <ul>
+        <div>
           <ProcessingView />
-          <p className={styles.description}>
-            Get started by editing{" "}
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-        </ul>
+        </div>
       );
     }
     return (
@@ -77,7 +72,7 @@ const Home: NextPage = () => {
           {bookData.summary.title}
         </h1>
         <p className="text-center">
-          著者 : {bookData.summary.author} / 出版社 :{" "}
+          著者 : {bookData.summary.author} / 出版社 :
           {bookData.summary.publisher}
         </p>
         <p className="text-secondary text-center">
