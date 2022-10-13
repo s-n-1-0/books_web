@@ -11,21 +11,30 @@ const Home: NextPage = () => {
   const { isbn } = router.query;
   const [bookData, setBookData] = useState<OpenBDBookData | null>(null);
   const [editingIsbn, setEdittingIsbn] = useState<string>("");
+  const [errorText, setErrorText] = useState<string>("");
   let isHello = false;
   if (typeof isbn == "string") {
-    openbd.get(isbn).then((res: { data: OpenBDGetResponseData }) => {
-      setBookData(res.data?.[0]);
-    });
+    openbd
+      .get(isbn)
+      .then((res: { data: OpenBDGetResponseData }) => {
+        let resBookData = res.data?.[0];
+        if (resBookData) setBookData(resBookData);
+        else setErrorText("書籍情報を見つけることができませんでした。");
+      })
+      .catch(() => {
+        setErrorText("通信エラー。時間を置いてからご確認ください。");
+      });
   } else {
     //isbn未指定の場合
     isHello = true;
   }
 
   function makeMainContent() {
-    if (isHello) {
+    if (isHello || errorText != "") {
       return (
         <div className="text-center">
           <h1 className="pt-5 text-3xl pb-2">書籍情報を共有</h1>
+          <p className="text-red-600">{errorText}</p>
           <div className="mb-4 flex items-end">
             <div className="w-full">
               <label className="block text-gray-700 text-sm font-bold mb-2 text-left">
