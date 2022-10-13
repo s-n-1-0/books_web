@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import Link from "next/link";
 import { useState } from "react";
 
 function Header() {
@@ -42,12 +43,11 @@ function Header() {
             {/* ここにメニューリスト */}
           </div>
           <div>
-            <a
-              href="/ja/share"
-              className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
-            >
-              本を探す
-            </a>
+            <Link href="/ja/share">
+              <a className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">
+                本を探す
+              </a>
+            </Link>
           </div>
         </div>
       </nav>
