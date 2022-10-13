@@ -1,9 +1,9 @@
+import Header from "@/components/header";
+import styles from "@/styles/Home.module.css";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import React from "react";
-import Header from "../components/header";
-import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
   return (
@@ -14,8 +14,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header></Header>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
+      <main className="container mx-auto">
+        <h1 className="text-center pt-5 text-5xl">
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
