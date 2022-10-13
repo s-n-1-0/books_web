@@ -1,4 +1,5 @@
 interface OpenBDBookDataSummary {
+  isbn: string;
   title: string;
   publisher: string;
   volume: string;
