@@ -1,4 +1,5 @@
 import { convertUrl2Isbn13 } from "asin2isbn";
+import Image from "next/image";
 import { useState } from "react";
 type SearchBookButtonProps = { editingText: string; onClick: () => void };
 function SearchBookButton({ editingText, onClick }: SearchBookButtonProps) {
@@ -18,10 +19,13 @@ function SearchBookFields({ errorText }: Props) {
   const [editingIsbn, setEdittingIsbn] = useState<string>("");
   const [editingAmazonUrl, setEdittingAmazonUrl] = useState<string>("");
   const [amazonUrlErrorText, setAmazonUrlErrorText] = useState<string>("");
+  let notsupportedKindleText =
+    "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
   return (
     <div className="text-center">
       <h1 className="pt-5 text-3xl pb-2">書籍情報を共有</h1>
       <p className="text-red-600">{errorText}</p>
+      <hr className="mb-4" />
       <div className="mb-4 flex items-end">
         <div className="w-full">
           <label className="block text-gray-700 text-sm font-bold mb-2 text-left">
@@ -67,9 +71,7 @@ function SearchBookFields({ errorText }: Props) {
                 let res = convertUrl2Isbn13(editingAmazonUrl);
                 if (res.isbn != "") location.href = "./share?isbn=" + res.isbn;
                 else if (res.error == "KINDLE") {
-                  setAmazonUrlErrorText(
-                    "Kindle(電子書籍)は非対応です。紙の書籍のURLを指定してください。"
-                  );
+                  setAmazonUrlErrorText(notsupportedKindleText);
                 } else setAmazonUrlErrorText("無効なURLです。");
               } catch (err) {
                 setAmazonUrlErrorText("無効なURLです。");
@@ -78,6 +80,20 @@ function SearchBookFields({ errorText }: Props) {
           />
         </div>
         <p className="text-red-600">{amazonUrlErrorText}</p>
+        {(() => {
+          if (amazonUrlErrorText == notsupportedKindleText)
+            return (
+              <div className="p-10">
+                <Image
+                  src="/images/guides/amazon-pepper-book-ss.png"
+                  width={439}
+                  height={89}
+                  alt=""
+                />
+              </div>
+            );
+          return;
+        })()}
       </div>
     </div>
   );
