@@ -34,7 +34,7 @@ function SearchBookFields({ errorText }: Props) {
           </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="email"
+            inputMode="email"
             placeholder="9784798056920"
             value={editingIsbn}
             onChange={(e) => {
@@ -57,7 +57,7 @@ function SearchBookFields({ errorText }: Props) {
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="email"
+              inputMode="text"
               placeholder="この素晴らしい..."
               value={editingTitle}
               onChange={(e) => {
@@ -76,7 +76,7 @@ function SearchBookFields({ errorText }: Props) {
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="email"
+              inputMode="url"
               placeholder="https://www.amazon.co.jp/dp/4088831209/..."
               value={editingAmazonUrl}
               onChange={(e) => {
