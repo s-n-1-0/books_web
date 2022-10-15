@@ -17,6 +17,7 @@ function SearchBookButton({ editingText, onClick }: SearchBookButtonProps) {
 type Props = { errorText: string };
 function SearchBookFields({ errorText }: Props) {
   const [editingIsbn, setEdittingIsbn] = useState<string>("");
+  const [editingTitle, setEditingTitle] = useState<string>("");
   const [editingAmazonUrl, setEdittingAmazonUrl] = useState<string>("");
   const [amazonUrlErrorText, setAmazonUrlErrorText] = useState<string>("");
   let notsupportedKindleText =
@@ -47,6 +48,25 @@ function SearchBookFields({ errorText }: Props) {
             location.href = "./share?isbn=" + editingIsbn;
           }}
         />
+      </div>
+      <div className="mb-4">
+        <div className="flex items-end">
+          <div className="w-full">
+            <label className="block text-gray-700 text-sm font-bold mb-2 text-left">
+              タイトルで調べる
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              type="email"
+              placeholder="この素晴らしい..."
+              value={editingTitle}
+              onChange={(e) => {
+                setEditingTitle(e.target.value);
+              }}
+            />
+          </div>
+          <SearchBookButton editingText={editingTitle} onClick={() => {}} />
+        </div>
       </div>
       <div className="mb-4">
         <div className="flex items-end">
