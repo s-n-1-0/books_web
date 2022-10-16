@@ -72,7 +72,7 @@ function SearchBookFields({ errorText }: Props) {
           <SearchBookButton
             editingText={editingTitle}
             onClick={() => {
-              modalRef.current?.openModal();
+              modalRef.current?.openModal(editingTitle);
             }}
           />
         </div>
