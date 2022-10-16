@@ -1,6 +1,9 @@
 import { convertUrl2Isbn13 } from "asin2isbn";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import SearchGoogleBooksModal, {
+  SearchGoogleBooksModalRefType,
+} from "./search-google-books-modal";
 type SearchBookButtonProps = { editingText: string; onClick: () => void };
 function SearchBookButton({ editingText, onClick }: SearchBookButtonProps) {
   if (editingText != "")
@@ -20,6 +23,7 @@ function SearchBookFields({ errorText }: Props) {
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [editingAmazonUrl, setEdittingAmazonUrl] = useState<string>("");
   const [amazonUrlErrorText, setAmazonUrlErrorText] = useState<string>("");
+  const modalRef = useRef<SearchGoogleBooksModalRefType>(null);
   let notsupportedKindleText =
     "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
   return (
@@ -65,8 +69,14 @@ function SearchBookFields({ errorText }: Props) {
               }}
             />
           </div>
-          <SearchBookButton editingText={editingTitle} onClick={() => {}} />
+          <SearchBookButton
+            editingText={editingTitle}
+            onClick={() => {
+              modalRef.current?.openModal();
+            }}
+          />
         </div>
+        <SearchGoogleBooksModal ref={modalRef} />
       </div>
       <div className="mb-4">
         <div className="flex items-end">
