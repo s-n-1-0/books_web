@@ -36,17 +36,17 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 overflow-hidden">
       <div className="relative h-5/6 w-full mx-4 lg:mx-0 lg:w-3/4 md:p-4 bg-white rounded-md shadow-xl overflow-y-auto">
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center">
+          <h3 className="text-left">
+            <b>「{searchTitle}」</b>で検索
+          </h3>
           <FontAwesomeIcon
             className="text-3xl p-2 cursor-pointer"
             icon={faXmark}
             onClick={closeModal}
           />
         </div>
-        <h3 className="text-left">
-          <b>「{searchTitle}」</b>で検索
-        </h3>
-        <hr className="my-3" />
+        <hr className="mb-3" />
         <ul className="m-2 text-left text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white cursor-pointer">
           {googleBooksResults
             .filter((item) => {
