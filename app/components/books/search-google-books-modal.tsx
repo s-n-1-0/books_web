@@ -55,15 +55,15 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
             })
             .map((item) => {
               return (
-                <a
+                <li
                   key={item.id}
-                  href={
-                    "/ja/share?isbn=" +
-                    item.volumeInfo.industryIdentifiers[0].identifier
-                  }
-                  target="_blank"
+                  onClick={() => {
+                    let url =
+                      "/ja/share?isbn=" +
+                      item.volumeInfo.industryIdentifiers[0].identifier;
+                    window.open(url, "_blank");
+                  }}
                   className="py-2 px-4 w-full border-b border-gray-200 dark:border-gray-600"
-                  rel="noreferrer"
                 >
                   <div className="flex items-center">
                     <BookThumbnail
@@ -78,7 +78,7 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
                       </small>
                     </div>
                   </div>
-                </a>
+                </li>
               );
             })}
         </ul>
