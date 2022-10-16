@@ -1,33 +1,80 @@
 import SearchBookFields from "@/components/books/search-book-fields";
 import Header from "@/components/header";
 import ProcessingView from "@/components/processing-view";
-import { OpenBDBookData, OpenBDGetResponseData } from "@/Interfaces/openbd/get";
+import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
+import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
 import * as openbd from "@/libs/openbd";
+import { makeSharePageLink, SharePageFromDb } from "@/utils/links";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+interface BookData {
+  title: string;
+  author: string;
+  thumbnail: string;
+  isbn: string;
+  publisher: string;
+  from: SharePageFromDb;
+}
 const Home: NextPage = () => {
   const router = useRouter();
-  const { isbn } = router.query;
-  const [bookData, setBookData] = useState<OpenBDBookData | null>(null);
+  const { isbn, from } = router.query;
+  const [bookData, setBookData] = useState<BookData | null>(null);
   const [errorText, setErrorText] = useState<string>("");
-  let isHello = false;
-  if (typeof isbn == "string") {
-    openbd
-      .get(isbn)
-      .then((res: { data: OpenBDGetResponseData }) => {
-        let resBookData = res.data?.[0];
-        if (resBookData) setBookData(resBookData);
-        else setErrorText("書籍情報を見つけることができませんでした。");
-      })
-      .catch(() => {
-        setErrorText("通信エラー。時間を置いてからご確認ください。");
-      });
-  } else {
-    //isbn未指定の場合
-    isHello = true;
-  }
+  const [isHello, setIsHello] = useState<boolean>(false);
+  useEffect(() => {
+    if (typeof isbn == "string") {
+      let fromDb = typeof from == "string" ? from : "";
+      switch (fromDb) {
+        case "opendb":
+        default:
+          openbd
+            .get(isbn)
+            .then((res: { data: OpenBDGetResponseData }) => {
+              let resBookData = res.data?.[0];
+              if (resBookData) {
+                setBookData({
+                  title: resBookData.summary.title,
+                  author: resBookData.summary.author,
+                  isbn: resBookData.summary.isbn,
+                  publisher: resBookData.summary.publisher,
+                  thumbnail: resBookData.summary.cover,
+                  from: "openbd",
+                });
+                setIsHello(false);
+              } else setErrorText("書籍情報を見つけることができませんでした。");
+            })
+            .catch(() => {
+              setErrorText("通信エラー。時間を置いてからご確認ください。");
+            });
+          break;
+        case "googlebooks":
+          searchGoogleBooksApiByIsbn(isbn)
+            .then((book) => {
+              if (book) {
+                setBookData({
+                  title: book.volumeInfo.title,
+                  author: book.volumeInfo.authors.join(" "),
+                  isbn: isbn,
+                  publisher: book.volumeInfo.publisher,
+                  thumbnail: book.volumeInfo.imageLinks.smallThumbnail,
+                  from: "googlebooks",
+                });
+                setIsHello(false);
+              } else setErrorText("書籍情報を見つけることができませんでした。");
+            })
+            .catch(() => {
+              setErrorText("通信エラー。時間を置いてからご確認ください。");
+            });
+          break;
+      }
+    } else {
+      //isbn未指定の場合
+      setIsHello(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [from, isbn]);
 
   function makeMainContent() {
     if (isHello || errorText != "") {
@@ -42,19 +89,16 @@ const Home: NextPage = () => {
     }
     return (
       <div>
-        <h1 className="text-center pt-5 text-3xl pb-2">
-          {bookData.summary.title}
-        </h1>
+        <h1 className="text-center pt-5 text-3xl pb-2">{bookData.title}</h1>
         <p className="text-center">
-          著者 : {bookData.summary.author} / 出版社 :
-          {bookData.summary.publisher}
+          著者 : {bookData.author} / 出版社 :{bookData.publisher}
         </p>
         <p className="text-secondary text-center">
-          <span className="text-2xl">ISBN : {bookData.summary.isbn}</span>
+          <span className="text-2xl">ISBN : {bookData.isbn}</span>
           <button
             className="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded ml-2"
             onClick={() => {
-              navigator.clipboard.writeText(bookData.summary.isbn);
+              navigator.clipboard.writeText(bookData.isbn);
             }}
           >
             コピー
@@ -65,9 +109,7 @@ const Home: NextPage = () => {
             className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
             onClick={() => {
               navigator.clipboard.writeText(
-                `${location.origin + location.pathname}?isbn=${
-                  bookData.summary.isbn
-                }`
+                makeSharePageLink(bookData.isbn, bookData.from)
               );
             }}
           >

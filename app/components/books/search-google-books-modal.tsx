@@ -3,6 +3,7 @@ import {
   GoogleBooksApiVolumesResponseData,
 } from "@/Interfaces/googlebooks/volumes";
 import { searchGoogleBooksApi } from "@/libs/googlebooks";
+import { makeSharePageLink } from "@/utils/links";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { forwardRef, Ref, useImperativeHandle, useState } from "react";
@@ -70,9 +71,10 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
                     <li
                       key={item.id}
                       onClick={() => {
-                        let url =
-                          "/ja/share?isbn=" +
-                          item.volumeInfo.industryIdentifiers[0].identifier;
+                        let url = makeSharePageLink(
+                          item.volumeInfo.industryIdentifiers[0].identifier,
+                          "googlebooks"
+                        );
                         window.open(url, "_blank");
                       }}
                       className="py-2 px-4 w-full border-b border-gray-200 dark:border-gray-600"

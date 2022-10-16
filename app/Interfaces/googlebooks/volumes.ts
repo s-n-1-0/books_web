@@ -1,6 +1,6 @@
 interface GoogleBooksApiBookDataIndustryIdentifier {
-  type: string;
-  identifier: "ISBN_10" | "ISBN_13" | "PKEY";
+  type: "ISBN_10" | "ISBN_13" | "PKEY";
+  identifier: string;
 }
 interface GoogleBooksApiBookDataInfo {
   title: string;

@@ -1,3 +1,4 @@
+import { makeSharePageLink } from "@/utils/links";
 import { convertUrl2Isbn13 } from "asin2isbn";
 import Image from "next/image";
 import { useRef, useState } from "react";
@@ -27,7 +28,7 @@ function SearchBookFields({ errorText }: Props) {
   let notsupportedKindleText =
     "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
   return (
-    <div className="text-center">
+    <div className="text-center mx-2">
       <h1 className="pt-5 text-3xl pb-2">書籍情報を共有</h1>
       <p className="text-red-600">{errorText}</p>
       <hr className="mb-4" />
@@ -49,7 +50,7 @@ function SearchBookFields({ errorText }: Props) {
         <SearchBookButton
           editingText={editingIsbn}
           onClick={() => {
-            location.href = "./share?isbn=" + editingIsbn;
+            makeSharePageLink(editingIsbn, "openbd");
           }}
         />
       </div>
@@ -99,7 +100,7 @@ function SearchBookFields({ errorText }: Props) {
             onClick={() => {
               try {
                 let res = convertUrl2Isbn13(editingAmazonUrl);
-                if (res.isbn != "") location.href = "./share?isbn=" + res.isbn;
+                if (res.isbn != "") makeSharePageLink(res.isbn, "openbd");
                 else if (res.error == "KINDLE") {
                   setAmazonUrlErrorText(notsupportedKindleText);
                 } else setAmazonUrlErrorText("無効なURLです。");
