@@ -50,7 +50,7 @@ function SearchBookFields({ errorText }: Props) {
         <SearchBookButton
           editingText={editingIsbn}
           onClick={() => {
-            makeSharePageLink(editingIsbn, "openbd");
+            makeSharePageLink(editingIsbn, "openbd", "");
           }}
         />
       </div>
@@ -100,7 +100,7 @@ function SearchBookFields({ errorText }: Props) {
             onClick={() => {
               let res = convertUrl2Isbn13(editingAmazonUrl);
               if (res.isbn != "")
-                location.href = makeSharePageLink(res.isbn, "openbd");
+                location.href = makeSharePageLink(res.isbn, "openbd", "");
               else if (res.error == "KINDLE") {
                 setAmazonUrlErrorText(notsupportedKindleText);
               } else setAmazonUrlErrorText("無効なURLです。");

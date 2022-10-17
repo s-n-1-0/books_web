@@ -1,3 +1,4 @@
+import BookComment from "@/components/books/book-comment";
 import SearchBookFields from "@/components/books/search-book-fields";
 import Header from "@/components/header";
 import ProcessingView from "@/components/processing-view";
@@ -19,10 +20,18 @@ interface BookData {
 }
 const Home: NextPage = () => {
   const router = useRouter();
-  const { isbn, from } = router.query;
+  const { isbn, from, comment } = router.query;
   const [bookData, setBookData] = useState<BookData | null>(null);
   const [errorText, setErrorText] = useState<string>("");
   const [isHello, setIsHello] = useState<boolean>(false);
+  function updateQueryComment() {
+    return typeof comment == "string" ? decodeURIComponent(comment) : "";
+  }
+  useEffect(() => {
+    setUserComment(updateQueryComment());
+  }, [comment]);
+  const [userComment, setUserComment] = useState<string>(updateQueryComment());
+
   useEffect(() => {
     if (typeof isbn == "string") {
       let fromDb = typeof from == "string" ? from : "";
@@ -104,17 +113,25 @@ const Home: NextPage = () => {
             コピー
           </button>
         </p>
-        <div className="text-center p-10">
-          <button
-            className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-            onClick={() => {
-              navigator.clipboard.writeText(
-                makeSharePageLink(bookData.isbn, bookData.from)
-              );
+        <div className="p-10">
+          <BookComment
+            comment={userComment}
+            onChange={(newValue: string) => {
+              setUserComment(newValue);
             }}
-          >
-            この本を共有する
-          </button>
+          />
+          <div className="text-center mt-4">
+            <button
+              className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  makeSharePageLink(bookData.isbn, bookData.from, userComment)
+                );
+              }}
+            >
+              この本を共有する
+            </button>
+          </div>
         </div>
       </div>
     );

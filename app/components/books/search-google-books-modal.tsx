@@ -73,7 +73,8 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
                       onClick={() => {
                         let url = makeSharePageLink(
                           item.volumeInfo.industryIdentifiers[0].identifier,
-                          "googlebooks"
+                          "googlebooks",
+                          ""
                         );
                         window.open(url, "_blank");
                       }}
