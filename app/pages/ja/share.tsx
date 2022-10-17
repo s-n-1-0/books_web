@@ -1,4 +1,5 @@
 import BookComment from "@/components/books/book-comment";
+import BookThumbnail from "@/components/books/book-thumbnail";
 import SearchBookFields from "@/components/books/search-book-fields";
 import Header from "@/components/header";
 import ProcessingView from "@/components/processing-view";
@@ -98,7 +99,17 @@ const Home: NextPage = () => {
     }
     return (
       <div>
-        <h1 className="text-center pt-5 text-3xl pb-2">{bookData.title}</h1>
+        <div className="flex items-center justify-center pt-5  pb-2">
+          {(() => {
+            if (bookData.thumbnail == "") return;
+            return (
+              <span className="mr-2">
+                <BookThumbnail src={bookData.thumbnail} />
+              </span>
+            );
+          })()}
+          <span className="text-3xl">{bookData.title}</span>
+        </div>
         <p className="text-center">
           著者 : {bookData.author} / 出版社 :{bookData.publisher}
         </p>
