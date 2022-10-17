@@ -1,4 +1,6 @@
-import BookComment from "@/components/books/book-comment";
+import BookComment, {
+  BookCommentRefType,
+} from "@/components/books/book-comment";
 import BookThumbnail from "@/components/books/book-thumbnail";
 import SearchBookFields from "@/components/books/search-book-fields";
 import Header from "@/components/header";
@@ -10,7 +12,7 @@ import { makeSharePageLink, SharePageFromDb } from "@/utils/links";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 interface BookData {
   title: string;
   author: string;
@@ -27,6 +29,7 @@ const Home: NextPage = () => {
   const [errorText, setErrorText] = useState<string>("");
   const [isHello, setIsHello] = useState<boolean>(false);
   const [isClickedShareButton, setIsClickedShareButton] = useState(false);
+  const commentRef = useRef<BookCommentRefType>(null);
   function updateQueryComment() {
     return typeof comment == "string" ? decodeURIComponent(comment) : "";
   }
@@ -139,12 +142,14 @@ const Home: NextPage = () => {
             onChange={(newValue: string) => {
               setUserComment(newValue);
             }}
+            ref={commentRef}
           />
           <div className="text-center mt-4">
             <button
               className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
               onClick={() => {
                 setIsClickedShareButton(true);
+                commentRef?.current?.finishEditing();
                 navigator.clipboard.writeText(
                   makeSharePageLink(bookData.isbn, bookData.from, userComment)
                 );

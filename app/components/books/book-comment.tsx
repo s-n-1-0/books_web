@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { forwardRef, Ref, useImperativeHandle, useState } from "react";
 
 type Props = {
   comment: string;
   onChange: (newValue: string) => void;
 };
-function BookComment({ comment, onChange }: Props) {
+function _BookComment({ comment, onChange }: Props, ref: Ref<unknown>) {
   let [isEditing, setIsEditing] = useState(false);
+  useImperativeHandle(ref, () => ({
+    finishEditing: () => {
+      setIsEditing(false);
+    },
+  }));
   if (!isEditing && comment == "")
     return (
       <div className="text-center">
@@ -100,5 +105,8 @@ function BookComment({ comment, onChange }: Props) {
     </div>
   );
 }
-
+let BookComment = forwardRef(_BookComment);
+export type BookCommentRefType = {
+  finishEditing: () => void;
+};
 export default BookComment;
