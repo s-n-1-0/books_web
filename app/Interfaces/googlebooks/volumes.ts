@@ -7,7 +7,7 @@ interface GoogleBooksApiBookDataInfo {
   authors: string[];
   publisher: string;
   industryIdentifiers: GoogleBooksApiBookDataIndustryIdentifier[];
-  imageLinks: {
+  imageLinks?: {
     smallThumbnail: string;
     thumbnail: string;
   };

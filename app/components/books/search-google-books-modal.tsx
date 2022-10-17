@@ -82,7 +82,7 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
                     >
                       <div className="flex items-center">
                         <BookThumbnail
-                          src={item.volumeInfo.imageLinks.smallThumbnail}
+                          src={item.volumeInfo.imageLinks?.smallThumbnail ?? ""}
                         />
                         <div className="pl-2">
                           {item.volumeInfo.title}

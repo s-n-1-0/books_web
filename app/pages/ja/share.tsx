@@ -67,7 +67,7 @@ const Home: NextPage = () => {
                   author: book.volumeInfo.authors.join(" "),
                   isbn: isbn,
                   publisher: book.volumeInfo.publisher,
-                  thumbnail: book.volumeInfo.imageLinks.smallThumbnail,
+                  thumbnail: book.volumeInfo?.imageLinks?.smallThumbnail ?? "",
                   from: "googlebooks",
                 });
                 setIsHello(false);
