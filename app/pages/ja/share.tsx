@@ -179,6 +179,7 @@ const Home: NextPage = () => {
           content="書籍共有できるURLを発行します。ご自由にお使いください。"
         />
         <link rel="icon" href="/images/icon.png" />
+        <link rel="canonical" href="https://books.sn-10.net/ja/share" />
       </Head>
       <Header></Header>
       <main className="container mx-auto">{makeMainContent()}</main>
