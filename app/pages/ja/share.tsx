@@ -35,6 +35,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (typeof isbn == "string") {
+      setIsHello(false);
       let fromDb = typeof from == "string" ? from : "";
       switch (fromDb) {
         case "opendb":
