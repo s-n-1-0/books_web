@@ -7,10 +7,10 @@ function BookThumbnail({ src }: Props) {
     <div
       style={{
         position: "relative",
-        minWidth: "30px",
-        maxWidth: "50px",
-        height: "50px",
-        maxHeight: "100px",
+        minWidth: "60px",
+        maxWidth: "100px",
+        height: "100px",
+        maxHeight: "200px",
       }}
     >
       <Image src={src} alt="" layout="fill" objectFit="contain" />

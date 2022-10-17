@@ -1,3 +1,5 @@
+import { faBook } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import Link from "next/link";
 import { useState } from "react";
@@ -20,7 +22,10 @@ function Header() {
       <nav className="flex items-center justify-between flex-wrap bg-my-color p-6">
         <div className="flex items-center flex-shrink-0 text-white mr-6">
           <Link href="/ja/share">
-            <a className="font-semibold text-xl tracking-tight">Share Books</a>
+            <a className="font-semibold text-xl tracking-tight">
+              <FontAwesomeIcon icon={faBook} />
+              <span className="ml-1">Share Books</span>
+            </a>
           </Link>
         </div>
         <div className="block lg:hidden">

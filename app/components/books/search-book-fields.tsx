@@ -7,15 +7,23 @@ import { useRef, useState } from "react";
 import SearchGoogleBooksModal, {
   SearchGoogleBooksModalRefType,
 } from "./search-google-books-modal";
-type SearchBookButtonProps = { editingText: string; onClick: () => void };
-function SearchBookButton({ editingText, onClick }: SearchBookButtonProps) {
+type SearchBookButtonProps = {
+  buttonText: string;
+  editingText: string;
+  onClick: () => void;
+};
+function SearchBookButton({
+  buttonText,
+  editingText,
+  onClick,
+}: SearchBookButtonProps) {
   if (editingText != "")
     return (
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-2 w-100 whitespace-nowrap"
         onClick={onClick}
       >
-        調べる
+        {buttonText}
       </button>
     );
   else return <span></span>;
@@ -38,7 +46,7 @@ function SearchBookFields({ errorText }: Props) {
         <div className="flex items-end">
           <div className="w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2 text-left">
-              ISBNで調べる
+              ISBNで共有
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -51,6 +59,7 @@ function SearchBookFields({ errorText }: Props) {
             />
           </div>
           <SearchBookButton
+            buttonText="共有"
             editingText={editingIsbn}
             onClick={() => {
               makeSharePageLink(editingIsbn, "openbd", "");
@@ -83,6 +92,7 @@ function SearchBookFields({ errorText }: Props) {
             />
           </div>
           <SearchBookButton
+            buttonText="調べる"
             editingText={editingTitle}
             onClick={() => {
               modalRef.current?.openModal(editingTitle);
@@ -95,7 +105,7 @@ function SearchBookFields({ errorText }: Props) {
         <div className="flex items-end">
           <div className="w-full">
             <label className="block text-gray-700 text-sm font-bold mb-2 text-left">
-              Amazon URLで調べる
+              Amazon URLで共有
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -108,6 +118,7 @@ function SearchBookFields({ errorText }: Props) {
             />
           </div>
           <SearchBookButton
+            buttonText="共有"
             editingText={editingAmazonUrl}
             onClick={() => {
               let res = convertUrl2Isbn13(editingAmazonUrl);
