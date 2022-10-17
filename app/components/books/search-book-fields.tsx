@@ -98,15 +98,12 @@ function SearchBookFields({ errorText }: Props) {
           <SearchBookButton
             editingText={editingAmazonUrl}
             onClick={() => {
-              try {
-                let res = convertUrl2Isbn13(editingAmazonUrl);
-                if (res.isbn != "") makeSharePageLink(res.isbn, "openbd");
-                else if (res.error == "KINDLE") {
-                  setAmazonUrlErrorText(notsupportedKindleText);
-                } else setAmazonUrlErrorText("無効なURLです。");
-              } catch (err) {
-                setAmazonUrlErrorText("無効なURLです。");
-              }
+              let res = convertUrl2Isbn13(editingAmazonUrl);
+              if (res.isbn != "")
+                location.href = makeSharePageLink(res.isbn, "openbd");
+              else if (res.error == "KINDLE") {
+                setAmazonUrlErrorText(notsupportedKindleText);
+              } else setAmazonUrlErrorText("無効なURLです。");
             }}
           />
         </div>
