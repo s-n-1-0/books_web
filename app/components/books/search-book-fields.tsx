@@ -2,7 +2,6 @@ import { makeSharePageLink } from "@/utils/links";
 import { faBarcode } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { convertUrl2Isbn13 } from "asin2isbn";
-import Image from "next/image";
 import { useRef, useState } from "react";
 import SearchGoogleBooksModal, {
   SearchGoogleBooksModalRefType,
@@ -134,11 +133,14 @@ function SearchBookFields({ errorText }: Props) {
         {(() => {
           if (amazonUrlErrorText == notsupportedKindleText)
             return (
-              <div className="p-10">
-                <Image
-                  src="/images/guides/amazon-pepper-book-ss.png"
-                  width={439}
-                  height={89}
+              <div className="p-10 mx-auto">
+                <img
+                  src="https://i.gyazo.com/c13353fcbacce087b7dd3a42985d19c0.png"
+                  style={{
+                    maxHeight: "89px",
+                    width: "100%",
+                    objectFit: "contain",
+                  }}
                   alt=""
                 />
               </div>
