@@ -182,7 +182,7 @@ const Home: NextPage = () => {
         <link rel="canonical" href="https://books.sn-10.net/ja/share" />
       </Head>
       <Header></Header>
-      <main className="container mx-auto">{makeMainContent()}</main>
+      <main className="container px-2">{makeMainContent()}</main>
 
       <footer>
         <hr />

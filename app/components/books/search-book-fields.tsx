@@ -38,7 +38,7 @@ function SearchBookFields({ errorText }: Props) {
   let notsupportedKindleText =
     "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
   return (
-    <div className="text-center mx-2">
+    <div className="text-center">
       <h1 className="pt-5 text-3xl pb-2">書籍情報を共有</h1>
       <p className="text-red-600">{errorText}</p>
       <hr className="mb-4" />
