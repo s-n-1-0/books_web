@@ -26,6 +26,7 @@ const Home: NextPage = () => {
   const [bookData, setBookData] = useState<BookData | null>(null);
   const [errorText, setErrorText] = useState<string>("");
   const [isHello, setIsHello] = useState<boolean>(false);
+  const [isClickedShareButton, setIsClickedShareButton] = useState(false);
   function updateQueryComment() {
     return typeof comment == "string" ? decodeURIComponent(comment) : "";
   }
@@ -117,9 +118,9 @@ const Home: NextPage = () => {
           <span className="text-3xl">{bookData.title}</span>
         </div>
         <p className="text-secondary text-center">
-          <span className="text-2xl">ISBN : {bookData.isbn}</span>
+          <span className="text-xl">ISBN : {bookData.isbn}</span>
           <button
-            className="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded ml-2"
+            className="text-sm bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded ml-2"
             onClick={() => {
               navigator.clipboard.writeText(bookData.isbn);
             }}
@@ -143,6 +144,7 @@ const Home: NextPage = () => {
             <button
               className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
               onClick={() => {
+                setIsClickedShareButton(true);
                 navigator.clipboard.writeText(
                   makeSharePageLink(bookData.isbn, bookData.from, userComment)
                 );
@@ -150,6 +152,14 @@ const Home: NextPage = () => {
             >
               この本を共有する
             </button>
+            {(() => {
+              if (isClickedShareButton)
+                return (
+                  <p className="text-center text-secondary">
+                    <small>共有URLをコピーしました。</small>
+                  </p>
+                );
+            })()}
           </div>
         </div>
       </div>
