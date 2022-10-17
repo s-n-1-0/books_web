@@ -17,6 +17,7 @@ interface BookData {
   thumbnail: string;
   isbn: string;
   publisher: string;
+  description: string;
   from: SharePageFromDb;
 }
 const Home: NextPage = () => {
@@ -51,6 +52,9 @@ const Home: NextPage = () => {
                   isbn: resBookData.summary.isbn,
                   publisher: resBookData.summary.publisher,
                   thumbnail: resBookData.summary.cover,
+                  description:
+                    resBookData.onix.CollateralDetail.TextContent?.[0].Text ??
+                    "",
                   from: "openbd",
                 });
                 setIsHello(false);
@@ -70,6 +74,7 @@ const Home: NextPage = () => {
                   isbn: isbn,
                   publisher: book.volumeInfo.publisher,
                   thumbnail: book.volumeInfo?.imageLinks?.smallThumbnail ?? "",
+                  description: book.volumeInfo.description,
                   from: "googlebooks",
                 });
                 setIsHello(false);
@@ -111,9 +116,6 @@ const Home: NextPage = () => {
           })()}
           <span className="text-3xl">{bookData.title}</span>
         </div>
-        <p className="text-center">
-          著者 : {bookData.author} / 出版社 :{bookData.publisher}
-        </p>
         <p className="text-secondary text-center">
           <span className="text-2xl">ISBN : {bookData.isbn}</span>
           <button
@@ -125,6 +127,11 @@ const Home: NextPage = () => {
             コピー
           </button>
         </p>
+        <p className="text-center">
+          著者 : {bookData.author} / 出版社 :{bookData.publisher}
+        </p>
+
+        <p className="text-center mt-1">{bookData.description}</p>
         <div className="p-10">
           <BookComment
             comment={userComment}

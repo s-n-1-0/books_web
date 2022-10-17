@@ -1,3 +1,11 @@
+interface OpenBDBookDataOnixCollateralDetailTextContent {
+  Text: string;
+}
+interface OpenBDBookDataOnix {
+  CollateralDetail: {
+    TextContent: OpenBDBookDataOnixCollateralDetailTextContent[];
+  };
+}
 interface OpenBDBookDataSummary {
   isbn: string;
   title: string;
@@ -10,6 +18,7 @@ interface OpenBDBookDataSummary {
 }
 interface OpenBDBookData {
   summary: OpenBDBookDataSummary;
+  onix: OpenBDBookDataOnix;
 }
 type OpenBDGetResponseData = OpenBDBookData[];
 

@@ -11,6 +11,7 @@ interface GoogleBooksApiBookDataInfo {
     smallThumbnail: string;
     thumbnail: string;
   };
+  description: string;
 }
 interface GoogleBooksApiBookData {
   id: string;
