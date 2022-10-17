@@ -19,9 +19,9 @@ function Header() {
     <header>
       <nav className="flex items-center justify-between flex-wrap bg-my-color p-6">
         <div className="flex items-center flex-shrink-0 text-white mr-6">
-          <span className="font-semibold text-xl tracking-tight">
-            Share Books
-          </span>
+          <Link href="/ja/share">
+            <a className="font-semibold text-xl tracking-tight">Share Books</a>
+          </Link>
         </div>
         <div className="block lg:hidden">
           <button
