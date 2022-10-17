@@ -1,4 +1,6 @@
 import { makeSharePageLink } from "@/utils/links";
+import { faBarcode } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { convertUrl2Isbn13 } from "asin2isbn";
 import Image from "next/image";
 import { useRef, useState } from "react";
@@ -32,27 +34,37 @@ function SearchBookFields({ errorText }: Props) {
       <h1 className="pt-5 text-3xl pb-2">書籍情報を共有</h1>
       <p className="text-red-600">{errorText}</p>
       <hr className="mb-4" />
-      <div className="mb-4 flex items-end">
-        <div className="w-full">
-          <label className="block text-gray-700 text-sm font-bold mb-2 text-left">
-            ISBNで調べる
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            inputMode="email"
-            placeholder="9784798056920"
-            value={editingIsbn}
-            onChange={(e) => {
-              setEdittingIsbn(e.target.value);
+      <div className="mb-4">
+        <div className="flex items-end">
+          <div className="w-full">
+            <label className="block text-gray-700 text-sm font-bold mb-2 text-left">
+              ISBNで調べる
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              inputMode="email"
+              placeholder="9784798056920"
+              value={editingIsbn}
+              onChange={(e) => {
+                setEdittingIsbn(e.target.value);
+              }}
+            />
+          </div>
+          <SearchBookButton
+            editingText={editingIsbn}
+            onClick={() => {
+              makeSharePageLink(editingIsbn, "openbd", "");
             }}
           />
         </div>
-        <SearchBookButton
-          editingText={editingIsbn}
-          onClick={() => {
-            makeSharePageLink(editingIsbn, "openbd", "");
-          }}
-        />
+        <p className="text-left text-secondary">
+          <small>
+            <FontAwesomeIcon icon={faBarcode} />
+            <span className="ml-1">
+              書籍のバーコードからISBNを読み取る機能は今後実装予定です。
+            </span>
+          </small>
+        </p>
       </div>
       <div className="mb-4">
         <div className="flex items-end">
