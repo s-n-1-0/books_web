@@ -62,7 +62,7 @@ function SearchBookFields({ errorText }: Props) {
             buttonText="共有"
             editingText={editingIsbn}
             onClick={() => {
-              makeSharePageLink(editingIsbn, "openbd", "");
+              location.href = makeSharePageLink(editingIsbn, "openbd", "");
             }}
           />
         </div>
