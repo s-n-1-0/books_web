@@ -16,7 +16,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "asin2isbn": "^1.0.1",
+    "asin2isbn": "^1.0.2",
     "classnames": "^2.3.2",
     "next": "12.3.1",
     "openbd": "git+https://github.com/s-n-1-0/openbd",
