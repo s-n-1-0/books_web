@@ -175,7 +175,7 @@ const Home: NextPage = () => {
           <div className="pt-2">
             <h1 className="text-xl">
               <FontAwesomeIcon icon={faMagnifyingGlass} className="mr-2" />
-              本を探す
+              書店を探す
             </h1>
             <small>
               紙の書籍と電子書籍両方のリンクが含まれます。選択にご注意ください。
