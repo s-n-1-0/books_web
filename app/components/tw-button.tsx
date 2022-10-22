@@ -6,20 +6,17 @@ type ButtonColor = {
 };
 type Props = {
   children: ReactNode;
-  color?: string;
+  color?: ButtonColor;
 };
-let colors: { [key: string]: ButtonColor } = {
-  blue: {
+
+function TwButton({
+  color = {
     color: "bg-blue-500",
     hoverColor: "hover:bg-blue-700",
   },
-  red: {
-    color: "bg-red-500",
-    hoverColor: "hover:bg-red-700",
-  },
-};
-function TwButton({ color = "blue", children }: Props) {
-  let c = colors[color];
+  children,
+}: Props) {
+  let c = color;
   let classNames = `font-bold py-2 px-4 rounded ${c.color} text-white ${c.hoverColor}`;
   return <button className={classNames}>{children}</button>;
 }
