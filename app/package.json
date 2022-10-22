@@ -24,6 +24,7 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@fortawesome/free-brands-svg-icons": "^6.2.0",
     "@types/node": "18.8.4",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
