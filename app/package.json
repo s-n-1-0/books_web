@@ -10,11 +10,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-regular-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "asin2isbn": "^1.0.1",
+    "asin2isbn": "^1.0.2",
     "classnames": "^2.3.2",
     "next": "12.3.1",
     "openbd": "git+https://github.com/s-n-1-0/openbd",
@@ -22,6 +24,7 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@fortawesome/free-brands-svg-icons": "^6.2.0",
     "@types/node": "18.8.4",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
