@@ -24,7 +24,10 @@ function CustomHead({ title, description = "", pageUrl, ogType }: Props) {
       <meta property="og:url" content={pageUrl} />
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={title} />
-      <meta property="og:image" content="/images/ogp.png" />
+      <meta
+        property="og:image"
+        content="https://books.sn-10.net/images/ogp.png"
+      />
       <meta name="twitter:card" content="summary_large_image" />
     </Head>
   );
