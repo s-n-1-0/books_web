@@ -6,6 +6,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   return (
@@ -24,9 +25,9 @@ const Home: NextPage = () => {
               書籍を探す
             </h1>
             書籍は
-            <a href="/ja/share" className="underline">
-              検索ページ
-            </a>
+            <Link href="/ja/share">
+              <a className="underline">検索ページ</a>
+            </Link>
             よりISBN(書籍についている主に978から始まる番号)や書籍名、Amazon
             URLから検索することができます。
           </div>

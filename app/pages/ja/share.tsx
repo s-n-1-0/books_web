@@ -38,6 +38,7 @@ const Home: NextPage = () => {
   }
   useEffect(() => {
     setUserComment(updateQueryComment());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comment]);
   const [userComment, setUserComment] = useState<string>(updateQueryComment());
 
