@@ -64,6 +64,7 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
               {googleBooksResults
                 .filter((item) => {
                   let id = item?.volumeInfo?.industryIdentifiers?.[0];
+                  if (!id) return false;
                   return id.type == "ISBN_10" || id.type == "ISBN_13";
                 })
                 .map((item) => {
