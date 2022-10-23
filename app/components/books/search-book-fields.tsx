@@ -1,7 +1,12 @@
 import { makeSharePageLink } from "@/utils/links";
-import { faBarcode, faBook } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBarcode,
+  faBook,
+  faQuestion,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { convertUrl2Isbn13 } from "asin2isbn";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import SearchGoogleBooksModal, {
   SearchGoogleBooksModalRefType,
@@ -151,6 +156,14 @@ function SearchBookFields({ errorText }: Props) {
           return;
         })()}
       </div>
+      <p className="text-left text-secondary">
+        <Link href="/ja/help/find">
+          <a className="underline">
+            <FontAwesomeIcon icon={faQuestion} className="mr-2" />
+            書籍が見つからない場合...
+          </a>
+        </Link>
+      </p>
     </div>
   );
 }
