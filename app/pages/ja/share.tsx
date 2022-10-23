@@ -4,8 +4,10 @@ import BookComment, {
 import BookLinks from "@/components/books/book-links";
 import BookThumbnail from "@/components/books/book-thumbnail";
 import SearchBookFields from "@/components/books/search-book-fields";
+import CustomHead from "@/components/head";
 import Header from "@/components/header";
 import ProcessingView from "@/components/processing-view";
+import TweetButton from "@/components/tweet-button";
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
 import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
 import * as openbd from "@/libs/openbd";
@@ -13,7 +15,6 @@ import { makeSharePageLink, SharePageFromDb } from "@/utils/links";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NextPage } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 interface BookData {
@@ -169,6 +170,29 @@ const Home: NextPage = () => {
                   </p>
                 );
             })()}
+            <p>
+              <div className="mx-auto mt-3">
+                {(() => {
+                  let twText = "";
+                  if (userComment != "") {
+                    twText =
+                      (userComment.length > 75
+                        ? userComment.slice(0, 70) + "..."
+                        : userComment) +
+                      "%0a%0a" +
+                      `書籍「${bookData.title}」の紹介`;
+                  } else {
+                    twText = `書籍「${bookData.title}」の紹介です。`;
+                  }
+                  let twUrl = makeSharePageLink(
+                    bookData.isbn,
+                    bookData.from,
+                    userComment
+                  );
+                  return <TweetButton text={twText} url={twUrl} />;
+                })()}
+              </div>
+            </p>
           </div>
           <hr />
           <div className="pt-2">
@@ -187,15 +211,12 @@ const Home: NextPage = () => {
   }
   return (
     <div>
-      <Head>
-        <title>本を友だちに紹介する - Share Books</title>
-        <meta
-          name="description"
-          content="書籍共有できるURLを発行します。ご自由にお使いください。"
-        />
-        <link rel="icon" href="/images/icon.png" />
-        <link rel="canonical" href="https://books.sn-10.net/ja/share" />
-      </Head>
+      <CustomHead
+        title="本を友だちに紹介する - Share Books"
+        description="書籍共有・紹介サイトです。共有URLを発行します。ご自由にお使いください。"
+        pageUrl="https://books.sn-10.net/ja/share"
+        ogType="product"
+      ></CustomHead>
       <Header></Header>
       <main>
         <div className="w-full px-2 ">{makeMainContent()}</div>
