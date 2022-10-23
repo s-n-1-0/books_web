@@ -7,6 +7,7 @@ import SearchBookFields from "@/components/books/search-book-fields";
 import CustomHead from "@/components/head";
 import Header from "@/components/header";
 import ProcessingView from "@/components/processing-view";
+import TweetButton from "@/components/tweet-button";
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
 import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
 import * as openbd from "@/libs/openbd";
@@ -169,6 +170,29 @@ const Home: NextPage = () => {
                   </p>
                 );
             })()}
+            <p>
+              <div className="mx-auto mt-3">
+                {(() => {
+                  let twText = "";
+                  if (userComment != "") {
+                    twText =
+                      (userComment.length > 75
+                        ? userComment.slice(0, 70) + "..."
+                        : userComment) +
+                      "%0a%0a" +
+                      `書籍「${bookData.title}」の紹介`;
+                  } else {
+                    twText = `書籍「${bookData.title}」の紹介です。`;
+                  }
+                  let twUrl = makeSharePageLink(
+                    bookData.isbn,
+                    bookData.from,
+                    userComment
+                  );
+                  return <TweetButton text={twText} url={twUrl} />;
+                })()}
+              </div>
+            </p>
           </div>
           <hr />
           <div className="pt-2">
