@@ -1,19 +1,17 @@
 import BookComment, {
   BookCommentRefType,
 } from "@/components/books/book-comment";
+import BookLinks from "@/components/books/book-links";
 import BookThumbnail from "@/components/books/book-thumbnail";
 import SearchBookFields from "@/components/books/search-book-fields";
 import Header from "@/components/header";
 import ProcessingView from "@/components/processing-view";
-import TwButton from "@/components/tw-button";
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
 import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
 import * as openbd from "@/libs/openbd";
 import { makeSharePageLink, SharePageFromDb } from "@/utils/links";
-import { faAmazon } from "@fortawesome/free-brands-svg-icons";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { convertIsbn2Url } from "asin2isbn";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -180,25 +178,7 @@ const Home: NextPage = () => {
             <small>
               紙の書籍と電子書籍両方のリンクが含まれます。選択にご注意ください。
             </small>
-            <div className="flex justify-center m-3">
-              <a
-                href={(() => {
-                  return convertIsbn2Url(bookData.isbn);
-                })()}
-              >
-                <TwButton
-                  color={{
-                    color: "bg-neutral-500",
-                    hoverColor: "hover:bg-neutral-700",
-                  }}
-                >
-                  <span>
-                    <FontAwesomeIcon icon={faAmazon} />
-                    <span className="ml-2">Amazon</span>
-                  </span>
-                </TwButton>
-              </a>
-            </div>
+            <BookLinks isbn={bookData.isbn} />
           </div>
         </div>
       </div>
