@@ -1,3 +1,4 @@
+import CustomHead from "@/components/head";
 import Header from "@/components/header";
 import {
   faMagnifyingGlass,
@@ -5,17 +6,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 
 const Home: NextPage = () => {
   return (
     <div>
-      <Head>
-        <title>Share Books ヘルプ</title>
-        <link rel="icon" href="/images/icon.png" />
-        <link rel="canonical" href="https://books.sn-10.net/ja/share" />
-      </Head>
+      <CustomHead
+        title="ヘルプ:本・書店が見つからない - Share Books"
+        pageUrl="https://books.sn-10.net/ja/share"
+        ogType="article"
+      ></CustomHead>
       <Header></Header>
       <main>
         <div className="w-full px-2 py-3">

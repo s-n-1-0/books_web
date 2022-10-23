@@ -4,6 +4,7 @@ import BookComment, {
 import BookLinks from "@/components/books/book-links";
 import BookThumbnail from "@/components/books/book-thumbnail";
 import SearchBookFields from "@/components/books/search-book-fields";
+import CustomHead from "@/components/head";
 import Header from "@/components/header";
 import ProcessingView from "@/components/processing-view";
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
@@ -13,7 +14,6 @@ import { makeSharePageLink, SharePageFromDb } from "@/utils/links";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NextPage } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 interface BookData {
@@ -187,15 +187,12 @@ const Home: NextPage = () => {
   }
   return (
     <div>
-      <Head>
-        <title>本を友だちに紹介する - Share Books</title>
-        <meta
-          name="description"
-          content="書籍共有できるURLを発行します。ご自由にお使いください。"
-        />
-        <link rel="icon" href="/images/icon.png" />
-        <link rel="canonical" href="https://books.sn-10.net/ja/share" />
-      </Head>
+      <CustomHead
+        title="本を友だちに紹介する - Share Books"
+        description="書籍共有・紹介サイトです。共有URLを発行します。ご自由にお使いください。"
+        pageUrl="https://books.sn-10.net/ja/share"
+        ogType="product"
+      ></CustomHead>
       <Header></Header>
       <main>
         <div className="w-full px-2 ">{makeMainContent()}</div>
