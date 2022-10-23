@@ -179,7 +179,7 @@ const Home: NextPage = () => {
                       (userComment.length > 75
                         ? userComment.slice(0, 70) + "..."
                         : userComment) +
-                      "%0a%0a" +
+                      "\n\n" +
                       `書籍「${bookData.title}」の紹介`;
                   } else {
                     twText = `書籍「${bookData.title}」の紹介です。`;

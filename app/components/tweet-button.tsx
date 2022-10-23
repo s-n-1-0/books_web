@@ -23,8 +23,7 @@ function TweetButton({ text, url = encodeURIComponent(location.href) }: Props) {
       onClick={() => {
         window.open(
           "https://twitter.com/share?text=" +
-            text +
-            " - Share Books" +
+            encodeURIComponent(text + " - Share Books") +
             "&url=" +
             encodeURIComponent(url)
         );
