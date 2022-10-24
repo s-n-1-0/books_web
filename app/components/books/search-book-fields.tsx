@@ -111,8 +111,11 @@ function SearchBookFields({ errorText }: Props) {
       <div className="mb-4">
         <div className="flex items-end">
           <div className="w-full">
-            <label className="block text-gray-700 text-sm font-bold mb-2 text-left">
-              Amazon URLで共有
+            <label className="block text-gray-700 text-sm mb-2 text-left">
+              <span className="font-bold">Amazon URLで共有</span>
+              <small className="ml-2 text-secondary">
+                商品ページのURLを張り付けてください
+              </small>
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
