@@ -2,6 +2,7 @@ import { makeSharePageLink } from "@/utils/links";
 import {
   faBarcode,
   faBook,
+  faPaperPlane,
   faQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -43,12 +44,22 @@ function SearchBookFields({ errorText }: Props) {
     "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
   return (
     <div className="text-center">
-      <h1 className="pt-5 text-2xl pb-2 text-slate-700">
-        <FontAwesomeIcon icon={faBook} />
-        <span className="ml-1">以下の方法で書籍を共有できます。</span>
-      </h1>
-      <p className="text-red-600">{errorText}</p>
+      <hr className="mt-4" />
+      <div className="py-10 text-start pl-8 bg-gray-100">
+        <h1 className="text-4xl text-my-color">
+          <FontAwesomeIcon icon={faPaperPlane} className="mr-1" />
+          書籍を紹介する
+        </h1>
+        <p className="text-slate-500">
+          登録不要で書籍をお知り合いに共有することができます。
+        </p>
+      </div>
       <hr className="mb-4" />
+      <h3 className="pt-5 text-xl pb-2 text-slate-700">
+        <FontAwesomeIcon icon={faBook} />
+        <span className="ml-1">以下の方法で書籍を共有することができます。</span>
+      </h3>
+      <p className="text-red-600">{errorText}</p>
       <div className="mb-4">
         <div className="flex items-end">
           <div className="w-full">
