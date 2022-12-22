@@ -66,7 +66,7 @@ function SearchBookFields({ errorText }: Props) {
           </h1>
           <hr className="mt-1" />
           <p className="text-slate-500 text-sm md:text-base">
-            登録不要で書籍をお知り合いに共有することができます。
+            登録不要で簡単に書籍を共有することができます。
           </p>
         </div>
         <div className="absolute py-4 pr-2 h-full w-full top-0 right-0">
