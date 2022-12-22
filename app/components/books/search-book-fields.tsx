@@ -73,7 +73,7 @@ function SearchBookFields({ errorText }: Props) {
           <div className="relative h-full w-full">
             <img
               className="object-cover ml-auto z-0 rounded-md h-full w-full"
-              src="/images/mid_thumbnail.png"
+              src="https://hello.sn-10.net/apps/books/mid_thumbnail.png"
               alt="Painted by Midjourney"
             />
             <p className="absolute bottom-0 right-0 p-2 text-white opacity-90">
