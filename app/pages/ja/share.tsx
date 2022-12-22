@@ -212,8 +212,8 @@ const Home: NextPage = () => {
   return (
     <div>
       <CustomHead
-        title="本を知り合いに紹介する - Share Books"
-        description="登録不要で書籍を共有・紹介できるサイトです。共有URLを発行します。ご自由にお使いください。"
+        title="本を知り合いに紹介する - 読書日より/Share Books"
+        description="登録不要で簡単に書籍を共有・紹介できるサイトです。書籍レビューや書店へのリンクを含む共有URLを発行することができます。ご自由にお使いください。"
         pageUrl="https://books.sn-10.net/ja/share"
         ogType="product"
       ></CustomHead>
