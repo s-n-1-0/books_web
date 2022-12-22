@@ -1,5 +1,3 @@
-import { faBook } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import Link from "next/link";
 import { useState } from "react";
@@ -25,8 +23,7 @@ function Header({ isMenu = true }: Props) {
         <div className="flex items-center flex-shrink-0 text-white mr-6">
           <Link href="/ja/share">
             <a className="font-semibold text-xl tracking-tight">
-              <FontAwesomeIcon icon={faBook} />
-              <span className="ml-1">Share Books</span>
+              <span>Share Books</span>
             </a>
           </Link>
         </div>
