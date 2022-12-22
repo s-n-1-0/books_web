@@ -43,16 +43,43 @@ function SearchBookFields({ errorText }: Props) {
   let notsupportedKindleText =
     "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
   return (
-    <div className="text-center">
-      <hr className="mt-4" />
-      <div className="py-10 text-start pl-8 bg-gray-100">
-        <h1 className="text-4xl text-my-color">
-          <FontAwesomeIcon icon={faPaperPlane} className="mr-1" />
-          書籍を紹介する
-        </h1>
-        <p className="text-slate-500">
-          登録不要で書籍をお知り合いに共有することができます。
-        </p>
+    <div className="text-center mt-4 mx-auto" style={{ maxWidth: "1250px" }}>
+      <div
+        className="py-10 text-start px-4 bg-gray-100 relative mx-auto"
+        style={{
+          height: "calc( 100vw / 1250 * 400)",
+          minHeight: "175px",
+          maxHeight: "400px",
+        }}
+      >
+        <div className="relative z-10 bg-white bg-opacity-90 w-fit rounded ml-2 p-2">
+          <h1 className="text-4xl text-my-color">
+            <FontAwesomeIcon icon={faPaperPlane} className="mr-1" />
+            書籍を紹介する
+          </h1>
+          <p className="text-slate-500">
+            登録不要で書籍をお知り合いに共有することができます。
+          </p>
+        </div>
+        <div
+          className="absolute py-4 pr-2"
+          style={{
+            width: "100%",
+            height: "100%",
+            top: "0%",
+            right: "0%",
+          }}
+        >
+          <img
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+            className="object-cover ml-auto z-0 rounded-md"
+            src="/images/mid_thumbnail.png"
+            alt="サムネイル"
+          />
+        </div>
       </div>
       <hr className="mb-4" />
       <h3 className="pt-5 text-xl pb-2 text-slate-700">
