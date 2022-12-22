@@ -1,8 +1,8 @@
 import { makeSharePageLink } from "@/utils/links";
 import {
+  faArrowUpRightFromSquare,
   faBarcode,
   faBook,
-  faPaperPlane,
   faQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -48,16 +48,24 @@ function SearchBookFields({ errorText }: Props) {
         className="py-10 text-start px-4 bg-gray-100 relative mx-auto"
         style={{
           height: "calc( 100vw / 1250 * 400)",
-          minHeight: "175px",
+          minHeight: "200px",
           maxHeight: "400px",
+          fontFamily:
+            "'游明朝 Medium','Yu Mincho',YuMincho,'Hiragino Mincho Pro',serif",
         }}
       >
         <div className="relative z-10 bg-white bg-opacity-90 w-fit rounded ml-2 p-2">
-          <h1 className="text-4xl text-my-color">
-            <FontAwesomeIcon icon={faPaperPlane} className="mr-1" />
-            書籍を紹介する
+          <h1 className="text-3xl text-my-color md:text-4xl">
+            <span className="inline-flex justify-center">
+              <FontAwesomeIcon
+                icon={faBook}
+                className="mr-1 text-xl md:text-2xl"
+              />
+            </span>
+            読書日より
           </h1>
-          <p className="text-slate-500">
+          <hr className="mt-1" />
+          <p className="text-slate-500 text-sm md:text-base">
             登録不要で書籍をお知り合いに共有することができます。
           </p>
         </div>
@@ -69,18 +77,20 @@ function SearchBookFields({ errorText }: Props) {
               alt="Painted by Midjourney"
             />
             <p className="absolute bottom-0 right-0 p-2 text-white opacity-90">
-              Painted by{" "}
-              <a href="https://www.midjourney.com/" className="underline">
-                Midjourney
-              </a>
-              .
+              <small>
+                Painted by{" "}
+                <a href="https://www.midjourney.com/" className="underline">
+                  Midjourney
+                </a>
+                .
+              </small>
             </p>
           </div>
         </div>
       </div>
       <hr className="mb-4" />
       <h3 className="pt-5 text-xl pb-2 text-slate-700">
-        <FontAwesomeIcon icon={faBook} />
+        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
         <span className="ml-1">以下の方法で書籍を共有することができます。</span>
       </h3>
       <p className="text-red-600">{errorText}</p>
