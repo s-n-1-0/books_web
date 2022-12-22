@@ -1,5 +1,6 @@
 import { makeSharePageLink } from "@/utils/links";
 import {
+  faArrowUpRightFromSquare,
   faBarcode,
   faBook,
   faQuestion,
@@ -42,13 +43,57 @@ function SearchBookFields({ errorText }: Props) {
   let notsupportedKindleText =
     "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
   return (
-    <div className="text-center">
-      <h1 className="pt-5 text-2xl pb-2 text-slate-700">
-        <FontAwesomeIcon icon={faBook} />
-        <span className="ml-1">以下の方法で書籍を共有できます。</span>
-      </h1>
-      <p className="text-red-600">{errorText}</p>
+    <div className="text-center mt-4 mx-auto" style={{ maxWidth: "1250px" }}>
+      <div
+        className="py-10 text-start px-4 bg-gray-100 relative mx-auto"
+        style={{
+          height: "calc( 100vw / 1250 * 400)",
+          minHeight: "200px",
+          maxHeight: "400px",
+          fontFamily:
+            "'游明朝 Medium','Yu Mincho',YuMincho,'Hiragino Mincho Pro',serif",
+        }}
+      >
+        <div className="relative z-10 bg-white bg-opacity-90 w-fit rounded ml-2 p-2">
+          <h1 className="text-3xl text-my-color md:text-4xl">
+            <span className="inline-flex justify-center">
+              <FontAwesomeIcon
+                icon={faBook}
+                className="mr-1 text-xl md:text-2xl"
+              />
+            </span>
+            読書日より
+          </h1>
+          <hr className="mt-1" />
+          <p className="text-slate-500 text-sm md:text-base">
+            登録不要で書籍をお知り合いに共有することができます。
+          </p>
+        </div>
+        <div className="absolute py-4 pr-2 h-full w-full top-0 right-0">
+          <div className="relative h-full w-full">
+            <img
+              className="object-cover ml-auto z-0 rounded-md h-full w-full"
+              src="https://hello.sn-10.net/apps/books/mid_thumbnail.png"
+              alt="Painted by Midjourney"
+            />
+            <p className="absolute bottom-0 right-0 p-2 text-white opacity-90">
+              <small>
+                Painted by{" "}
+                <a href="https://www.midjourney.com/" className="underline">
+                  Midjourney
+                </a>
+                .
+              </small>
+            </p>
+          </div>
+        </div>
+      </div>
       <hr className="mb-4" />
+      <h3 className="pt-5 text-xl pb-2 text-slate-700">
+        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+        <span className="ml-1">以下の方法で書籍を共有することができます。</span>
+      </h3>
+      <p className="text-red-600">{errorText}</p>
       <div className="mb-4">
         <div className="flex items-end">
           <div className="w-full">
