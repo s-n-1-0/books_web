@@ -61,24 +61,21 @@ function SearchBookFields({ errorText }: Props) {
             登録不要で書籍をお知り合いに共有することができます。
           </p>
         </div>
-        <div
-          className="absolute py-4 pr-2"
-          style={{
-            width: "100%",
-            height: "100%",
-            top: "0%",
-            right: "0%",
-          }}
-        >
-          <img
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-            className="object-cover ml-auto z-0 rounded-md"
-            src="/images/mid_thumbnail.png"
-            alt="サムネイル"
-          />
+        <div className="absolute py-4 pr-2 h-full w-full top-0 right-0">
+          <div className="relative h-full w-full">
+            <img
+              className="object-cover ml-auto z-0 rounded-md h-full w-full"
+              src="/images/mid_thumbnail.png"
+              alt="Painted by Midjourney"
+            />
+            <p className="absolute bottom-0 right-0 p-2 text-white opacity-90">
+              Painted by{" "}
+              <a href="https://www.midjourney.com/" className="underline">
+                Midjourney
+              </a>
+              .
+            </p>
+          </div>
         </div>
       </div>
       <hr className="mb-4" />
