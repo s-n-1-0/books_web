@@ -39,7 +39,7 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
   }));
   if (!isOpen) return <span></span>;
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 overflow-hidden">
+    <div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 overflow-hidden z-20">
       <div className="relative h-5/6 w-full mx-4 lg:mx-0 lg:w-3/4 md:p-4 bg-white rounded-md shadow-xl overflow-y-auto">
         <div className="flex justify-between items-center">
           <h3 className="text-left">
