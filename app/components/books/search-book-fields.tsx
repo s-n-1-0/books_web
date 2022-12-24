@@ -151,6 +151,11 @@ function SearchBookFields({ errorText }: Props) {
             }}
           />
         </div>
+        <p className="text-left text-secondary">
+          <small>
+            タイトル検索で書籍が見つからない場合はISBN検索をお試しください。
+          </small>
+        </p>
         <SearchGoogleBooksModal ref={modalRef} />
       </div>
       <div className="mb-4">
