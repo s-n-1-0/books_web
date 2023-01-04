@@ -5,13 +5,13 @@ interface GoogleBooksApiBookDataIndustryIdentifier {
 interface GoogleBooksApiBookDataInfo {
   title: string;
   authors: string[];
-  publisher: string;
+  publisher?: string;
   industryIdentifiers: GoogleBooksApiBookDataIndustryIdentifier[];
   imageLinks?: {
     smallThumbnail: string;
     thumbnail: string;
   };
-  description: string;
+  description?: string;
 }
 interface GoogleBooksApiBookData {
   id: string;
