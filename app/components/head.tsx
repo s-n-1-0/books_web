@@ -10,8 +10,15 @@ type Props = {
     product: 製品の紹介ページ
    */
   ogType: "website" | "blog" | "article" | "product";
+  noindex?: boolean;
 };
-function CustomHead({ title, description = "", pageUrl, ogType }: Props) {
+function CustomHead({
+  title,
+  description = "",
+  pageUrl,
+  ogType,
+  noindex = false,
+}: Props) {
   return (
     <Head>
       <title>{title}</title>
@@ -29,6 +36,9 @@ function CustomHead({ title, description = "", pageUrl, ogType }: Props) {
         content="https://books.sn-10.net/images/ogp.png"
       />
       <meta name="twitter:card" content="summary" />
+      {(() => {
+        if (noindex) return <meta name="robots" content="noindex" />;
+      })()}
     </Head>
   );
 }
