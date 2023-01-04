@@ -7,13 +7,15 @@ import { makeSharePageLink } from "@/utils/links";
 import { forwardRef, Ref, useImperativeHandle, useState } from "react";
 import ProcessingView from "../../processing-view";
 import BookThumbnail from "../book-thumbnail";
-function _SearchGoogleBooksList(_: any, ref: Ref<unknown>) {
+type Props = {
+  isNoheader: boolean;
+};
+function _SearchGoogleBooksList({ isNoheader }: Props, ref: Ref<unknown>) {
   const [googleBooksResults, setGoogleBooksResults] = useState<
     GoogleBooksApiBookData[]
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   async function search(title: string) {
-    console.log("test");
     setIsLoading(true);
     let res = await searchGoogleBooksApi({
       q: {
@@ -53,7 +55,8 @@ function _SearchGoogleBooksList(_: any, ref: Ref<unknown>) {
                   let url = makeSharePageLink(
                     item.volumeInfo.industryIdentifiers[0].identifier,
                     "googlebooks",
-                    ""
+                    "",
+                    isNoheader
                   );
                   window.open(url, "_blank");
                 }}

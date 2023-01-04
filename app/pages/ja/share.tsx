@@ -45,6 +45,7 @@ const Home: NextPage = () => {
   const [userComment, setUserComment] = useState<string>(updateQueryComment());
 
   useEffect(() => {
+    if (!router.isReady) return;
     if (typeof isbn == "string") {
       setIsHello(false);
       let fromDb = typeof from == "string" ? from : "";
