@@ -28,7 +28,8 @@ interface BookData {
 }
 const Home: NextPage = () => {
   const router = useRouter();
-  const { isbn, from, comment } = router.query;
+  const { isbn, from, comment, noheader: _noheader } = router.query;
+  const isHeader = !(typeof _noheader == "string");
   const [bookData, setBookData] = useState<BookData | null>(null);
   const [errorText, setErrorText] = useState<string>("");
   const [isHello, setIsHello] = useState<boolean>(false);
@@ -217,7 +218,10 @@ const Home: NextPage = () => {
         pageUrl="https://books.sn-10.net/ja/share"
         ogType="product"
       ></CustomHead>
-      <Header></Header>
+      {(() => {
+        if (isHeader) return <Header></Header>;
+      })()}
+
       <main>
         <div className="w-full px-2 ">{makeMainContent()}</div>
       </main>
