@@ -7,8 +7,8 @@ import { makeSharePageLink } from "@/utils/links";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { forwardRef, Ref, useImperativeHandle, useState } from "react";
-import ProcessingView from "../processing-view";
-import BookThumbnail from "./book-thumbnail";
+import ProcessingView from "../../processing-view";
+import BookThumbnail from "../book-thumbnail";
 function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [searchTitle, setSearchTitle] = useState<string>("");
