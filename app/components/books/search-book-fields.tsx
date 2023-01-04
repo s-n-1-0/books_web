@@ -69,7 +69,7 @@ function SearchBookFields({ errorText }: Props) {
             登録不要で簡単に書籍を共有することができます。
           </p>
         </div>
-        <div className="absolute py-4 pr-2 h-full w-full top-0 right-0">
+        <div className="absolute py-4 px-2 h-full w-full top-0 right-0">
           <div className="relative h-full w-full">
             <img
               className="object-cover ml-auto z-0 rounded-md h-full w-full"
