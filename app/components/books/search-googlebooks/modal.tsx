@@ -37,7 +37,7 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
           />
         </div>
         <hr className="mb-3" />
-        <SearchGoogleBooksList ref={googlebooksListRef} />
+        <SearchGoogleBooksList ref={googlebooksListRef} isNoheader={false} />
       </div>
     </div>
   );
