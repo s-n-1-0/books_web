@@ -5,14 +5,19 @@ import {
 import CustomHead from "@/components/head";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const Search: NextPage = () => {
   const router = useRouter();
   var { title: _title } = router.query;
   let title = typeof _title == "string" ? _title : "";
   const listRef = useRef<SearchGoogleBooksListRefType>(null);
-  listRef.current?.search(title);
+  useEffect(() => {
+    if (!router.isReady || title == "") return;
+    listRef.current?.search(title);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title]);
+
   return (
     <div>
       <CustomHead
