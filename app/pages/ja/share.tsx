@@ -9,6 +9,7 @@ import Header from "@/components/header";
 import ProcessingView from "@/components/processing-view";
 import TweetButton from "@/components/tweet-button";
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
+import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
 import * as openbd from "@/libs/openbd";
 import { makeSharePageLink, SharePageFromDb } from "@/utils/links";
@@ -157,9 +158,13 @@ const Home: NextPage = () => {
               onClick={() => {
                 setIsClickedShareButton(true);
                 commentRef?.current?.finishEditing();
-                navigator.clipboard.writeText(
+                navigator.clipboard?.writeText(
                   makeSharePageLink(bookData.isbn, bookData.from, userComment)
                 );
+                sendMessage({
+                  key: "completedSharing",
+                  data: { type: "default", url: "" },
+                });
               }}
             >
               この本を共有する

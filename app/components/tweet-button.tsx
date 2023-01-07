@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import { css } from "@emotion/react";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,12 +22,20 @@ function TweetButton({ text, url = encodeURIComponent(location.href) }: Props) {
     <button
       css={buttonStyle}
       onClick={() => {
-        window.open(
+        let twitterUrl =
           "https://twitter.com/share?text=" +
-            encodeURIComponent(text + " - Share Books") +
-            "&url=" +
-            encodeURIComponent(url)
-        );
+          encodeURIComponent(text + " - Share Books") +
+          "&url=" +
+          encodeURIComponent(url);
+        if (
+          !sendMessage({
+            key: "completedSharing",
+            data: { type: "twitter", url: twitterUrl },
+          })
+        ) {
+          //アプリからではなかったらそのまま開く
+          window.open(twitterUrl);
+        }
       }}
     >
       <FontAwesomeIcon icon={faTwitter} />
