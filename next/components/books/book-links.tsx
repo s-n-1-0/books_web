@@ -64,7 +64,7 @@ function BookLinks({ isbn }: Props) {
         <Link href="/ja/help/find">
           <a className="underline">
             <FontAwesomeIcon icon={faQuestion} className="mr-2" />
-            書店が見つからない場合...
+            取り扱い書店の追加をリクエストする...
           </a>
         </Link>
       </p>
