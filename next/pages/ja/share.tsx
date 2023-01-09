@@ -116,7 +116,7 @@ const Home: NextPage = () => {
       );
     }
     return (
-      <div>
+      <div className="mx-auto" style={{ maxWidth: "1250px" }}>
         <div className="flex items-center justify-center pt-5  pb-2">
           {(() => {
             if (bookData.thumbnail == "") return;
@@ -140,10 +140,14 @@ const Home: NextPage = () => {
           </button>
         </p>
         <p className="text-center">
-          著者 : {bookData.author} / 出版社 :{bookData.publisher}
+          著者 : {bookData.author}{" "}
+          {(() => {
+            if (bookData.publisher == "") return;
+            return <span>/ 出版社 :{bookData.publisher}</span>;
+          })()}
         </p>
 
-        <p className="text-center mt-1">{bookData.description}</p>
+        <p className="text-center mt-1 line-clamp-5">{bookData.description}</p>
         <div className="p-10">
           <BookComment
             comment={userComment}
