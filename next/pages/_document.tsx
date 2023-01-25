@@ -14,6 +14,7 @@ const MyDocument = () => {
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400&display=swap"
           rel="stylesheet"
         />
+        <meta name="apple-itunes-app" content="app-id=1663611616" />
       </Head>
       <body>
         <Main />

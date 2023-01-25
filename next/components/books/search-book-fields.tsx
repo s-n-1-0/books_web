@@ -73,7 +73,7 @@ function SearchBookFields({ errorText }: Props) {
           <div className="relative h-full w-full">
             <img
               className="object-cover ml-auto z-0 rounded-md h-full w-full"
-              src="https://hello.sn-10.net/apps/books/mid_thumbnail.png"
+              src="https://hello.sn-10.net/apps/books/mid_thumbnail.webp"
               alt="Painted by Midjourney"
             />
             <p className="absolute bottom-0 right-0 p-2 text-white opacity-90">
@@ -120,9 +120,10 @@ function SearchBookFields({ errorText }: Props) {
         </div>
         <p className="text-left text-secondary">
           <small>
-            <FontAwesomeIcon icon={faBarcode} />
+            🎉
             <span className="ml-1">
-              書籍のバーコードからISBNを読み取る機能は今後実装予定です。
+              <FontAwesomeIcon icon={faBarcode} />
+              バーコードからISBNを読み取る機能は、アプリをダウンロードすると利用可能です!
             </span>
           </small>
         </p>

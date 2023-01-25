@@ -13,7 +13,7 @@ import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
 import * as openbd from "@/libs/openbd";
 import { makeSharePageLink, SharePageFromDb } from "@/utils/links";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -34,7 +34,7 @@ const Home: NextPage = () => {
   const [bookData, setBookData] = useState<BookData | null>(null);
   const [errorText, setErrorText] = useState<string>("");
   const [isHello, setIsHello] = useState<boolean>(false);
-  const [isClickedShareButton, setIsClickedShareButton] = useState(false);
+  const [clickedShareButtonText, setClickedShareButtonText] = useState("");
   const commentRef = useRef<BookCommentRefType>(null);
   function updateQueryComment() {
     return typeof comment == "string" ? decodeURIComponent(comment) : "";
@@ -156,11 +156,11 @@ const Home: NextPage = () => {
             }}
             ref={commentRef}
           />
-          <div className="text-center mt-4 mb-10">
+          <div className="text-center mt-6 mb-10">
             <button
               className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
               onClick={() => {
-                setIsClickedShareButton(true);
+                setClickedShareButtonText("共有URLをコピーしました。");
                 commentRef?.current?.finishEditing();
                 navigator.clipboard?.writeText(
                   makeSharePageLink(bookData.isbn, bookData.from, userComment)
@@ -172,17 +172,19 @@ const Home: NextPage = () => {
               }}
             >
               この本を共有する
+              <br />
+              <small>URLをコピー</small>
             </button>
             {(() => {
-              if (isClickedShareButton)
+              if (clickedShareButtonText != "")
                 return (
                   <p className="text-center text-secondary">
-                    <small>共有URLをコピーしました。</small>
+                    <small>{clickedShareButtonText}</small>
                   </p>
                 );
             })()}
             <p>
-              <div className="mx-auto mt-3">
+              <div className="mt-3 flex justify-center items-center flex-wrap">
                 {(() => {
                   let twText = "";
                   if (userComment != "") {
@@ -202,7 +204,38 @@ const Home: NextPage = () => {
                   );
                   return <TweetButton text={twText} url={twUrl} />;
                 })()}
+                <button
+                  onClick={() => {
+                    setClickedShareButtonText(
+                      "マークダウン形式でコピーしました。"
+                    );
+                    commentRef?.current?.finishEditing();
+                    let authorText =
+                      bookData.author == "" ? "" : `(${bookData.author})`;
+                    navigator.clipboard?.writeText(
+                      `[「${
+                        bookData.title
+                      }」${authorText} - Share Books](${makeSharePageLink(
+                        bookData.isbn,
+                        bookData.from,
+                        userComment
+                      )})`
+                    );
+                    sendMessage({
+                      key: "completedSharing",
+                      data: { type: "default", url: "" },
+                    });
+                  }}
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full inline-flex items-center m-2"
+                >
+                  <FontAwesomeIcon icon={faCopy} className="mr-1" />
+                  <span>マークダウン形式で共有</span>
+                </button>
               </div>
+              <small className="text-secondary">
+                <b>note</b>や<b>Notion</b>
+                などのサイトには「マークダウン形式で共有」がおすすめです!
+              </small>
             </p>
           </div>
           <hr />
