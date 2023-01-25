@@ -12,8 +12,6 @@ function TweetButton({ text, url = encodeURIComponent(location.href) }: Props) {
     text-align: end;
     border: none;
     background-color: #1da1f2;
-    padding: 6px 16px;
-    border-radius: 100vh;
     color: white;
     cursor: pointer;
   `;
@@ -21,6 +19,7 @@ function TweetButton({ text, url = encodeURIComponent(location.href) }: Props) {
   return (
     <button
       css={buttonStyle}
+      className="h-fit py-2 px-4 rounded-full"
       onClick={() => {
         let twitterUrl =
           "https://twitter.com/share?text=" +
