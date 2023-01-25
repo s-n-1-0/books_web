@@ -120,9 +120,10 @@ function SearchBookFields({ errorText }: Props) {
         </div>
         <p className="text-left text-secondary">
           <small>
-            <FontAwesomeIcon icon={faBarcode} />
+            🎉
             <span className="ml-1">
-              書籍のバーコードからISBNを読み取る機能は今後実装予定です。
+              <FontAwesomeIcon icon={faBarcode} />
+              バーコードからISBNを読み取る機能は、アプリをダウンロードすると利用可能です!
             </span>
           </small>
         </p>
