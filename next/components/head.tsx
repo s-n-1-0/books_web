@@ -26,7 +26,7 @@ function CustomHead({
         if (description != "")
           return <meta name="description" content={description} />;
       })()}
-      <link rel="icon" href="/images/icon.png" />
+      <link rel="icon" href="/images/icon_web.png" />
       <link rel="canonical" href={pageUrl} />
       <meta property="og:url" content={pageUrl} />
       <meta property="og:type" content={ogType} />
