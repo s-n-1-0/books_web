@@ -1,3 +1,4 @@
+import { callStoreEvent, StoreNameType } from "@/libs/analytics/events";
 import { faAmazon } from "@fortawesome/free-brands-svg-icons";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,11 +11,19 @@ type Props = {
 };
 function BookLinks({ isbn }: Props) {
   let amazonUrl = convertIsbn2Url(isbn);
-  let isbn13 = isbn.length == 13 ? isbn : convertIsbn(isbn);
+  let isbn13 = isbn.length == 13 ? isbn : convertIsbn(isbn) ?? isbn;
+  let makeClickedLinkEvent = (storeName: StoreNameType) => () => {
+    callStoreEvent({ storeName: storeName, isbn13: isbn13 });
+  };
   return (
     <div>
       <div className="flex justify-center items-center m-3">
-        <a href={amazonUrl} target="_blank" rel="noopener noreferrer">
+        <a
+          href={amazonUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={makeClickedLinkEvent("amazon")}
+        >
           <TwButton
             color={{
               color: "bg-neutral-700",
@@ -32,6 +41,7 @@ function BookLinks({ isbn }: Props) {
           target="_blank"
           rel="noopener noreferrer"
           className="m-2"
+          onClick={makeClickedLinkEvent("kinokuniya")}
         >
           <img
             src="https://corp.kinokuniya.co.jp/wp-content/uploads/2020/07/logo.png"
@@ -48,6 +58,7 @@ function BookLinks({ isbn }: Props) {
           target="_blank"
           rel="noopener noreferrer"
           className="m-2"
+          onClick={makeClickedLinkEvent("honto")}
         >
           <img
             src="https://i.gyazo.com/ee86b2469f712858a4e1b0ce17684939.png"
