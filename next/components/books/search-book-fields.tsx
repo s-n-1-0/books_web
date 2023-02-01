@@ -91,7 +91,7 @@ function SearchBookFields({ errorText }: Props) {
       <hr className="mb-4" />
       <h3 className="pt-5 text-xl pb-2 text-slate-700">
         <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-        <span className="ml-1">以下の方法で書籍を共有することができます。</span>
+        <span className="ml-1">次の方法で書籍を共有することができます。</span>
       </h3>
       <p className="text-red-600">{errorText}</p>
       <div className="mb-4">
