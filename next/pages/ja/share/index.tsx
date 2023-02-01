@@ -8,25 +8,18 @@ import CustomHead from "@/components/head";
 import Header from "@/components/header";
 import ProcessingView from "@/components/processing-view";
 import TweetButton from "@/components/tweet-button";
-import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
-import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
-import * as openbd from "@/libs/openbd";
-import { makeSharePageUrl, SharePageFromDb } from "@/utils/links";
+import {
+  BookData,
+  convertSharePageParams2BookData,
+  makeSharePageUrl,
+} from "@/utils/links";
 import { faCopy, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-interface BookData {
-  title: string;
-  author: string;
-  thumbnail: string;
-  isbn: string;
-  publisher: string;
-  description: string;
-  from: SharePageFromDb;
-}
+
 const Home: NextPage = () => {
   const router = useRouter();
   const { isbn, from, comment, noheader: _noheader } = router.query;
@@ -50,53 +43,16 @@ const Home: NextPage = () => {
     if (typeof isbn == "string") {
       setIsHello(false);
       let fromDb = typeof from == "string" ? from : "";
-      switch (fromDb) {
-        case "opendb":
-        default:
-          openbd
-            .get(isbn)
-            .then((res: { data: OpenBDGetResponseData }) => {
-              let resBookData = res.data?.[0];
-              if (resBookData) {
-                setBookData({
-                  title: resBookData.summary.title,
-                  author: resBookData.summary.author,
-                  isbn: resBookData.summary.isbn,
-                  publisher: resBookData.summary.publisher,
-                  thumbnail: resBookData.summary.cover,
-                  description:
-                    resBookData.onix.CollateralDetail.TextContent?.[0].Text ??
-                    "",
-                  from: "openbd",
-                });
-                setIsHello(false);
-              } else setErrorText("書籍情報を見つけることができませんでした。");
-            })
-            .catch(() => {
-              setErrorText("通信エラー。時間を置いてからご確認ください。");
-            });
-          break;
-        case "googlebooks":
-          searchGoogleBooksApiByIsbn(isbn)
-            .then((book) => {
-              if (book) {
-                setBookData({
-                  title: book.volumeInfo.title,
-                  author: book.volumeInfo.authors.join(" "),
-                  isbn: isbn,
-                  publisher: book.volumeInfo.publisher ?? "",
-                  thumbnail: book.volumeInfo?.imageLinks?.smallThumbnail ?? "",
-                  description: book.volumeInfo.description ?? "",
-                  from: "googlebooks",
-                });
-                setIsHello(false);
-              } else setErrorText("書籍情報を見つけることができませんでした。");
-            })
-            .catch(() => {
-              setErrorText("通信エラー。時間を置いてからご確認ください。");
-            });
-          break;
-      }
+      convertSharePageParams2BookData(isbn, fromDb)
+        .then((bookData) => {
+          if (bookData) {
+            setBookData(bookData);
+            setIsHello(false);
+          } else setErrorText("書籍情報を見つけることができませんでした。");
+        })
+        .catch(() => {
+          setErrorText("通信エラー。時間を置いてからご確認ください。");
+        });
     } else {
       //isbn未指定の場合
       setIsHello(true);
