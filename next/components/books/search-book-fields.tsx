@@ -1,4 +1,4 @@
-import { makeSharePageLink } from "@/utils/links";
+import { makeSharePageUrl } from "@/utils/links";
 import {
   faArrowUpRightFromSquare,
   faBarcode,
@@ -114,7 +114,7 @@ function SearchBookFields({ errorText }: Props) {
             buttonText="共有"
             editingText={editingIsbn}
             onClick={() => {
-              location.href = makeSharePageLink(editingIsbn, "openbd", "");
+              location.href = makeSharePageUrl(editingIsbn, "openbd", "");
             }}
           />
         </div>
@@ -184,7 +184,7 @@ function SearchBookFields({ errorText }: Props) {
             onClick={() => {
               let res = convertUrl2Isbn13(editingAmazonUrl);
               if (res.isbn != "")
-                location.href = makeSharePageLink(res.isbn, "openbd", "");
+                location.href = makeSharePageUrl(res.isbn, "openbd", "");
               else if (res.error == "KINDLE") {
                 setAmazonUrlErrorText(notsupportedKindleText);
               } else setAmazonUrlErrorText("無効なURLです。");

@@ -1,5 +1,5 @@
 export type SharePageFromDb = "openbd" | "googlebooks";
-export function makeSharePageLink(
+export function makeSharePageUrl(
   isbn: string,
   from: SharePageFromDb,
   comment: string,

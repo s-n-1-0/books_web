@@ -12,7 +12,7 @@ import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
 import * as openbd from "@/libs/openbd";
-import { makeSharePageLink, SharePageFromDb } from "@/utils/links";
+import { makeSharePageUrl, SharePageFromDb } from "@/utils/links";
 import { faCopy, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NextPage } from "next";
@@ -163,7 +163,7 @@ const Home: NextPage = () => {
                 setClickedShareButtonText("共有URLをコピーしました。");
                 commentRef?.current?.finishEditing();
                 navigator.clipboard?.writeText(
-                  makeSharePageLink(bookData.isbn, bookData.from, userComment)
+                  makeSharePageUrl(bookData.isbn, bookData.from, userComment)
                 );
                 sendMessage({
                   key: "completedSharing",
@@ -197,7 +197,7 @@ const Home: NextPage = () => {
                   } else {
                     twText = `書籍「${bookData.title}」の紹介です。`;
                   }
-                  let twUrl = makeSharePageLink(
+                  let twUrl = makeSharePageUrl(
                     bookData.isbn,
                     bookData.from,
                     userComment
@@ -215,7 +215,7 @@ const Home: NextPage = () => {
                     navigator.clipboard?.writeText(
                       `[「${
                         bookData.title
-                      }」${authorText} - Share Books](${makeSharePageLink(
+                      }」${authorText} - Share Books](${makeSharePageUrl(
                         bookData.isbn,
                         bookData.from,
                         userComment
