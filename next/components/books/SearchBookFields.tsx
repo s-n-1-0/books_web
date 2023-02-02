@@ -1,4 +1,4 @@
-import { makeSharePageLink } from "@/utils/links";
+import { makeSharePageUrl } from "@/utils/links";
 import {
   faArrowUpRightFromSquare,
   faBarcode,
@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import SearchGoogleBooksModal, {
   SearchGoogleBooksModalRefType,
-} from "./search-googlebooks/modal";
+} from "./search-googlebooks/SearchGoogleBooksModal";
 type SearchBookButtonProps = {
   buttonText: string;
   editingText: string;
@@ -91,7 +91,7 @@ function SearchBookFields({ errorText }: Props) {
       <hr className="mb-4" />
       <h3 className="pt-5 text-xl pb-2 text-slate-700">
         <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-        <span className="ml-1">以下の方法で書籍を共有することができます。</span>
+        <span className="ml-1">次の方法で書籍を共有することができます。</span>
       </h3>
       <p className="text-red-600">{errorText}</p>
       <div className="mb-4">
@@ -114,7 +114,7 @@ function SearchBookFields({ errorText }: Props) {
             buttonText="共有"
             editingText={editingIsbn}
             onClick={() => {
-              location.href = makeSharePageLink(editingIsbn, "openbd", "");
+              location.href = makeSharePageUrl(editingIsbn, "openbd", "");
             }}
           />
         </div>
@@ -184,7 +184,7 @@ function SearchBookFields({ errorText }: Props) {
             onClick={() => {
               let res = convertUrl2Isbn13(editingAmazonUrl);
               if (res.isbn != "")
-                location.href = makeSharePageLink(res.isbn, "openbd", "");
+                location.href = makeSharePageUrl(res.isbn, "openbd", "");
               else if (res.error == "KINDLE") {
                 setAmazonUrlErrorText(notsupportedKindleText);
               } else setAmazonUrlErrorText("無効なURLです。");

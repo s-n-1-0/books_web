@@ -1,5 +1,5 @@
-import CustomHead from "@/components/head";
-import Header from "@/components/header";
+import CustomHead from "@/components/CustomHead";
+import Header from "@/components/CustomHeader";
 import { NextPage } from "next";
 import Link from "next/link";
 

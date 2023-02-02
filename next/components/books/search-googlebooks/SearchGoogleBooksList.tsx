@@ -3,10 +3,10 @@ import {
   GoogleBooksApiVolumesResponseData,
 } from "@/Interfaces/googlebooks/volumes";
 import { searchGoogleBooksApi } from "@/libs/googlebooks";
-import { makeSharePageLink } from "@/utils/links";
+import { makeSharePageUrl } from "@/utils/links";
 import { forwardRef, Ref, useImperativeHandle, useState } from "react";
-import ProcessingView from "../../processing-view";
-import BookThumbnail from "../book-thumbnail";
+import ProcessingView from "../../ProcessingView";
+import BookThumbnail from "../BookThumbnail";
 type Props = {
   isNoheader: boolean;
 };
@@ -52,7 +52,7 @@ function _SearchGoogleBooksList({ isNoheader }: Props, ref: Ref<unknown>) {
               <li
                 key={item.id}
                 onClick={() => {
-                  let url = makeSharePageLink(
+                  let url = makeSharePageUrl(
                     item.volumeInfo.industryIdentifiers[0].identifier,
                     "googlebooks",
                     "",

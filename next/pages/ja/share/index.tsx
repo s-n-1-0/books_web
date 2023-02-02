@@ -1,32 +1,25 @@
 import BookComment, {
   BookCommentRefType,
-} from "@/components/books/book-comment";
-import BookLinks from "@/components/books/book-links";
-import BookThumbnail from "@/components/books/book-thumbnail";
-import SearchBookFields from "@/components/books/search-book-fields";
-import CustomHead from "@/components/head";
-import Header from "@/components/header";
-import ProcessingView from "@/components/processing-view";
-import TweetButton from "@/components/tweet-button";
-import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
+} from "@/components/books/BookComment";
+import BookThumbnail from "@/components/books/BookThumbnail";
+import SearchBookFields from "@/components/books/SearchBookFields";
+import CustomHead from "@/components/CustomHead";
+import Header from "@/components/CustomHeader";
+import ProcessingView from "@/components/ProcessingView";
+import StoreLinks from "@/components/stores/StoreLinks";
+import TweetButton from "@/components/TweetButton";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
-import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
-import * as openbd from "@/libs/openbd";
-import { makeSharePageLink, SharePageFromDb } from "@/utils/links";
+import {
+  BookData,
+  convertSharePageParams2BookData,
+  makeSharePageUrl,
+} from "@/utils/links";
 import { faCopy, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-interface BookData {
-  title: string;
-  author: string;
-  thumbnail: string;
-  isbn: string;
-  publisher: string;
-  description: string;
-  from: SharePageFromDb;
-}
+
 const Home: NextPage = () => {
   const router = useRouter();
   const { isbn, from, comment, noheader: _noheader } = router.query;
@@ -50,53 +43,16 @@ const Home: NextPage = () => {
     if (typeof isbn == "string") {
       setIsHello(false);
       let fromDb = typeof from == "string" ? from : "";
-      switch (fromDb) {
-        case "opendb":
-        default:
-          openbd
-            .get(isbn)
-            .then((res: { data: OpenBDGetResponseData }) => {
-              let resBookData = res.data?.[0];
-              if (resBookData) {
-                setBookData({
-                  title: resBookData.summary.title,
-                  author: resBookData.summary.author,
-                  isbn: resBookData.summary.isbn,
-                  publisher: resBookData.summary.publisher,
-                  thumbnail: resBookData.summary.cover,
-                  description:
-                    resBookData.onix.CollateralDetail.TextContent?.[0].Text ??
-                    "",
-                  from: "openbd",
-                });
-                setIsHello(false);
-              } else setErrorText("書籍情報を見つけることができませんでした。");
-            })
-            .catch(() => {
-              setErrorText("通信エラー。時間を置いてからご確認ください。");
-            });
-          break;
-        case "googlebooks":
-          searchGoogleBooksApiByIsbn(isbn)
-            .then((book) => {
-              if (book) {
-                setBookData({
-                  title: book.volumeInfo.title,
-                  author: book.volumeInfo.authors.join(" "),
-                  isbn: isbn,
-                  publisher: book.volumeInfo.publisher ?? "",
-                  thumbnail: book.volumeInfo?.imageLinks?.smallThumbnail ?? "",
-                  description: book.volumeInfo.description ?? "",
-                  from: "googlebooks",
-                });
-                setIsHello(false);
-              } else setErrorText("書籍情報を見つけることができませんでした。");
-            })
-            .catch(() => {
-              setErrorText("通信エラー。時間を置いてからご確認ください。");
-            });
-          break;
-      }
+      convertSharePageParams2BookData(isbn, fromDb)
+        .then((bookData) => {
+          if (bookData) {
+            setBookData(bookData);
+            setIsHello(false);
+          } else setErrorText("書籍情報を見つけることができませんでした。");
+        })
+        .catch(() => {
+          setErrorText("通信エラー。時間を置いてからご確認ください。");
+        });
     } else {
       //isbn未指定の場合
       setIsHello(true);
@@ -163,7 +119,7 @@ const Home: NextPage = () => {
                 setClickedShareButtonText("共有URLをコピーしました。");
                 commentRef?.current?.finishEditing();
                 navigator.clipboard?.writeText(
-                  makeSharePageLink(bookData.isbn, bookData.from, userComment)
+                  makeSharePageUrl(bookData.isbn, bookData.from, userComment)
                 );
                 sendMessage({
                   key: "completedSharing",
@@ -197,7 +153,7 @@ const Home: NextPage = () => {
                   } else {
                     twText = `書籍「${bookData.title}」の紹介です。`;
                   }
-                  let twUrl = makeSharePageLink(
+                  let twUrl = makeSharePageUrl(
                     bookData.isbn,
                     bookData.from,
                     userComment
@@ -215,7 +171,7 @@ const Home: NextPage = () => {
                     navigator.clipboard?.writeText(
                       `[「${
                         bookData.title
-                      }」${authorText} - Share Books](${makeSharePageLink(
+                      }」${authorText} - Share Books](${makeSharePageUrl(
                         bookData.isbn,
                         bookData.from,
                         userComment
@@ -247,7 +203,7 @@ const Home: NextPage = () => {
             <small>
               紙の書籍と電子書籍両方のリンクが含まれます。選択にご注意ください。
             </small>
-            <BookLinks isbn={bookData.isbn} />
+            <StoreLinks isbn={bookData.isbn} />
           </div>
         </div>
       </div>
