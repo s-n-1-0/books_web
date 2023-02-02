@@ -16,6 +16,8 @@ import {
   checkSharePageUrl,
   makeShareListPageUrl,
 } from "@/utils/links";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
@@ -157,38 +159,44 @@ function MainContent() {
           </ul>
         );
       })()}
-      <div className="w-full text-center m-3">
-        <button
-          onClick={() => {
-            navigator.clipboard
-              .readText()
-              .then(async (text) => {
-                try {
-                  let url = new URL(text);
-                  if (!checkSharePageUrl(url)) {
+      <div className="text-center m-3">
+        <span className="text-secondary">
+          書籍共有URLをコピーした状態で↓を押してください。
+        </span>
+        <div className="w-full mt-1">
+          <button
+            onClick={() => {
+              navigator.clipboard
+                .readText()
+                .then(async (text) => {
+                  try {
+                    let url = new URL(text);
+                    if (!checkSharePageUrl(url)) {
+                      setErrorText("コピーしているURLが有効ではありません。");
+                      return;
+                    }
+                    let newBookList = Array.from(
+                      new Set([...bookList.map((x) => x.href), url.href]) //重複削除
+                    ).map((x) => new URL(x));
+                    setBookList(newBookList);
+                  } catch {
                     setErrorText("コピーしているURLが有効ではありません。");
-                    return;
                   }
-                  let newBookList = Array.from(
-                    new Set([...bookList.map((x) => x.href), url.href]) //重複削除
-                  ).map((x) => new URL(x));
-                  setBookList(newBookList);
-                } catch {
-                  setErrorText("コピーしているURLが有効ではありません。");
-                }
-              })
-              .catch(() => {
-                setErrorText(
-                  "× ブラウザなどの設定からこのサイトに貼り付け許可を与えてください。 ×"
-                );
-              });
-          }}
-          className="mx-auto bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 border-b-4 border-orange-700 hover:border-orange-500 rounded"
-        >
-          リストに追加
-        </button>
-        <br />
-        <small className="text-red-500">{errorText}</small>
+                })
+                .catch(() => {
+                  setErrorText(
+                    "× ブラウザなどの設定からこのサイトに貼り付け許可を与えてください。 ×"
+                  );
+                });
+            }}
+            className="mx-auto bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 border-b-4 border-orange-700 hover:border-orange-500 rounded"
+          >
+            <FontAwesomeIcon icon={faPlus} className="mr-1" />
+            リストに追加
+          </button>
+          <br />
+          <small className="text-red-500">{errorText}</small>
+        </div>
       </div>
       <hr className="my-3" />
       <div className="w-full text-center m-3">
@@ -200,9 +208,9 @@ function MainContent() {
             );
           }}
         >
-          このリストを共有する
+          このリストを共有
           <br />
-          <small>URLをコピー</small>
+          <small>共有URLを作成してコピー</small>
         </button>
       </div>
     </div>
