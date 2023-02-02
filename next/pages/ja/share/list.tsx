@@ -9,10 +9,12 @@ import {
   SelectedStoreContext,
   SelectedStoreContextProvider,
   SelectedStoreContextType,
+  StoreType,
 } from "@/contexts/selected_store_context";
-import { BookData } from "@/utils/links";
+import { BookData, makeShareListPageUrl } from "@/utils/links";
 import { NextPage } from "next";
-import { useContext, useState } from "react";
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
 type Props = {
   bookData: BookData;
 };
@@ -78,82 +80,140 @@ function BookCellRightMenu({ bookData }: Props) {
     </div>
   );
 }
-let List: NextPage = () => {
+function MainContent() {
+  const router = useRouter();
+  const { store: _store, books: _books } = router.query;
+  const { selectedStore, setSelectedStore }: SelectedStoreContextType =
+    useContext(SelectedStoreContext);
   const [bookList, setBookList] = useState<URL[]>([]);
   const [errorText, setErrorText] = useState("");
-  function makeMainContent() {
-    return (
-      <div>
-        <h3 className="pt-5 text-xl text-center pb-2 text-slate-700">
-          <span className="ml-1">複数の書籍をまとめて共有できます。</span>
-        </h3>
-        {(() => {
-          if (bookList.length == 0) return;
-          return (
-            <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-              {(() => {
-                return bookList.map((x, i) => {
-                  let position: "top" | "bottom" | "center" =
-                    i == 0
-                      ? "top"
-                      : i == bookList.length - 1
-                      ? "bottom"
-                      : "center";
-                  if (bookList.length == 1) position = "bottom";
-                  return (
-                    <BookCell
-                      key={x.href}
-                      url={x}
-                      position={position}
-                      makeRightElement={(bookData) => {
-                        return <BookCellRightMenu bookData={bookData} />;
-                      }}
-                    />
-                  );
-                });
-              })()}
-            </ul>
+  useEffect(() => {
+    let store: StoreType = (() => {
+      let s = typeof _store == "string" ? _store : "";
+      switch (s) {
+        case "amazon":
+        case "honto":
+        case "kinokuniya":
+          return s;
+        default:
+          return "amazon";
+      }
+    })();
+    setSelectedStore(store);
+  }, [_store, setSelectedStore]);
+  useEffect(() => {
+    try {
+      let books: URL[] = [];
+      if (Array.isArray(_books)) {
+        books = Array.from(new Set(_books))
+          .map((url) => new URL(url))
+          .filter(
+            (url) =>
+              !(
+                url.pathname.split("/")?.[2] !== "share" ||
+                url.searchParams.get("isbn") == null
+              )
           );
-        })()}
-        <hr className="mt-3" />
-        <div className="w-full text-center m-3">
-          <button
-            onClick={() => {
-              navigator.clipboard
-                .readText()
-                .then(async (text) => {
-                  try {
-                    let url = new URL(text);
-                    if (
-                      url.pathname.split("/")?.[2] !== "share" ||
-                      url.searchParams.get("isbn") == null
-                    ) {
-                      setErrorText("コピーしているURLが有効ではありません。");
-                    }
-                    let newBookList = Array.from(
-                      new Set([...bookList.map((x) => x.href), url.href]) //重複削除
-                    ).map((x) => new URL(x));
-                    setBookList(newBookList);
-                  } catch {
+      } else if (typeof _books == "string") {
+        let url = new URL(_books);
+        if (
+          url.pathname.split("/")?.[2] !== "share" ||
+          url.searchParams.get("isbn") == null
+        )
+          return;
+        books = [url];
+      }
+      if (books.length > 0) setBookList(books);
+    } catch {}
+  }, [_books]);
+  return (
+    <div>
+      <h3 className="pt-5 text-xl text-center pb-2 text-slate-700">
+        <span className="ml-1">複数の書籍をまとめて共有できます。</span>
+      </h3>
+      {(() => {
+        if (bookList.length == 0) return;
+        return (
+          <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            {(() => {
+              return bookList.map((x, i) => {
+                let position: "top" | "bottom" | "center" =
+                  i == 0
+                    ? "top"
+                    : i == bookList.length - 1
+                    ? "bottom"
+                    : "center";
+                if (bookList.length == 1) position = "bottom";
+                return (
+                  <BookCell
+                    key={x.href}
+                    url={x}
+                    position={position}
+                    makeRightElement={(bookData) => {
+                      return <BookCellRightMenu bookData={bookData} />;
+                    }}
+                  />
+                );
+              });
+            })()}
+          </ul>
+        );
+      })()}
+      <div className="w-full text-center m-3">
+        <button
+          onClick={() => {
+            navigator.clipboard
+              .readText()
+              .then(async (text) => {
+                try {
+                  let url = new URL(text);
+                  if (
+                    url.pathname.split("/")?.[2] !== "share" ||
+                    url.searchParams.get("isbn") == null
+                  ) {
                     setErrorText("コピーしているURLが有効ではありません。");
+                    return;
                   }
-                })
-                .catch(() => {
-                  setErrorText(
-                    "× ブラウザなどの設定からこのサイトに貼り付け許可を与えてください。 ×"
-                  );
-                });
-            }}
-            className="mx-auto bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 border-b-4 border-orange-700 hover:border-orange-500 rounded"
-          >
-            共有リストに追加
-          </button>
-          <br />
-          <small className="text-red-500">{errorText}</small>
-        </div>
+                  let newBookList = Array.from(
+                    new Set([...bookList.map((x) => x.href), url.href]) //重複削除
+                  ).map((x) => new URL(x));
+                  setBookList(newBookList);
+                } catch {
+                  setErrorText("コピーしているURLが有効ではありません。");
+                }
+              })
+              .catch(() => {
+                setErrorText(
+                  "× ブラウザなどの設定からこのサイトに貼り付け許可を与えてください。 ×"
+                );
+              });
+          }}
+          className="mx-auto bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 border-b-4 border-orange-700 hover:border-orange-500 rounded"
+        >
+          リストに追加
+        </button>
+        <br />
+        <small className="text-red-500">{errorText}</small>
       </div>
-    );
-  }
+      <hr className="my-3" />
+      <div className="w-full text-center m-3">
+        <button
+          className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+          onClick={() => {
+            navigator.clipboard?.writeText(
+              makeShareListPageUrl(bookList, selectedStore)
+            );
+          }}
+        >
+          このリストを共有する
+          <br />
+          <small>URLをコピー</small>
+        </button>
+      </div>
+    </div>
+  );
+}
+let List: NextPage = () => {
   return (
     <SelectedStoreContextProvider>
       <BookCacheContextProvider>
@@ -169,7 +229,9 @@ let List: NextPage = () => {
           })()}
 
           <main>
-            <div className="w-full px-2 ">{makeMainContent()}</div>
+            <div className="w-full px-2 ">
+              <MainContent />
+            </div>
           </main>
 
           <footer>

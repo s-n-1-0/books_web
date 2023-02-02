@@ -1,3 +1,4 @@
+import { StoreType } from "@/contexts/selected_store_context";
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
 import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
 import * as openbd from "@/libs/openbd";
@@ -13,6 +14,12 @@ export function makeSharePageUrl(
   if (comment != "") url += `&comment=${encodeURIComponent(comment)}`;
   if (isNoheader) url += `&noheader`;
   return url;
+}
+export function makeShareListPageUrl(books: URL[], store: StoreType) {
+  const params = new URLSearchParams();
+  books.forEach((url) => params.append("books", url.href));
+  params.append("store", store);
+  return `${location.origin}/ja/share/list?${params.toString()}`;
 }
 export interface BookData {
   title: string;

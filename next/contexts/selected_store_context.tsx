@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-type StoreType = "amazon" | "kinokuniya" | "honto";
+export type StoreType = "amazon" | "kinokuniya" | "honto";
 export interface SelectedStoreContextType {
   selectedStore: StoreType;
   setSelectedStore: (storeKey: StoreType) => void;
