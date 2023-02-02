@@ -16,73 +16,77 @@ import {
   checkSharePageUrl,
   makeShareListPageUrl,
 } from "@/utils/links";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 type Props = {
   bookData: BookData;
+  children?: ReactNode;
 };
-function BookCellRightMenu({ bookData }: Props) {
+function BookCellRightMenu({ bookData, children }: Props) {
   const { selectedStore, setSelectedStore }: SelectedStoreContextType =
     useContext(SelectedStoreContext);
   const [isShowSelector, setShowSelector] = useState(false);
   return (
-    <div className="flex items-center justify-center h-full flex-col">
-      {(() => {
-        switch (selectedStore) {
-          case "amazon":
-            return <AmazonLink isbn={bookData.isbn} />;
-          case "honto":
-            return <HontoLink isbn={bookData.isbn} />;
-          case "kinokuniya":
-            return <KinokuniyaLink isbn={bookData.isbn} />;
-        }
-      })()}
+    <div className="flex h-full items-center">
+      <div className="flex  justify-center  flex-col">
+        {(() => {
+          switch (selectedStore) {
+            case "amazon":
+              return <AmazonLink isbn={bookData.isbn} />;
+            case "honto":
+              return <HontoLink isbn={bookData.isbn} />;
+            case "kinokuniya":
+              return <KinokuniyaLink isbn={bookData.isbn} />;
+          }
+        })()}
 
-      <button
-        className="text-blue-500 mt-1 underline cursor-pointer"
-        onClick={() => {
-          setShowSelector(true);
-        }}
-      >
-        他のストア...
-      </button>
-      {(() => {
-        if (!isShowSelector) return;
-        return (
-          <ul className="w-full cursor-pointer text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-            <li
-              className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600"
-              onClick={() => {
-                setSelectedStore("amazon");
-                setShowSelector(false);
-              }}
-            >
-              Amazon
-            </li>
-            <li
-              className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600"
-              onClick={() => {
-                setSelectedStore("kinokuniya");
-                setShowSelector(false);
-              }}
-            >
-              紀ノ國屋
-            </li>
-            <li
-              className="w-full px-4 py-2 rounded-b-lg"
-              onClick={() => {
-                setSelectedStore("honto");
-                setShowSelector(false);
-              }}
-            >
-              Honto
-            </li>
-          </ul>
-        );
-      })()}
+        <button
+          className="text-blue-500 mt-1 underline cursor-pointer"
+          onClick={() => {
+            setShowSelector(true);
+          }}
+        >
+          他のストア...
+        </button>
+        {(() => {
+          if (!isShowSelector) return;
+          return (
+            <ul className="w-full cursor-pointer text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              <li
+                className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600"
+                onClick={() => {
+                  setSelectedStore("amazon");
+                  setShowSelector(false);
+                }}
+              >
+                Amazon
+              </li>
+              <li
+                className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600"
+                onClick={() => {
+                  setSelectedStore("kinokuniya");
+                  setShowSelector(false);
+                }}
+              >
+                紀ノ國屋
+              </li>
+              <li
+                className="w-full px-4 py-2 rounded-b-lg"
+                onClick={() => {
+                  setSelectedStore("honto");
+                  setShowSelector(false);
+                }}
+              >
+                Honto
+              </li>
+            </ul>
+          );
+        })()}
+      </div>
+      {children}
     </div>
   );
 }
@@ -173,7 +177,22 @@ function MainContent() {
                       url={x}
                       position={position}
                       makeRightElement={(bookData) => {
-                        return <BookCellRightMenu bookData={bookData} />;
+                        return (
+                          <BookCellRightMenu bookData={bookData}>
+                            <div>
+                              <button
+                                className="text-xl ml-5 text-yellow-600"
+                                onClick={() => {
+                                  let newBookList = [...bookList];
+                                  newBookList.splice(i, 1);
+                                  setBookList(newBookList);
+                                }}
+                              >
+                                <FontAwesomeIcon icon={faXmark} />
+                              </button>
+                            </div>
+                          </BookCellRightMenu>
+                        );
                       }}
                     />
                   );
