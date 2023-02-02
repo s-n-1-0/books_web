@@ -11,7 +11,11 @@ import {
   SelectedStoreContextType,
   StoreType,
 } from "@/contexts/selected_store_context";
-import { BookData, makeShareListPageUrl } from "@/utils/links";
+import {
+  BookData,
+  checkSharePageUrl,
+  makeShareListPageUrl,
+} from "@/utils/links";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
@@ -107,13 +111,7 @@ function MainContent() {
       if (Array.isArray(_books)) {
         books = Array.from(new Set(_books))
           .map((url) => new URL(url))
-          .filter(
-            (url) =>
-              !(
-                url.pathname.split("/")?.[2] !== "share" ||
-                url.searchParams.get("isbn") == null
-              )
-          );
+          .filter((url) => checkSharePageUrl(url));
       } else if (typeof _books == "string") {
         let url = new URL(_books);
         if (
@@ -167,10 +165,7 @@ function MainContent() {
               .then(async (text) => {
                 try {
                   let url = new URL(text);
-                  if (
-                    url.pathname.split("/")?.[2] !== "share" ||
-                    url.searchParams.get("isbn") == null
-                  ) {
+                  if (!checkSharePageUrl(url)) {
                     setErrorText("コピーしているURLが有効ではありません。");
                     return;
                   }

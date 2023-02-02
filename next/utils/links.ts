@@ -15,6 +15,13 @@ export function makeSharePageUrl(
   if (isNoheader) url += `&noheader`;
   return url;
 }
+export function checkSharePageUrl(url: URL) {
+  if (!url.href.startsWith(location.origin)) return false;
+  return !(
+    url.pathname.split("/")?.[2] !== "share" ||
+    url.searchParams.get("isbn") == null
+  );
+}
 export function makeShareListPageUrl(books: URL[], store: StoreType) {
   const params = new URLSearchParams();
   books.forEach((url) => params.append("books", url.href));
