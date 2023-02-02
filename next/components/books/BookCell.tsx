@@ -9,8 +9,9 @@ import BookThumbnail from "./BookThumbnail";
 type Props = {
   url: URL;
   position: "top" | "bottom" | "center";
+  makeRightElement?: (bookData: BookData) => JSX.Element;
 };
-export function BookCell({ url, position }: Props) {
+export function BookCell({ url, position, makeRightElement }: Props) {
   const context: BookCacheContextType = useContext(BookCacheContext);
   const [bookData, setBookData] = useState<BookData | null>(null);
   useEffect(() => {
@@ -28,13 +29,16 @@ export function BookCell({ url, position }: Props) {
   function makeCellUi() {
     if (bookData) {
       return (
-        <div className="flex items-center">
-          <BookThumbnail src={bookData.thumbnail} />
-          <div className="pl-2">
-            {bookData.title}
-            <br />
-            <small className="text-secondary">ISBN : {bookData.isbn}</small>
+        <div className="flex justify-between">
+          <div className="flex items-center">
+            <BookThumbnail src={bookData.thumbnail} />
+            <div className="pl-2">
+              {bookData.title}
+              <br />
+              <small className="text-secondary">ISBN : {bookData.isbn}</small>
+            </div>
           </div>
+          <div>{makeRightElement?.(bookData)}</div>
         </div>
       );
     } else return;
