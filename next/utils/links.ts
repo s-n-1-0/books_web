@@ -27,6 +27,14 @@ export interface BookData {
  * URLから書籍情報を取得します。
  * @param url 有効なURL
  */
+export function convertSharePageUrl2BookData(url: URL) {
+  let isbn = url.searchParams.get("isbn") ?? "";
+  let from = url.searchParams.get("from") ?? "";
+  return convertSharePageParams2BookData(isbn, from);
+}
+/**
+ * URL Paramsから書籍情報を取得します。
+ */
 export async function convertSharePageParams2BookData(
   isbn: string,
   from: string
