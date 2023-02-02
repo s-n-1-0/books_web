@@ -1,12 +1,12 @@
 import BookComment, {
   BookCommentRefType,
 } from "@/components/books/book-comment";
-import BookLinks from "@/components/books/book-links";
 import BookThumbnail from "@/components/books/book-thumbnail";
 import SearchBookFields from "@/components/books/search-book-fields";
 import CustomHead from "@/components/head";
 import Header from "@/components/header";
 import ProcessingView from "@/components/processing-view";
+import StoreLinks from "@/components/stores/store-links";
 import TweetButton from "@/components/tweet-button";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import {
@@ -203,7 +203,7 @@ const Home: NextPage = () => {
             <small>
               紙の書籍と電子書籍両方のリンクが含まれます。選択にご注意ください。
             </small>
-            <BookLinks isbn={bookData.isbn} />
+            <StoreLinks isbn={bookData.isbn} />
           </div>
         </div>
       </div>

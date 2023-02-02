@@ -9,7 +9,7 @@ import TwButton from "../tw-button";
 type Props = {
   isbn: string;
 };
-function BookLinks({ isbn }: Props) {
+function StoreLinks({ isbn }: Props) {
   let amazonUrl = convertIsbn2Url(isbn);
   let isbn13 = isbn.length == 13 ? isbn : convertIsbn(isbn) ?? isbn;
   let makeClickedLinkEvent = (storeName: StoreNameType) => () => {
@@ -83,4 +83,4 @@ function BookLinks({ isbn }: Props) {
   );
 }
 
-export default BookLinks;
+export default StoreLinks;
