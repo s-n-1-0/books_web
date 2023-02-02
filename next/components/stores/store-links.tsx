@@ -13,7 +13,7 @@ function StoreLinks({ isbn }: Props) {
   let amazonUrl = convertIsbn2Url(isbn);
   let isbn13 = isbn.length == 13 ? isbn : convertIsbn(isbn) ?? isbn;
   let makeClickedLinkEvent = (storeName: StoreNameType) => () => {
-    callStoreEvent({ storeName: storeName, isbn13: isbn13 });
+    callStoreEvent({ storeName: storeName, isbn: isbn13 });
   };
   return (
     <div>
