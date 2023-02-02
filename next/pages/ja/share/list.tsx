@@ -92,11 +92,13 @@ function BookCellRightMenu({ bookData, children }: Props) {
 }
 function MainContent() {
   const router = useRouter();
-  const { store: _store, books: _books } = router.query;
+  const { store: _store, books: _books, title: _title } = router.query;
   const { selectedStore, setSelectedStore }: SelectedStoreContextType =
     useContext(SelectedStoreContext);
   const [bookList, setBookList] = useState<URL[]>([]);
   const [errorText, setErrorText] = useState("");
+  const [listTitle, setListTitle] = useState("無名のリスト");
+  const [isEditListTitle, setIsEditListTitle] = useState(false);
   useEffect(() => {
     let store: StoreType = (() => {
       let s = typeof _store == "string" ? _store : "";
@@ -110,7 +112,8 @@ function MainContent() {
       }
     })();
     setSelectedStore(store);
-  }, [_store, setSelectedStore]);
+    if (typeof _title == "string") setListTitle(_title);
+  }, [_store, setSelectedStore, _title]);
   useEffect(() => {
     try {
       let books: URL[] = [];
@@ -136,6 +139,36 @@ function MainContent() {
         <span className="ml-1">複数の書籍をまとめて共有できます。</span>
       </h3>
       {(() => {
+        if (isEditListTitle)
+          return (
+            <input
+              type="text"
+              value={listTitle}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+              onChange={(event) => {
+                setListTitle(event.target.value);
+              }}
+            />
+          );
+        return (
+          <h2 className="text-2xl">
+            {listTitle}
+            <small className="ml-2 text-secondary">
+              (
+              <button
+                className="underline"
+                onClick={() => {
+                  setIsEditListTitle(true);
+                }}
+              >
+                編集
+              </button>
+              )
+            </small>
+          </h2>
+        );
+      })()}
+      {(() => {
         if (bookList.length == 0) return;
         return (
           <div>
@@ -145,7 +178,8 @@ function MainContent() {
                 onClick={() => {
                   window.location.href = makeShareListPageUrl(
                     bookList,
-                    selectedStore
+                    selectedStore,
+                    listTitle
                   );
                 }}
               >
@@ -246,8 +280,9 @@ function MainContent() {
         <button
           className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
           onClick={() => {
+            setIsEditListTitle(false);
             navigator.clipboard?.writeText(
-              makeShareListPageUrl(bookList, selectedStore)
+              makeShareListPageUrl(bookList, selectedStore, listTitle)
             );
           }}
         >

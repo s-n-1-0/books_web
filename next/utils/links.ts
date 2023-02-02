@@ -22,10 +22,15 @@ export function checkSharePageUrl(url: URL) {
     url.searchParams.get("isbn") == null
   );
 }
-export function makeShareListPageUrl(books: URL[], store: StoreType) {
+export function makeShareListPageUrl(
+  books: URL[],
+  store: StoreType,
+  title: string
+) {
   const params = new URLSearchParams();
   books.forEach((url) => params.append("books", url.href));
   params.append("store", store);
+  params.append("title", title);
   return `${location.origin}/ja/share/list?${params.toString()}`;
 }
 export interface BookData {
