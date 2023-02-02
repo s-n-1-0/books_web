@@ -134,29 +134,53 @@ function MainContent() {
       {(() => {
         if (bookList.length == 0) return;
         return (
-          <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-            {(() => {
-              return bookList.map((x, i) => {
-                let position: "top" | "bottom" | "center" =
-                  i == 0
-                    ? "top"
-                    : i == bookList.length - 1
-                    ? "bottom"
-                    : "center";
-                if (bookList.length == 1) position = "bottom";
-                return (
-                  <BookCell
-                    key={x.href}
-                    url={x}
-                    position={position}
-                    makeRightElement={(bookData) => {
-                      return <BookCellRightMenu bookData={bookData} />;
-                    }}
-                  />
-                );
-              });
-            })()}
-          </ul>
+          <div>
+            <p className="text-end">
+              <button
+                className="mr-1 text-blue-500 underline mb-1"
+                onClick={() => {
+                  window.location.href = makeShareListPageUrl(
+                    bookList,
+                    selectedStore
+                  );
+                }}
+              >
+                一時保存
+              </button>
+              /
+              <button
+                className="mx-1 text-blue-500 underline mb-1"
+                onClick={() => {
+                  window.open("./list");
+                }}
+              >
+                新規リスト(別タブ)
+              </button>
+            </p>
+            <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              {(() => {
+                return bookList.map((x, i) => {
+                  let position: "top" | "bottom" | "center" =
+                    i == 0
+                      ? "top"
+                      : i == bookList.length - 1
+                      ? "bottom"
+                      : "center";
+                  if (bookList.length == 1) position = "bottom";
+                  return (
+                    <BookCell
+                      key={x.href}
+                      url={x}
+                      position={position}
+                      makeRightElement={(bookData) => {
+                        return <BookCellRightMenu bookData={bookData} />;
+                      }}
+                    />
+                  );
+                });
+              })()}
+            </ul>
+          </div>
         );
       })()}
       <div className="text-center m-3">
