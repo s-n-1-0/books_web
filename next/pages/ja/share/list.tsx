@@ -14,16 +14,25 @@ let Home: NextPage = () => {
         <h3 className="pt-5 text-xl text-center pb-2 text-slate-700">
           <span className="ml-1">複数の書籍をまとめて共有できます。</span>
         </h3>
-        <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-          {(() => {
-            return bookList.map((x, i) => {
-              let position: "top" | "bottom" | "center" =
-                i == 0 ? "top" : i == bookList.length - 1 ? "bottom" : "center";
-              if (bookList.length == 1) position = "bottom";
-              return <BookCell key={x.href} url={x} position={position} />;
-            });
-          })()}
-        </ul>
+        {(() => {
+          if (bookList.length == 0) return;
+          return (
+            <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              {(() => {
+                return bookList.map((x, i) => {
+                  let position: "top" | "bottom" | "center" =
+                    i == 0
+                      ? "top"
+                      : i == bookList.length - 1
+                      ? "bottom"
+                      : "center";
+                  if (bookList.length == 1) position = "bottom";
+                  return <BookCell key={x.href} url={x} position={position} />;
+                });
+              })()}
+            </ul>
+          );
+        })()}
         <hr className="mt-3" />
         <div className="w-full text-center m-3">
           <button
