@@ -1,7 +1,10 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { forwardRef, Ref, useImperativeHandle, useRef, useState } from "react";
-import { SearchGoogleBooksList, SearchGoogleBooksListRefType } from "./list";
+import {
+  SearchGoogleBooksList,
+  SearchGoogleBooksListRefType,
+} from "./SearchGoogleBooksList";
 function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [searchTitle, setSearchTitle] = useState<string>("");

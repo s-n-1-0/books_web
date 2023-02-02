@@ -4,7 +4,7 @@ import {
 } from "@/contexts/book_cache_context";
 import { BookData, convertSharePageUrl2BookData } from "@/utils/links";
 import { useContext, useEffect, useState } from "react";
-import BookThumbnail from "./book-thumbnail";
+import BookThumbnail from "./BookThumbnail";
 
 type Props = {
   url: URL;

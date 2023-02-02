@@ -5,8 +5,8 @@ import {
 import { searchGoogleBooksApi } from "@/libs/googlebooks";
 import { makeSharePageUrl } from "@/utils/links";
 import { forwardRef, Ref, useImperativeHandle, useState } from "react";
-import ProcessingView from "../../processing-view";
-import BookThumbnail from "../book-thumbnail";
+import ProcessingView from "../../ProcessingView";
+import BookThumbnail from "../BookThumbnail";
 type Props = {
   isNoheader: boolean;
 };

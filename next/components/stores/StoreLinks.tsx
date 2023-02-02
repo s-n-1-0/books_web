@@ -1,9 +1,9 @@
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import AmazonLink from "./amazon-link";
-import HontoLink from "./honto-link";
-import KinokuniyaLink from "./kinokuniya-link";
+import AmazonLink from "./AmazonLink";
+import HontoLink from "./HontoLink";
+import KinokuniyaLink from "./KinokuniyaLink";
 
 type Props = {
   isbn: string;

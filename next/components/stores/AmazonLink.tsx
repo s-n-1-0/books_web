@@ -2,7 +2,7 @@ import { callStoreEvent } from "@/libs/analytics/events";
 import { faAmazon } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { convertIsbn2Url } from "asin2isbn";
-import TwButton from "../tw-button";
+import TwButton from "../TwButton";
 
 interface Props {
   isbn: string;

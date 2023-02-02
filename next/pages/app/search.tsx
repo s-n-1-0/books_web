@@ -1,8 +1,8 @@
 import {
   SearchGoogleBooksList,
   SearchGoogleBooksListRefType,
-} from "@/components/books/search-googlebooks/list";
-import CustomHead from "@/components/head";
+} from "@/components/books/search-googlebooks/SearchGoogleBooksList";
+import CustomHead from "@/components/CustomHead";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";

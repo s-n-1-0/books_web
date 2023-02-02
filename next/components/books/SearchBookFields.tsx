@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import SearchGoogleBooksModal, {
   SearchGoogleBooksModalRefType,
-} from "./search-googlebooks/modal";
+} from "./search-googlebooks/SearchGoogleBooksModal";
 type SearchBookButtonProps = {
   buttonText: string;
   editingText: string;

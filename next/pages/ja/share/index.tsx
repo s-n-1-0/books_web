@@ -1,13 +1,13 @@
 import BookComment, {
   BookCommentRefType,
-} from "@/components/books/book-comment";
-import BookThumbnail from "@/components/books/book-thumbnail";
-import SearchBookFields from "@/components/books/search-book-fields";
-import CustomHead from "@/components/head";
-import Header from "@/components/header";
-import ProcessingView from "@/components/processing-view";
-import StoreLinks from "@/components/stores/store-links";
-import TweetButton from "@/components/tweet-button";
+} from "@/components/books/BookComment";
+import BookThumbnail from "@/components/books/BookThumbnail";
+import SearchBookFields from "@/components/books/SearchBookFields";
+import CustomHead from "@/components/CustomHead";
+import Header from "@/components/CustomHeader";
+import ProcessingView from "@/components/ProcessingView";
+import StoreLinks from "@/components/stores/StoreLinks";
+import TweetButton from "@/components/TweetButton";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import {
   BookData,

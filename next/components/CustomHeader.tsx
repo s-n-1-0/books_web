@@ -4,7 +4,7 @@ import { useState } from "react";
 type Props = {
   isMenu?: Boolean;
 };
-function Header({ isMenu = true }: Props) {
+function CustomHeader({ isMenu = true }: Props) {
   let [isOpen, setIsOpen] = useState(false);
   let menuClassNames = classNames(
     "w-full",
@@ -65,4 +65,4 @@ function Header({ isMenu = true }: Props) {
     </header>
   );
 }
-export default Header;
+export default CustomHeader;

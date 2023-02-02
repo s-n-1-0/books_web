@@ -1,6 +1,6 @@
-import { BookCell } from "@/components/books/book-cell";
-import CustomHead from "@/components/head";
-import Header from "@/components/header";
+import { BookCell } from "@/components/books/BookCell";
+import CustomHead from "@/components/CustomHead";
+import Header from "@/components/CustomHeader";
 import { BookCacheContextProvider } from "@/contexts/book_cache_context";
 import { NextPage } from "next";
 import { useState } from "react";
