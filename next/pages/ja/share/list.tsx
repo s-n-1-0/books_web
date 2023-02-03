@@ -4,7 +4,12 @@ import Header from "@/components/CustomHeader";
 import AmazonLink from "@/components/stores/AmazonLink";
 import HontoLink from "@/components/stores/HontoLink";
 import KinokuniyaLink from "@/components/stores/KinokuniyaLink";
-import { BookCacheContextProvider } from "@/contexts/book_cache_context";
+import TweetButton from "@/components/TweetButton";
+import {
+  BookCacheContext,
+  BookCacheContextProvider,
+  BookCacheContextType,
+} from "@/contexts/book_cache_context";
 import {
   SelectedStoreContext,
   SelectedStoreContextProvider,
@@ -16,7 +21,8 @@ import {
   checkSharePageUrl,
   makeShareListPageUrl,
 } from "@/utils/links";
-import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { makeMarkdownSharePageLinks } from "@/utils/markdown";
+import { faCopy, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -93,6 +99,7 @@ function BookCellRightMenu({ bookData, children }: Props) {
 function MainContent() {
   const router = useRouter();
   const { store: _store, books: _books, title: _title } = router.query;
+  const context: BookCacheContextType = useContext(BookCacheContext);
   const { selectedStore, setSelectedStore }: SelectedStoreContextType =
     useContext(SelectedStoreContext);
   const [bookList, setBookList] = useState<URL[]>([]);
@@ -275,22 +282,63 @@ function MainContent() {
           <small className="text-red-500">{errorText}</small>
         </div>
       </div>
-      <hr className="my-3" />
-      <div className="w-full text-center m-3">
-        <button
-          className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-          onClick={() => {
-            setIsEditListTitle(false);
-            navigator.clipboard?.writeText(
-              makeShareListPageUrl(bookList, selectedStore, listTitle)
-            );
-          }}
-        >
-          このリストを共有
-          <br />
-          <small>共有URLを作成してコピー</small>
-        </button>
-      </div>
+      <hr className="my-3" />{" "}
+      {(() => {
+        if (bookList.length == 0) return;
+        return (
+          <div className="text-center">
+            <div className="pb-2 ">
+              <h3 className="text-xl text-slate-700">
+                <span>- 共有する -</span>
+              </h3>
+            </div>
+            <button
+              className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 m-1 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+              onClick={() => {
+                setIsEditListTitle(false);
+                navigator.clipboard?.writeText(
+                  makeShareListPageUrl(bookList, selectedStore, listTitle)
+                );
+              }}
+            >
+              共有URLを生成
+            </button>
+            <div className="flex flex-wrap justify-center items-center">
+              <div className="m-1">
+                <TweetButton
+                  text={`「${listTitle}」の共有`}
+                  url={makeShareListPageUrl(bookList, selectedStore, listTitle)}
+                />
+              </div>
+              <button
+                onClick={() => {
+                  navigator.clipboard?.writeText(
+                    makeMarkdownSharePageLinks(
+                      bookList.map((url) => {
+                        const isbn = url.searchParams.get("isbn") ?? "";
+                        return {
+                          url: url,
+                          bookData: context.bookDataCaches[isbn],
+                        };
+                      }),
+                      selectedStore,
+                      listTitle
+                    )
+                  );
+                }}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full inline-flex items-center m-1"
+              >
+                <FontAwesomeIcon icon={faCopy} className="mr-1" />
+                <span>マークダウン形式で共有</span>
+              </button>
+            </div>
+            <small className="text-secondary">
+              <b>note</b>や<b>Notion</b>
+              などのサイトには「マークダウン形式で共有」がおすすめです!
+            </small>
+          </div>
+        );
+      })()}
     </div>
   );
 }

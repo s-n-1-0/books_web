@@ -167,10 +167,12 @@ const Home: NextPage = () => {
                       "マークダウン形式でコピーしました。"
                     );
                     commentRef?.current?.finishEditing();
-                    let authorText =
-                      bookData.author == "" ? "" : `(${bookData.author})`;
                     navigator.clipboard?.writeText(
-                      makeMarkdownSharePageLink(bookData, userComment)
+                      makeMarkdownSharePageLink({
+                        bookData,
+                        comment: userComment,
+                        isWriteSiteName: true,
+                      })
                     );
                     sendMessage({
                       key: "completedSharing",
