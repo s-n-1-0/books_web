@@ -12,6 +12,7 @@ import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import {
   BookData,
   convertSharePageParams2BookData,
+  makeShareListPageUrl,
   makeSharePageUrl,
 } from "@/utils/links";
 import { makeMarkdownSharePageLink } from "@/utils/markdown";
@@ -190,6 +191,20 @@ const Home: NextPage = () => {
                 などのサイトには「マークダウン形式で共有」がおすすめです!
               </small>
             </div>
+            <a
+              href={makeShareListPageUrl(
+                [
+                  new URL(
+                    makeSharePageUrl(bookData.isbn, bookData.from, userComment)
+                  ),
+                ],
+                "amazon",
+                ""
+              )}
+              className="underline text-blue-500 mt-2"
+            >
+              他の書籍とまとめて共有する
+            </a>
           </div>
           <hr />
           <div className="pt-2">
