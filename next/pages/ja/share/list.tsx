@@ -20,6 +20,7 @@ import {
   BookData,
   checkSharePageUrl,
   makeShareListPageUrl,
+  makeSharePageUrlFromSearchParams,
 } from "@/utils/links";
 import { makeMarkdownSharePageLinks } from "@/utils/markdown";
 import { faCopy, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -125,9 +126,12 @@ function MainContent() {
     try {
       let books: URL[] = [];
       if (Array.isArray(_books)) {
-        books = Array.from(new Set(_books))
-          .map((url) => new URL(url))
-          .filter((url) => checkSharePageUrl(url));
+        books = Array.from(new Set(_books)).map(
+          (params) =>
+            new URL(
+              makeSharePageUrlFromSearchParams(new URLSearchParams(params))
+            )
+        );
       } else if (typeof _books == "string") {
         let url = new URL(_books);
         if (

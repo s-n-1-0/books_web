@@ -10,10 +10,15 @@ export function makeSharePageUrl(
   comment: string,
   isNoheader: boolean = false
 ) {
-  let url = `${location.origin}/ja/share?isbn=${isbn}&from=${from}`;
-  if (comment != "") url += `&comment=${encodeURIComponent(comment)}`;
-  if (isNoheader) url += `&noheader`;
-  return url;
+  const params = new URLSearchParams();
+  params.append("isbn", isbn);
+  params.append("from", from);
+  if (comment != "") params.append("comment", encodeURIComponent(comment));
+  if (isNoheader) params.append("noheader", "");
+  return makeSharePageUrlFromSearchParams(params);
+}
+export function makeSharePageUrlFromSearchParams(params: URLSearchParams) {
+  return `${location.origin}/ja/share?${params.toString()}`;
 }
 export function checkSharePageUrl(url: URL) {
   if (!url.href.startsWith(location.origin)) return false;
@@ -28,7 +33,7 @@ export function makeShareListPageUrl(
   title: string
 ) {
   const params = new URLSearchParams();
-  books.forEach((url) => params.append("books", url.href));
+  books.forEach((url) => params.append("books", url.searchParams.toString()));
   params.append("store", store);
   params.append("title", title);
   return `${location.origin}/ja/share/list?${params.toString()}`;
