@@ -34,7 +34,7 @@ function CustomHeader({ isMenu = true }: Props) {
                 <div className="block lg:hidden">
                   <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white"
+                    className="flex ml-auto items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white"
                   >
                     <svg
                       className="fill-current h-3 w-3"
@@ -47,13 +47,17 @@ function CustomHeader({ isMenu = true }: Props) {
                   </button>
                 </div>
                 <div className={menuClassNames}>
-                  <div className="text-sm lg:flex-grow">
-                    {/* ここにメニューリスト */}
-                  </div>
-                  <div>
+                  <div className="text-sm mt-2 md:mr-2 lg:mt-0 lg:flex-grow text-end">
                     <Link href="/ja/share">
-                      <a className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">
+                      <a className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-my-color hover:bg-white">
                         本を探す
+                      </a>
+                    </Link>
+                  </div>
+                  <div className="my-2">
+                    <Link href="/ja/share/list" className="w-fit lg:flex-grow">
+                      <a className=" inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-my-color hover:bg-white">
+                        リストを作成
                       </a>
                     </Link>
                   </div>
