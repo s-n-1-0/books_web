@@ -106,6 +106,7 @@ function MainContent() {
   const [bookList, setBookList] = useState<URL[]>([]);
   const [errorText, setErrorText] = useState("");
   const [listTitle, setListTitle] = useState("無名のリスト");
+  const [clickedShareButtonText, setClickedShareButtonText] = useState("");
   const [isEditListTitle, setIsEditListTitle] = useState(false);
   useEffect(() => {
     let store: StoreType = (() => {
@@ -158,6 +159,7 @@ function MainContent() {
             new Set([...bookList.map((x) => x.href), url.href]) //重複削除
           ).map((x) => new URL(x));
           setBookList(newBookList);
+          setErrorText("");
         } catch {
           setErrorText("コピーしているURLが有効ではありません。");
         }
@@ -311,22 +313,22 @@ function MainContent() {
         if (bookList.length == 0) return;
         return (
           <div className="text-center">
-            <div className="pb-2 ">
-              <h3 className="text-xl text-slate-700">
-                <span>- 共有する -</span>
-              </h3>
-            </div>
             <button
               className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 m-1 border-b-4 border-blue-700 hover:border-blue-500 rounded"
               onClick={() => {
                 setIsEditListTitle(false);
+                setErrorText("");
+                setClickedShareButtonText("共有URLをコピーしました。");
                 navigator.clipboard?.writeText(
                   makeShareListPageUrl(bookList, selectedStore, listTitle)
                 );
               }}
             >
               共有URLを生成
-            </button>
+            </button>{" "}
+            <p className="text-secondary">
+              <small>{clickedShareButtonText}</small>
+            </p>
             <div className="flex flex-wrap justify-center items-center">
               <div className="m-1">
                 <TweetButton
@@ -336,6 +338,10 @@ function MainContent() {
               </div>
               <button
                 onClick={() => {
+                  setErrorText("");
+                  setClickedShareButtonText(
+                    "マークダウン形式でコピーしました。"
+                  );
                   navigator.clipboard?.writeText(
                     makeMarkdownSharePageLinks(
                       bookList.map((url) => {
