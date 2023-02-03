@@ -134,7 +134,9 @@ function MainContent() {
             )
         );
       } else if (typeof _books == "string") {
-        let url = new URL(_books);
+        let url = new URL(
+          makeSharePageUrlFromSearchParams(new URLSearchParams(_books))
+        );
         if (
           url.pathname.split("/")?.[2] !== "share" ||
           url.searchParams.get("isbn") == null
