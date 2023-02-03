@@ -140,7 +140,7 @@ const Home: NextPage = () => {
                   </p>
                 );
             })()}
-            <p>
+            <div>
               <div className="mt-3 flex justify-center items-center flex-wrap">
                 {(() => {
                   let twText = "";
@@ -187,7 +187,7 @@ const Home: NextPage = () => {
                 <b>note</b>や<b>Notion</b>
                 などのサイトには「マークダウン形式で共有」がおすすめです!
               </small>
-            </p>
+            </div>
           </div>
           <hr />
           <div className="pt-2">
