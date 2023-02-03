@@ -38,6 +38,7 @@ function BookCellRightMenu({ bookData, children }: Props) {
   return (
     <div className="flex h-full items-center">
       <div className="flex  justify-center  flex-col">
+        <span className="text-center text-slate-500">購入先</span>
         {(() => {
           switch (selectedStore) {
             case "amazon":
@@ -48,7 +49,6 @@ function BookCellRightMenu({ bookData, children }: Props) {
               return <KinokuniyaLink isbn={bookData.isbn} />;
           }
         })()}
-
         <button
           className="text-blue-500 mt-1 underline cursor-pointer"
           onClick={() => {
@@ -140,11 +140,46 @@ function MainContent() {
       if (books.length > 0) setBookList(books);
     } catch {}
   }, [_books]);
+  let clickAddButton = () => {
+    navigator.clipboard
+      .readText()
+      .then(async (text) => {
+        try {
+          let url = new URL(text);
+          if (!checkSharePageUrl(url)) {
+            setErrorText("コピーしているURLが有効ではありません。");
+            return;
+          }
+          let newBookList = Array.from(
+            new Set([...bookList.map((x) => x.href), url.href]) //重複削除
+          ).map((x) => new URL(x));
+          setBookList(newBookList);
+        } catch {
+          setErrorText("コピーしているURLが有効ではありません。");
+        }
+      })
+      .catch(() => {
+        setErrorText(
+          "× ブラウザなどの設定からこのサイトに貼り付け許可を与えてください。 ×"
+        );
+      });
+  };
   return (
-    <div>
-      <h3 className="pt-5 text-xl text-center pb-2 text-slate-700">
-        <span className="ml-1">複数の書籍をまとめて共有できます。</span>
-      </h3>
+    <div className=" mx-auto " style={{ maxWidth: "1200px" }}>
+      {(() => {
+        if (bookList.length > 0) return;
+        return (
+          <h3 className="pt-5 text-xl text-center pb-2 text-slate-700">
+            <span className="ml-1">
+              複数の書籍をまとめて共有することができます。
+            </span>
+          </h3>
+        );
+      })()}
+      <p className="text-center text-slate-500">
+        注意: リストを更新すると共有URLも更新されます!
+      </p>
+      <hr className="my-2" />
       {(() => {
         if (isEditListTitle)
           return (
@@ -190,7 +225,7 @@ function MainContent() {
                   );
                 }}
               >
-                一時保存
+                一瞬保存(リロード)
               </button>
               /
               <button
@@ -205,13 +240,7 @@ function MainContent() {
             <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
               {(() => {
                 return bookList.map((x, i) => {
-                  let position: "top" | "bottom" | "center" =
-                    i == 0
-                      ? "top"
-                      : i == bookList.length - 1
-                      ? "bottom"
-                      : "center";
-                  if (bookList.length == 1) position = "bottom";
+                  let position: "top" | "center" = i == 0 ? "top" : "center";
                   return (
                     <BookCell
                       key={x.href}
@@ -239,46 +268,37 @@ function MainContent() {
                   );
                 });
               })()}
+              <li
+                className="w-full px-4 py-2 rounded-b-lg text-center my-2 cursor-pointer"
+                onClick={clickAddButton}
+              >
+                <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                リストに追加
+              </li>
             </ul>
           </div>
         );
       })()}
       <div className="text-center m-3">
-        <span className="text-secondary">
-          書籍共有URLをコピーした状態で↓を押してください。
-        </span>
         <div className="w-full mt-1">
-          <button
-            onClick={() => {
-              navigator.clipboard
-                .readText()
-                .then(async (text) => {
-                  try {
-                    let url = new URL(text);
-                    if (!checkSharePageUrl(url)) {
-                      setErrorText("コピーしているURLが有効ではありません。");
-                      return;
-                    }
-                    let newBookList = Array.from(
-                      new Set([...bookList.map((x) => x.href), url.href]) //重複削除
-                    ).map((x) => new URL(x));
-                    setBookList(newBookList);
-                  } catch {
-                    setErrorText("コピーしているURLが有効ではありません。");
-                  }
-                })
-                .catch(() => {
-                  setErrorText(
-                    "× ブラウザなどの設定からこのサイトに貼り付け許可を与えてください。 ×"
-                  );
-                });
-            }}
-            className="mx-auto bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 border-b-4 border-orange-700 hover:border-orange-500 rounded"
-          >
-            <FontAwesomeIcon icon={faPlus} className="mr-1" />
-            リストに追加
-          </button>
-          <br />
+          {(() => {
+            if (bookList.length > 0) return;
+            return (
+              <button
+                onClick={clickAddButton}
+                className="mx-auto bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 border-b-4 border-orange-700 hover:border-orange-500 rounded"
+              >
+                <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                リストに追加
+              </button>
+            );
+          })()}
+
+          <p className="text-secondary">
+            <small>
+              書籍ページの「この本を共有する」を押した後↑を押すと、リストに書籍が追加されます。
+            </small>
+          </p>
           <small className="text-red-500">{errorText}</small>
         </div>
       </div>
