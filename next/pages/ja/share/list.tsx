@@ -121,7 +121,7 @@ function MainContent() {
       }
     })();
     setSelectedStore(store);
-    if (typeof _title == "string") setListTitle(_title);
+    if (typeof _title == "string" && _title != "") setListTitle(_title);
   }, [_store, setSelectedStore, _title]);
   useEffect(() => {
     try {
