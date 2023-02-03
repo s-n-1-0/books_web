@@ -14,6 +14,7 @@ import {
   convertSharePageParams2BookData,
   makeSharePageUrl,
 } from "@/utils/links";
+import { makeMarkdownSharePageLink } from "@/utils/markdown";
 import { faCopy, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NextPage } from "next";
@@ -169,13 +170,7 @@ const Home: NextPage = () => {
                     let authorText =
                       bookData.author == "" ? "" : `(${bookData.author})`;
                     navigator.clipboard?.writeText(
-                      `[「${
-                        bookData.title
-                      }」${authorText} - Share Books](${makeSharePageUrl(
-                        bookData.isbn,
-                        bookData.from,
-                        userComment
-                      )})`
+                      makeMarkdownSharePageLink(bookData, userComment)
                     );
                     sendMessage({
                       key: "completedSharing",
