@@ -86,7 +86,7 @@ export async function convertSharePageParams2BookData(
         if (book) {
           return {
             title: book.volumeInfo.title,
-            author: book.volumeInfo.authors.join(" "),
+            author: book.volumeInfo.authors?.join(" ") ?? "",
             isbn: isbn,
             publisher: book.volumeInfo.publisher ?? "",
             thumbnail: book.volumeInfo?.imageLinks?.smallThumbnail ?? "",

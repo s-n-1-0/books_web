@@ -98,10 +98,18 @@ const Home: NextPage = () => {
           </button>
         </p>
         <p className="text-center">
-          著者 : {bookData.author}{" "}
+          {(() => {
+            if (bookData.author == "") return;
+            return <span>著者: {bookData.author}</span>;
+          })()}
           {(() => {
             if (bookData.publisher == "") return;
-            return <span>/ 出版社 :{bookData.publisher}</span>;
+            let splitText = bookData.author != "" ? " / " : "";
+            return (
+              <span>
+                {splitText}出版社 :{bookData.publisher}
+              </span>
+            );
           })()}
         </p>
 
