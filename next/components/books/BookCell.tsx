@@ -3,6 +3,7 @@ import {
   BookCacheContextType,
 } from "@/contexts/book_cache_context";
 import { BookData, convertSharePageUrl2BookData } from "@/utils/links";
+import classNames from "classnames";
 import { useContext, useEffect, useState } from "react";
 import BookThumbnail from "./BookThumbnail";
 
@@ -10,6 +11,7 @@ type Props = {
   onClick?: () => void;
   url?: URL;
   bookData?: BookData;
+  headText?: string;
   position: "top" | "bottom" | "center";
   makeRightElement?: (bookData: BookData) => JSX.Element;
 };
@@ -17,6 +19,7 @@ export function BookCell({
   url,
   bookData: _bookData,
   position,
+  headText,
   onClick,
   makeRightElement,
 }: Props) {
@@ -40,6 +43,13 @@ export function BookCell({
       return (
         <div className="flex justify-between">
           <div className="flex items-center">
+            <span
+              className={classNames({
+                "mr-2": headText != "",
+              })}
+            >
+              {headText ?? ""}
+            </span>
             <BookThumbnail src={bookData.thumbnail} />
             <div className="pl-2">
               {bookData.title}

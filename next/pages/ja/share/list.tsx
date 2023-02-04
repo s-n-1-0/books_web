@@ -254,6 +254,7 @@ function MainContent() {
                       key={x.href}
                       url={x}
                       position={position}
+                      headText={String(i + 1)}
                       makeRightElement={(bookData) => {
                         return (
                           <BookCellRightMenu bookData={bookData}>

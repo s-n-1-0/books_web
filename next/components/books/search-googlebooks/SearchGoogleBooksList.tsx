@@ -108,6 +108,7 @@ function _SearchGoogleBooksList({ isNoheader }: Props, ref: Ref<unknown>) {
                 }}
                 bookData={bookData}
                 position={position}
+                headText={String(i + 1)}
                 makeRightElement={() => {
                   return <RightCellElement bookData={bookData} />;
                 }}
