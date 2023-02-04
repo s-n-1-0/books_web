@@ -3,10 +3,13 @@ import {
   GoogleBooksApiVolumesResponseData,
 } from "@/Interfaces/googlebooks/volumes";
 import { searchGoogleBooksApi } from "@/libs/googlebooks";
-import { makeSharePageUrl } from "@/utils/links";
+import {
+  convertGoogleBooksData2BookData,
+  makeSharePageUrl,
+} from "@/utils/links";
 import { forwardRef, Ref, useImperativeHandle, useState } from "react";
 import ProcessingView from "../../ProcessingView";
-import BookThumbnail from "../BookThumbnail";
+import { BookCell } from "../BookCell";
 type Props = {
   isNoheader: boolean;
 };
@@ -47,9 +50,15 @@ function _SearchGoogleBooksList({ isNoheader }: Props, ref: Ref<unknown>) {
             if (!id) return false;
             return id.type == "ISBN_10" || id.type == "ISBN_13";
           })
-          .map((item) => {
+          .map((item, i) => {
+            let position: "top" | "bottom" | "center" =
+              i == 0
+                ? "top"
+                : i == googleBooksResults.length - 1
+                ? "bottom"
+                : "center";
             return (
-              <li
+              <BookCell
                 key={item.id}
                 onClick={() => {
                   let url = makeSharePageUrl(
@@ -60,21 +69,9 @@ function _SearchGoogleBooksList({ isNoheader }: Props, ref: Ref<unknown>) {
                   );
                   window.open(url, "_blank");
                 }}
-                className="py-2 px-4 w-full border-b border-gray-200 dark:border-gray-600"
-              >
-                <div className="flex items-center">
-                  <BookThumbnail
-                    src={item.volumeInfo.imageLinks?.smallThumbnail ?? ""}
-                  />
-                  <div className="pl-2">
-                    {item.volumeInfo.title}
-                    <br />
-                    <small className="text-secondary">
-                      ISBN : {item.volumeInfo.industryIdentifiers[0].identifier}
-                    </small>
-                  </div>
-                </div>
-              </li>
+                bookData={convertGoogleBooksData2BookData(item)}
+                position={position}
+              />
             );
           })}
       </ul>

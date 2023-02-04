@@ -1,4 +1,5 @@
 import { StoreType } from "@/contexts/selected_store_context";
+import { GoogleBooksApiBookData } from "@/Interfaces/googlebooks/volumes";
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
 import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
 import * as openbd from "@/libs/openbd";
@@ -47,6 +48,19 @@ export interface BookData {
   description: string;
   from: SharePageFromDb;
 }
+export function convertGoogleBooksData2BookData({
+  volumeInfo,
+}: GoogleBooksApiBookData): BookData {
+  return {
+    title: volumeInfo.title,
+    author: volumeInfo.authors?.join(" ") ?? "",
+    isbn: volumeInfo.industryIdentifiers[0].identifier,
+    publisher: volumeInfo.publisher ?? "",
+    thumbnail: volumeInfo?.imageLinks?.smallThumbnail ?? "",
+    description: volumeInfo.description ?? "",
+    from: "googlebooks",
+  };
+}
 /**
  * URLから書籍情報を取得します。
  * @param url 有効なURL
@@ -84,15 +98,7 @@ export async function convertSharePageParams2BookData(
     case "googlebooks":
       return searchGoogleBooksApiByIsbn(isbn).then((book) => {
         if (book) {
-          return {
-            title: book.volumeInfo.title,
-            author: book.volumeInfo.authors?.join(" ") ?? "",
-            isbn: isbn,
-            publisher: book.volumeInfo.publisher ?? "",
-            thumbnail: book.volumeInfo?.imageLinks?.smallThumbnail ?? "",
-            description: book.volumeInfo.description ?? "",
-            from: "googlebooks",
-          };
+          return convertGoogleBooksData2BookData(book);
         } else return null;
       });
   }
