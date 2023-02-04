@@ -38,7 +38,7 @@ function TweetButton({ text, url = encodeURIComponent(location.href) }: Props) {
       }}
     >
       <FontAwesomeIcon icon={faTwitter} />
-      ツイートする
+      ツイート
     </button>
   );
 }

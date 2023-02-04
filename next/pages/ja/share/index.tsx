@@ -12,8 +12,10 @@ import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import {
   BookData,
   convertSharePageParams2BookData,
+  makeShareListPageUrl,
   makeSharePageUrl,
 } from "@/utils/links";
+import { makeMarkdownSharePageLink } from "@/utils/markdown";
 import { faCopy, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NextPage } from "next";
@@ -96,10 +98,18 @@ const Home: NextPage = () => {
           </button>
         </p>
         <p className="text-center">
-          著者 : {bookData.author}{" "}
+          {(() => {
+            if (bookData.author == "") return;
+            return <span>著者: {bookData.author}</span>;
+          })()}
           {(() => {
             if (bookData.publisher == "") return;
-            return <span>/ 出版社 :{bookData.publisher}</span>;
+            let splitText = bookData.author != "" ? " / " : "";
+            return (
+              <span>
+                {splitText}出版社 :{bookData.publisher}
+              </span>
+            );
           })()}
         </p>
 
@@ -139,7 +149,7 @@ const Home: NextPage = () => {
                   </p>
                 );
             })()}
-            <p>
+            <div>
               <div className="mt-3 flex justify-center items-center flex-wrap">
                 {(() => {
                   let twText = "";
@@ -166,16 +176,12 @@ const Home: NextPage = () => {
                       "マークダウン形式でコピーしました。"
                     );
                     commentRef?.current?.finishEditing();
-                    let authorText =
-                      bookData.author == "" ? "" : `(${bookData.author})`;
                     navigator.clipboard?.writeText(
-                      `[「${
-                        bookData.title
-                      }」${authorText} - Share Books](${makeSharePageUrl(
-                        bookData.isbn,
-                        bookData.from,
-                        userComment
-                      )})`
+                      makeMarkdownSharePageLink({
+                        bookData,
+                        comment: userComment,
+                        isWriteSiteName: true,
+                      })
                     );
                     sendMessage({
                       key: "completedSharing",
@@ -192,7 +198,21 @@ const Home: NextPage = () => {
                 <b>note</b>や<b>Notion</b>
                 などのサイトには「マークダウン形式で共有」がおすすめです!
               </small>
-            </p>
+            </div>
+            <a
+              href={makeShareListPageUrl(
+                [
+                  new URL(
+                    makeSharePageUrl(bookData.isbn, bookData.from, userComment)
+                  ),
+                ],
+                "amazon",
+                ""
+              )}
+              className="underline text-blue-500 mt-2"
+            >
+              他の書籍とまとめて共有する
+            </a>
           </div>
           <hr />
           <div className="pt-2">

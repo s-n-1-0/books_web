@@ -3,18 +3,30 @@ import {
   BookCacheContextType,
 } from "@/contexts/book_cache_context";
 import { BookData, convertSharePageUrl2BookData } from "@/utils/links";
+import classNames from "classnames";
 import { useContext, useEffect, useState } from "react";
 import BookThumbnail from "./BookThumbnail";
 
 type Props = {
-  url: URL;
+  onClick?: () => void;
+  url?: URL;
+  bookData?: BookData;
+  headText?: string;
   position: "top" | "bottom" | "center";
   makeRightElement?: (bookData: BookData) => JSX.Element;
 };
-export function BookCell({ url, position, makeRightElement }: Props) {
+export function BookCell({
+  url,
+  bookData: _bookData,
+  position,
+  headText,
+  onClick,
+  makeRightElement,
+}: Props) {
   const context: BookCacheContextType = useContext(BookCacheContext);
-  const [bookData, setBookData] = useState<BookData | null>(null);
+  const [bookData, setBookData] = useState<BookData | null>(_bookData ?? null);
   useEffect(() => {
+    if (!url) return;
     const isbn = url.searchParams.get("isbn");
     if (isbn && isbn in context.bookDataCaches) {
       setBookData(context.bookDataCaches[isbn]);
@@ -31,6 +43,13 @@ export function BookCell({ url, position, makeRightElement }: Props) {
       return (
         <div className="flex justify-between">
           <div className="flex items-center">
+            <span
+              className={classNames({
+                "mr-2": headText != "",
+              })}
+            >
+              {headText ?? ""}
+            </span>
             <BookThumbnail src={bookData.thumbnail} />
             <div className="pl-2">
               {bookData.title}
@@ -46,17 +65,27 @@ export function BookCell({ url, position, makeRightElement }: Props) {
   switch (position) {
     case "top":
       return (
-        <li className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">
+        <li
+          className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600"
+          onClick={onClick}
+        >
           {makeCellUi()}
         </li>
       );
     case "center":
       return (
-        <li className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
+        <li
+          className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600"
+          onClick={onClick}
+        >
           {makeCellUi()}
         </li>
       );
     case "bottom":
-      return <li className="w-full px-4 py-2 rounded-b-lg">{makeCellUi()}</li>;
+      return (
+        <li className="w-full px-4 py-2 rounded-b-lg" onClick={onClick}>
+          {makeCellUi()}
+        </li>
+      );
   }
 }

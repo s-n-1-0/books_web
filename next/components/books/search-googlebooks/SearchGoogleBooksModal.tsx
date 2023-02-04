@@ -1,4 +1,4 @@
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { forwardRef, Ref, useImperativeHandle, useRef, useState } from "react";
 import {
@@ -14,7 +14,6 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
     setIsOpen(true);
     setSearchTitle(title);
     process.nextTick(() => {
-      console.log(googlebooksListRef.current);
       googlebooksListRef.current?.search(title);
     });
   }
@@ -29,9 +28,26 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 overflow-hidden z-20">
       <div className="relative h-5/6 w-full mx-4 lg:mx-0 lg:w-3/4 md:p-4 bg-white rounded-md shadow-xl overflow-y-auto">
-        <div className="flex justify-between items-center">
-          <h3 className="text-left">
-            <b>「{searchTitle}」</b>で検索
+        <div className="flex justify-between items-center mb-1">
+          <h3 className="ml-auto">
+            <input
+              type="text"
+              value={searchTitle}
+              className="inline-block bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 mr-1"
+              onChange={(event) => {
+                setSearchTitle(event.target.value);
+              }}
+            />
+            <button
+              className="bg-my-color text-white font-bold py-1 px-2 rounded-lg ml-1 mr-4"
+              onClick={() => {
+                process.nextTick(() => {
+                  googlebooksListRef.current?.search(searchTitle);
+                });
+              }}
+            >
+              <FontAwesomeIcon icon={faSearch} />
+            </button>
           </h3>
           <FontAwesomeIcon
             className="text-3xl p-2 cursor-pointer"

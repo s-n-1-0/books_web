@@ -1,4 +1,5 @@
 import { StoreType } from "@/contexts/selected_store_context";
+import { GoogleBooksApiBookData } from "@/Interfaces/googlebooks/volumes";
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
 import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
 import * as openbd from "@/libs/openbd";
@@ -10,10 +11,15 @@ export function makeSharePageUrl(
   comment: string,
   isNoheader: boolean = false
 ) {
-  let url = `${location.origin}/ja/share?isbn=${isbn}&from=${from}`;
-  if (comment != "") url += `&comment=${encodeURIComponent(comment)}`;
-  if (isNoheader) url += `&noheader`;
-  return url;
+  const params = new URLSearchParams();
+  params.append("isbn", isbn);
+  params.append("from", from);
+  if (comment != "") params.append("comment", encodeURIComponent(comment));
+  if (isNoheader) params.append("noheader", "");
+  return makeSharePageUrlFromSearchParams(params);
+}
+export function makeSharePageUrlFromSearchParams(params: URLSearchParams) {
+  return `${location.origin}/ja/share?${params.toString()}`;
 }
 export function checkSharePageUrl(url: URL) {
   if (!url.href.startsWith(location.origin)) return false;
@@ -28,7 +34,7 @@ export function makeShareListPageUrl(
   title: string
 ) {
   const params = new URLSearchParams();
-  books.forEach((url) => params.append("books", url.href));
+  books.forEach((url) => params.append("books", url.searchParams.toString()));
   params.append("store", store);
   params.append("title", title);
   return `${location.origin}/ja/share/list?${params.toString()}`;
@@ -41,6 +47,19 @@ export interface BookData {
   publisher: string;
   description: string;
   from: SharePageFromDb;
+}
+export function convertGoogleBooksData2BookData({
+  volumeInfo,
+}: GoogleBooksApiBookData): BookData {
+  return {
+    title: volumeInfo.title,
+    author: volumeInfo.authors?.join(" ") ?? "",
+    isbn: volumeInfo.industryIdentifiers[0].identifier,
+    publisher: volumeInfo.publisher ?? "",
+    thumbnail: volumeInfo?.imageLinks?.smallThumbnail ?? "",
+    description: volumeInfo.description ?? "",
+    from: "googlebooks",
+  };
 }
 /**
  * URLから書籍情報を取得します。
@@ -79,15 +98,7 @@ export async function convertSharePageParams2BookData(
     case "googlebooks":
       return searchGoogleBooksApiByIsbn(isbn).then((book) => {
         if (book) {
-          return {
-            title: book.volumeInfo.title,
-            author: book.volumeInfo.authors.join(" "),
-            isbn: isbn,
-            publisher: book.volumeInfo.publisher ?? "",
-            thumbnail: book.volumeInfo?.imageLinks?.smallThumbnail ?? "",
-            description: book.volumeInfo.description ?? "",
-            from: "googlebooks",
-          };
+          return convertGoogleBooksData2BookData(book);
         } else return null;
       });
   }
