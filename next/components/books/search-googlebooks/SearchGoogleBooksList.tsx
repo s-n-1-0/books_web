@@ -2,14 +2,51 @@ import {
   GoogleBooksApiBookData,
   GoogleBooksApiVolumesResponseData,
 } from "@/Interfaces/googlebooks/volumes";
+import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import { searchGoogleBooksApi } from "@/libs/googlebooks";
 import {
+  BookData,
   convertGoogleBooksData2BookData,
   makeSharePageUrl,
 } from "@/utils/links";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import { forwardRef, Ref, useImperativeHandle, useState } from "react";
 import ProcessingView from "../../ProcessingView";
 import { BookCell } from "../BookCell";
+
+type RightCellElementProps = {
+  bookData: BookData;
+};
+function RightCellElement({ bookData }: RightCellElementProps) {
+  const [isCopied, setIsCopied] = useState(false);
+  return (
+    <div
+      className="flex flex-col justify-end"
+      onClick={(e) => {
+        navigator.clipboard?.writeText(
+          makeSharePageUrl(bookData.isbn, bookData.from, "")
+        );
+        sendMessage({
+          key: "completedSharing",
+          data: { type: "default", url: "" },
+        });
+        setIsCopied(true);
+        e.stopPropagation();
+      }}
+    >
+      <FontAwesomeIcon className="text-my-color" icon={faCopy} />
+      <span
+        className={classNames({
+          hidden: !isCopied,
+        })}
+      >
+        <small className="text-secondary">コピー!</small>
+      </span>
+    </div>
+  );
+}
 type Props = {
   isNoheader: boolean;
 };
@@ -42,7 +79,6 @@ function _SearchGoogleBooksList({ isNoheader }: Props, ref: Ref<unknown>) {
     );
   return (
     <div>
-      {" "}
       <ul className="m-2 text-left text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white cursor-pointer">
         {googleBooksResults
           .filter((item) => {
@@ -51,6 +87,7 @@ function _SearchGoogleBooksList({ isNoheader }: Props, ref: Ref<unknown>) {
             return id.type == "ISBN_10" || id.type == "ISBN_13";
           })
           .map((item, i) => {
+            let bookData = convertGoogleBooksData2BookData(item);
             let position: "top" | "bottom" | "center" =
               i == 0
                 ? "top"
@@ -69,8 +106,11 @@ function _SearchGoogleBooksList({ isNoheader }: Props, ref: Ref<unknown>) {
                   );
                   window.open(url, "_blank");
                 }}
-                bookData={convertGoogleBooksData2BookData(item)}
+                bookData={bookData}
                 position={position}
+                makeRightElement={() => {
+                  return <RightCellElement bookData={bookData} />;
+                }}
               />
             );
           })}
