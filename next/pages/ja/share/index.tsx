@@ -25,8 +25,8 @@ import { useEffect, useRef, useState } from "react";
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const { isbn, from, comment, noheader: _noheader } = router.query;
-  const isHeader = !(typeof _noheader == "string");
+  const { isbn, from, comment } = router.query;
+
   const [bookData, setBookData] = useState<BookData | null>(null);
   const [errorText, setErrorText] = useState<string>("");
   const [isHello, setIsHello] = useState<boolean>(false);
@@ -61,7 +61,7 @@ const Home: NextPage = () => {
       setIsHello(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [from, isbn]);
+  }, [router.query]);
 
   function makeMainContent() {
     if (isHello || errorText != "") {
@@ -238,14 +238,10 @@ const Home: NextPage = () => {
         pageUrl="https://books.sn-10.net/ja/share"
         ogType="product"
       ></CustomHead>
-      {(() => {
-        if (isHeader) return <Header></Header>;
-      })()}
-
+      <Header></Header>
       <main>
         <div className="w-full px-2 ">{makeMainContent()}</div>
       </main>
-
       <footer>
         <hr />
         <p className="text-center">
