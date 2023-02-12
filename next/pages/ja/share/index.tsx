@@ -9,6 +9,7 @@ import ProcessingView from "@/components/ProcessingView";
 import StoreLinks from "@/components/stores/StoreLinks";
 import TweetButton from "@/components/TweetButton";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
+import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import {
   BookData,
   convertSharePageParams2BookData,
@@ -91,7 +92,7 @@ const Home: NextPage = () => {
           <button
             className="text-sm bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded ml-2"
             onClick={() => {
-              navigator.clipboard.writeText(bookData.isbn);
+              flutterClipboard.writeText(bookData.isbn);
             }}
           >
             コピー
@@ -128,7 +129,7 @@ const Home: NextPage = () => {
               onClick={() => {
                 setClickedShareButtonText("共有URLをコピーしました。");
                 commentRef?.current?.finishEditing();
-                navigator.clipboard?.writeText(
+                flutterClipboard.writeText(
                   makeSharePageUrl(bookData.isbn, bookData.from, userComment)
                 );
                 sendMessage({
@@ -176,7 +177,7 @@ const Home: NextPage = () => {
                       "マークダウン形式でコピーしました。"
                     );
                     commentRef?.current?.finishEditing();
-                    navigator.clipboard?.writeText(
+                    flutterClipboard.writeText(
                       makeMarkdownSharePageLink({
                         bookData,
                         comment: userComment,
