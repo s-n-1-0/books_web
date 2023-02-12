@@ -9,6 +9,7 @@ import ProcessingView from "@/components/ProcessingView";
 import StoreLinks from "@/components/stores/StoreLinks";
 import TweetButton from "@/components/TweetButton";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
+import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import {
   BookData,
   convertSharePageParams2BookData,
@@ -24,8 +25,8 @@ import { useEffect, useRef, useState } from "react";
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const { isbn, from, comment, noheader: _noheader } = router.query;
-  const isHeader = !(typeof _noheader == "string");
+  const { isbn, from, comment } = router.query;
+
   const [bookData, setBookData] = useState<BookData | null>(null);
   const [errorText, setErrorText] = useState<string>("");
   const [isHello, setIsHello] = useState<boolean>(false);
@@ -60,7 +61,7 @@ const Home: NextPage = () => {
       setIsHello(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [from, isbn]);
+  }, [router.query]);
 
   function makeMainContent() {
     if (isHello || errorText != "") {
@@ -91,7 +92,7 @@ const Home: NextPage = () => {
           <button
             className="text-sm bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded ml-2"
             onClick={() => {
-              navigator.clipboard.writeText(bookData.isbn);
+              flutterClipboard.writeText(bookData.isbn);
             }}
           >
             コピー
@@ -128,7 +129,7 @@ const Home: NextPage = () => {
               onClick={() => {
                 setClickedShareButtonText("共有URLをコピーしました。");
                 commentRef?.current?.finishEditing();
-                navigator.clipboard?.writeText(
+                flutterClipboard.writeText(
                   makeSharePageUrl(bookData.isbn, bookData.from, userComment)
                 );
                 sendMessage({
@@ -176,7 +177,7 @@ const Home: NextPage = () => {
                       "マークダウン形式でコピーしました。"
                     );
                     commentRef?.current?.finishEditing();
-                    navigator.clipboard?.writeText(
+                    flutterClipboard.writeText(
                       makeMarkdownSharePageLink({
                         bookData,
                         comment: userComment,
@@ -237,14 +238,10 @@ const Home: NextPage = () => {
         pageUrl="https://books.sn-10.net/ja/share"
         ogType="product"
       ></CustomHead>
-      {(() => {
-        if (isHeader) return <Header></Header>;
-      })()}
-
+      <Header></Header>
       <main>
         <div className="w-full px-2 ">{makeMainContent()}</div>
       </main>
-
       <footer>
         <hr />
         <p className="text-center">

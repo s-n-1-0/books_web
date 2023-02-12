@@ -16,6 +16,7 @@ import {
   SelectedStoreContextType,
   StoreType,
 } from "@/contexts/selected_store_context";
+import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import {
   BookData,
   checkSharePageUrl,
@@ -148,22 +149,24 @@ function MainContent() {
     } catch {}
   }, [_books]);
   let clickAddButton = () => {
-    navigator.clipboard
+    flutterClipboard
       .readText()
-      .then(async (text) => {
-        try {
-          let url = new URL(text);
-          if (!checkSharePageUrl(url)) {
+      .then((text) => {
+        if (text) {
+          try {
+            let url = new URL(text);
+            if (!checkSharePageUrl(url)) {
+              setErrorText("コピーしているURLが有効ではありません。");
+              return;
+            }
+            let newBookList = Array.from(
+              new Set([...bookList.map((x) => x.href), url.href]) //重複削除
+            ).map((x) => new URL(x));
+            setBookList(newBookList);
+            setErrorText("");
+          } catch {
             setErrorText("コピーしているURLが有効ではありません。");
-            return;
           }
-          let newBookList = Array.from(
-            new Set([...bookList.map((x) => x.href), url.href]) //重複削除
-          ).map((x) => new URL(x));
-          setBookList(newBookList);
-          setErrorText("");
-        } catch {
-          setErrorText("コピーしているURLが有効ではありません。");
         }
       })
       .catch(() => {
@@ -322,7 +325,7 @@ function MainContent() {
                 setIsEditListTitle(false);
                 setErrorText("");
                 setClickedShareButtonText("共有URLをコピーしました。");
-                navigator.clipboard?.writeText(
+                flutterClipboard.writeText(
                   makeShareListPageUrl(bookList, selectedStore, listTitle)
                 );
               }}
@@ -345,7 +348,7 @@ function MainContent() {
                   setClickedShareButtonText(
                     "マークダウン形式でコピーしました。"
                   );
-                  navigator.clipboard?.writeText(
+                  flutterClipboard.writeText(
                     makeMarkdownSharePageLinks(
                       bookList.map((url) => {
                         const isbn = url.searchParams.get("isbn") ?? "";

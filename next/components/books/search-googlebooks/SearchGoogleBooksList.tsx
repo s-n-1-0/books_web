@@ -3,6 +3,7 @@ import {
   GoogleBooksApiVolumesResponseData,
 } from "@/Interfaces/googlebooks/volumes";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
+import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import { searchGoogleBooksApi } from "@/libs/googlebooks";
 import {
   BookData,
@@ -25,7 +26,7 @@ function RightCellElement({ bookData }: RightCellElementProps) {
     <div
       className="flex flex-col justify-end"
       onClick={(e) => {
-        navigator.clipboard?.writeText(
+        flutterClipboard.writeText(
           makeSharePageUrl(bookData.isbn, bookData.from, "")
         );
         sendMessage({
