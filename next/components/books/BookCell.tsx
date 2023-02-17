@@ -45,14 +45,19 @@ export function BookCell({
           <div className="flex items-center">
             <span
               className={classNames({
-                "mr-2": headText != "",
+                "mr-0.5": headText != "",
               })}
             >
               {headText ?? ""}
             </span>
-            <BookThumbnail src={bookData.thumbnail} />
-            <div className="pl-2">
-              {bookData.title}
+            {(() => {
+              if (bookData.thumbnail == "")
+                return <span className="mr-2"></span>;
+              return <BookThumbnail src={bookData.thumbnail} mode="small" />;
+            })()}
+
+            <div className="pl-0.5 line-clamp-2">
+              <span className="text-sm sm:text-base">{bookData.title}</span>
               <br />
               <small className="text-secondary">ISBN : {bookData.isbn}</small>
             </div>
