@@ -29,17 +29,17 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
     <div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 overflow-hidden z-20">
       <div className="relative h-5/6 w-full mx-4 lg:mx-0 lg:w-3/4 md:p-4 bg-white rounded-md shadow-xl overflow-y-auto">
         <div className="flex justify-between items-center mb-1">
-          <h3 className="ml-auto">
+          <p className="flex justify-end w-full m-1">
             <input
               type="text"
               value={searchTitle}
-              className="inline-block bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 mr-1"
+              className="w-full inline-block bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
               onChange={(event) => {
                 setSearchTitle(event.target.value);
               }}
             />
             <button
-              className="bg-my-color text-white font-bold py-1 px-2 rounded-lg ml-1 mr-4"
+              className="bg-my-color text-white font-bold py-1 px-3 rounded-lg ml-1"
               onClick={() => {
                 process.nextTick(() => {
                   googlebooksListRef.current?.search(searchTitle);
@@ -48,7 +48,7 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
             >
               <FontAwesomeIcon icon={faSearch} />
             </button>
-          </h3>
+          </p>
           <FontAwesomeIcon
             className="text-3xl p-2 cursor-pointer"
             icon={faXmark}
