@@ -71,7 +71,7 @@ export function BookCell({
     case "top":
       return (
         <li
-          className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600"
+          className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
           onClick={onClick}
         >
           {makeCellUi()}
@@ -80,7 +80,7 @@ export function BookCell({
     case "center":
       return (
         <li
-          className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600"
+          className="w-full px-4 py-2 border-b border-gray-200"
           onClick={onClick}
         >
           {makeCellUi()}

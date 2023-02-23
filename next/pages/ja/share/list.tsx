@@ -63,9 +63,9 @@ function BookCellRightMenu({ bookData, children }: Props) {
         {(() => {
           if (!isShowSelector) return;
           return (
-            <ul className="w-full cursor-pointer text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <ul className="w-full cursor-pointer text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
               <li
-                className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600"
+                className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
                 onClick={() => {
                   setSelectedStore("amazon");
                   setShowSelector(false);
@@ -74,7 +74,7 @@ function BookCellRightMenu({ bookData, children }: Props) {
                 Amazon
               </li>
               <li
-                className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600"
+                className="w-full px-4 py-2 border-b border-gray-200"
                 onClick={() => {
                   setSelectedStore("kinokuniya");
                   setShowSelector(false);
@@ -291,7 +291,7 @@ function MainContent() {
             );
           })()}
         </p>
-        <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+        <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
           {(() => {
             return bookList.map((x, i) => {
               let position: "top" | "center" = i == 0 ? "top" : "center";
