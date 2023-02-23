@@ -8,14 +8,12 @@ export type SharePageFromDb = "openbd" | "googlebooks";
 export function makeSharePageUrl(
   isbn: string,
   from: SharePageFromDb,
-  comment: string,
-  isNoheader: boolean = false
+  comment: string
 ) {
   const params = new URLSearchParams();
   params.append("isbn", isbn);
   params.append("from", from);
   if (comment != "") params.append("comment", encodeURIComponent(comment));
-  if (isNoheader) params.append("noheader", "");
   return makeSharePageUrlFromSearchParams(params);
 }
 export function makeSharePageUrlFromSearchParams(params: URLSearchParams) {

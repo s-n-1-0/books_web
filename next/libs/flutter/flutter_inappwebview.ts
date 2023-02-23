@@ -19,3 +19,7 @@ export function sendMessage(message: FlutterInAppWebViewMessage): boolean {
   }
   return false;
 }
+
+export function existFlutterInAppWebView() {
+  return window.flutter_inappwebview != null;
+}

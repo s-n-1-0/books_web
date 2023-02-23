@@ -16,16 +16,19 @@ import {
   SelectedStoreContextType,
   StoreType,
 } from "@/contexts/selected_store_context";
+import { existFlutterInAppWebView } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import {
   BookData,
   checkSharePageUrl,
   makeShareListPageUrl,
+  makeSharePageUrl,
   makeSharePageUrlFromSearchParams,
 } from "@/utils/links";
 import { makeMarkdownSharePageLinks } from "@/utils/markdown";
 import { faCopy, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { ReactNode, useContext, useEffect, useState } from "react";
@@ -62,9 +65,9 @@ function BookCellRightMenu({ bookData, children }: Props) {
         {(() => {
           if (!isShowSelector) return;
           return (
-            <ul className="w-full cursor-pointer text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <ul className="w-full cursor-pointer text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
               <li
-                className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600"
+                className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
                 onClick={() => {
                   setSelectedStore("amazon");
                   setShowSelector(false);
@@ -73,7 +76,7 @@ function BookCellRightMenu({ bookData, children }: Props) {
                 Amazon
               </li>
               <li
-                className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600"
+                className="w-full px-4 py-2 border-b border-gray-200"
                 onClick={() => {
                   setSelectedStore("kinokuniya");
                   setShowSelector(false);
@@ -105,8 +108,20 @@ function MainContent() {
   const { selectedStore, setSelectedStore }: SelectedStoreContextType =
     useContext(SelectedStoreContext);
   const [bookList, setBookList] = useState<URL[]>([]);
-  const [errorText, setErrorText] = useState("");
+  const [_errorText, setErrorText] = useState("");
+  let displayErrorText = _errorText.split("\n").map((line, i) => {
+    return (
+      <span key={i}>
+        {line}
+        <br />
+      </span>
+    );
+  });
   const [listTitle, setListTitle] = useState("無名のリスト");
+  const [isEditMode, setIsEditMode] = useState(false);
+  let editModeClass = {
+    hidden: !isEditMode,
+  };
   const [clickedShareButtonText, setClickedShareButtonText] = useState("");
   const [isEditListTitle, setIsEditListTitle] = useState(false);
   useEffect(() => {
@@ -125,6 +140,7 @@ function MainContent() {
     if (typeof _title == "string" && _title != "") setListTitle(_title);
   }, [_store, setSelectedStore, _title]);
   useEffect(() => {
+    if (!router.isReady) return;
     try {
       let books: URL[] = [];
       if (Array.isArray(_books)) {
@@ -146,9 +162,12 @@ function MainContent() {
         books = [url];
       }
       if (books.length > 0) setBookList(books);
+      setIsEditMode(books.length == 0);
     } catch {}
-  }, [_books]);
+  }, [_books, router.isReady]);
   let clickAddButton = () => {
+    let copyErrorText =
+      "コピーしているURLが有効ではありません。\n追加する書籍の情報画面にある「この本を共有する」を押して書籍URLをコピーした状態で押してください。";
     flutterClipboard
       .readText()
       .then((text) => {
@@ -156,7 +175,7 @@ function MainContent() {
           try {
             let url = new URL(text);
             if (!checkSharePageUrl(url)) {
-              setErrorText("コピーしているURLが有効ではありません。");
+              setErrorText(copyErrorText);
               return;
             }
             let newBookList = Array.from(
@@ -165,7 +184,7 @@ function MainContent() {
             setBookList(newBookList);
             setErrorText("");
           } catch {
-            setErrorText("コピーしているURLが有効ではありません。");
+            setErrorText(copyErrorText);
           }
         }
       })
@@ -176,7 +195,7 @@ function MainContent() {
       });
   };
   return (
-    <div className=" mx-auto " style={{ maxWidth: "1200px" }}>
+    <div className=" mx-auto mt-1 " style={{ maxWidth: "1200px" }}>
       {(() => {
         if (bookList.length > 0) return;
         return (
@@ -187,10 +206,14 @@ function MainContent() {
           </h3>
         );
       })()}
-      <p className="text-center text-slate-500">
-        注意: リストを更新すると共有URLも更新されます!
-      </p>
-      <hr className="my-2" />
+      <div role="alert" className={"my-2 " + classNames(editModeClass)}>
+        <div className="bg-yellow-500 text-white font-bold rounded-t px-4 py-2 mt-1">
+          注意
+        </div>
+        <div className="border border-t-0 border-yellow-400 rounded-b bg-yellow-100 px-4 py-3 text-yellow-700">
+          <p>リストの内容を変更すると共有URLも更新されます!</p>
+        </div>
+      </div>
       {(() => {
         if (isEditListTitle)
           return (
@@ -204,114 +227,172 @@ function MainContent() {
             />
           );
         return (
-          <h2 className="text-2xl">
+          <h2
+            className={classNames({
+              "text-2xl": true,
+              underline: isEditMode,
+            })}
+            onClick={() => {
+              if (!isEditMode) return;
+              setIsEditListTitle(true);
+            }}
+          >
             {listTitle}
-            <small className="ml-2 text-secondary">
-              (
-              <button
-                className="underline"
-                onClick={() => {
-                  setIsEditListTitle(true);
-                }}
-              >
-                編集
-              </button>
-              )
-            </small>
+            <span
+              className={classNames({
+                "text-sm": true,
+                ...editModeClass,
+              })}
+            >
+              (編集)
+            </span>
           </h2>
         );
       })()}
-      {(() => {
-        if (bookList.length == 0) return;
-        return (
-          <div>
-            <p className="text-end">
-              <button
-                className="mr-1 text-blue-500 underline mb-1"
-                onClick={() => {
-                  window.location.href = makeShareListPageUrl(
-                    bookList,
-                    selectedStore,
-                    listTitle
-                  );
-                }}
-              >
-                一瞬保存(リロード)
-              </button>
-              /
-              <button
-                className="mx-1 text-blue-500 underline mb-1"
-                onClick={() => {
-                  window.open("./list");
-                }}
-              >
-                新規リスト(別タブ)
-              </button>
-            </p>
-            <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-              {(() => {
-                return bookList.map((x, i) => {
-                  let position: "top" | "center" = i == 0 ? "top" : "center";
-                  return (
-                    <BookCell
-                      key={x.href}
-                      url={x}
-                      position={position}
-                      headText={String(i + 1)}
-                      makeRightElement={(bookData) => {
-                        return (
-                          <BookCellRightMenu bookData={bookData}>
-                            <div>
-                              <button
-                                className="text-xl ml-5 text-yellow-600"
-                                onClick={() => {
-                                  let newBookList = [...bookList];
-                                  newBookList.splice(i, 1);
-                                  setBookList(newBookList);
-                                }}
-                              >
-                                <FontAwesomeIcon icon={faXmark} />
-                              </button>
-                            </div>
-                          </BookCellRightMenu>
+      <div
+        className={classNames({
+          hidden: bookList.length == 0,
+        })}
+      >
+        <p className="text-end">
+          {(() => {
+            if (isEditMode)
+              return (
+                <span>
+                  <span
+                    className={classNames({
+                      hidden: existFlutterInAppWebView(),
+                    })}
+                  >
+                    <button
+                      className="mr-1 text-blue-500 underline mb-1"
+                      onClick={() => {
+                        window.location.href = makeShareListPageUrl(
+                          bookList,
+                          selectedStore,
+                          listTitle
                         );
                       }}
-                    />
-                  );
-                });
-              })()}
-              <li
-                className="w-full px-4 py-2 rounded-b-lg text-center my-2 cursor-pointer"
-                onClick={clickAddButton}
+                    >
+                      一時保存(リロード)
+                    </button>
+                    /
+                  </span>
+                  <button
+                    className="mx-1 text-blue-500 underline mb-1"
+                    onClick={() => {
+                      window.open("./list");
+                    }}
+                  >
+                    新規リスト(別タブ)
+                  </button>
+                </span>
+              );
+            return (
+              <button
+                className="mr-1 text-sm text-blue-500 underline mb-1"
+                onClick={() => {
+                  setIsEditMode(true);
+                }}
               >
-                <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                リストに追加
-              </li>
-            </ul>
-          </div>
-        );
-      })()}
+                リストの追加・編集する
+              </button>
+            );
+          })()}
+        </p>
+        <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
+          {(() => {
+            return bookList.map((x, i) => {
+              let position: "top" | "center" = i == 0 ? "top" : "center";
+              return (
+                <BookCell
+                  key={x.href}
+                  url={x}
+                  position={position}
+                  headText={String(i + 1)}
+                  makeRightElement={(bookData) => {
+                    return (
+                      <BookCellRightMenu bookData={bookData}>
+                        <div className={classNames(editModeClass)}>
+                          <button
+                            className="text-xl ml-5 text-yellow-600"
+                            onClick={() => {
+                              let newBookList = [...bookList];
+                              newBookList.splice(i, 1);
+                              setBookList(newBookList);
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faXmark} />
+                          </button>
+                        </div>
+                      </BookCellRightMenu>
+                    );
+                  }}
+                  onClickTitle={
+                    existFlutterInAppWebView()
+                      ? undefined
+                      : (book) => {
+                          let comment = x.searchParams.get("comment") ?? "";
+                          window.open(
+                            makeSharePageUrl(book.isbn, book.from, comment)
+                          );
+                        }
+                  }
+                />
+              );
+            });
+          })()}
+          <li
+            className={
+              "w-full px-4 py-2 rounded-b-lg text-center my-2 cursor-pointer " +
+              classNames(editModeClass)
+            }
+            onClick={clickAddButton}
+          >
+            <FontAwesomeIcon icon={faPlus} className="mr-1" />
+            リストに追加
+          </li>
+        </ul>
+      </div>
       <div className="text-center m-3">
         <div className="w-full mt-1">
           {(() => {
             if (bookList.length > 0) return;
+            //bookListが0の場合のボタン
             return (
-              <button
-                onClick={clickAddButton}
-                className="mx-auto bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 border-b-4 border-orange-700 hover:border-orange-500 rounded"
-              >
-                <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                リストに追加
-              </button>
+              <div>
+                <button
+                  onClick={clickAddButton}
+                  className="mx-auto bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 border-b-4 border-orange-700 hover:border-orange-500 rounded"
+                >
+                  <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                  リストに追加
+                </button>
+                <p className="text-secondary">
+                  <small>
+                    書籍ページの「この本を共有する」を押した後↑を押すと、リストに書籍が追加されます。
+                  </small>
+                </p>
+              </div>
             );
           })()}
-
-          <p className="text-secondary">
-            <small>
-              書籍ページの「この本を共有する」を押した後↑を押すと、リストに書籍が追加されます。
-            </small>
+          <p
+            className={classNames({
+              "text-end": true,
+              hidden: isEditMode,
+            })}
+          >
+            <button
+              className="mr-1 text-sm text-blue-500 underline mb-1"
+              onClick={() => {
+                setIsEditMode(true);
+              }}
+            >
+              リストの追加・編集する
+            </button>
           </p>
-          <small className="text-red-500">{errorText}</small>
+
+          <small className="text-red-500">{displayErrorText}</small>
         </div>
       </div>
       <hr className="my-3" />{" "}
@@ -322,6 +403,7 @@ function MainContent() {
             <button
               className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 m-1 border-b-4 border-blue-700 hover:border-blue-500 rounded"
               onClick={() => {
+                setIsEditMode(false);
                 setIsEditListTitle(false);
                 setErrorText("");
                 setClickedShareButtonText("共有URLをコピーしました。");
@@ -345,6 +427,7 @@ function MainContent() {
               <button
                 onClick={() => {
                   setErrorText("");
+                  setIsEditMode(false);
                   setClickedShareButtonText(
                     "マークダウン形式でコピーしました。"
                   );
