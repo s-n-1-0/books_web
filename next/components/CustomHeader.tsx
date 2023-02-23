@@ -36,11 +36,16 @@ function CustomHeader({ isMenu = true }: Props) {
         {(() => {
           if (isMenu)
             return (
-              <div>
+              <div
+                style={{
+                  height: isOpen ? "100px" : "30px",
+                  transition: "height 1s ease",
+                }}
+              >
                 <div className="block lg:hidden">
                   <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="flex ml-auto items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white"
+                    className="flex ml-auto items-center px-3 py-2 border rounded text-white border-white hover:text-gray-400 hover:border-gray-400"
                   >
                     <svg
                       className="fill-current h-3 w-3"
@@ -60,7 +65,7 @@ function CustomHeader({ isMenu = true }: Props) {
                       </a>
                     </Link>
                   </div>
-                  <div className="my-2">
+                  <div className="my-2 lg:my-0">
                     <span className="w-fit lg:flex-grow">
                       <a
                         href="/ja/share/list"
