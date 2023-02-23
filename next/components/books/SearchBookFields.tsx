@@ -1,9 +1,8 @@
 import { makeSharePageUrl } from "@/utils/links";
 import {
-  faArrowUpRightFromSquare,
   faBarcode,
-  faBook,
   faQuestion,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { convertUrl2Isbn13 } from "asin2isbn";
@@ -46,28 +45,124 @@ function SearchBookFields({ errorText }: Props) {
       <div
         className="py-10 text-start px-4 bg-gray-100 relative mx-auto"
         style={{
-          height: "calc( 100vw / 1250 * 400)",
-          minHeight: "200px",
-          maxHeight: "400px",
-          fontFamily:
-            "'游明朝 Medium','Yu Mincho',YuMincho,'Hiragino Mincho Pro',serif",
+          height: "80vh",
+          maxHeight: "800px",
         }}
       >
-        <div className="relative z-10 bg-white bg-opacity-90 w-fit rounded ml-2 p-2">
-          <h1 className="text-3xl text-my-color md:text-4xl">
-            <span className="inline-flex justify-center">
-              <FontAwesomeIcon
-                icon={faBook}
-                className="mr-1 text-xl md:text-2xl"
-              />
-            </span>
-            読書日より
-          </h1>
-          <hr className="mt-1" />
-          <p className="text-slate-500 text-sm md:text-base">
-            登録不要で簡単に書籍を共有することができます。
+        <div className="relative flex flex-col justify-between z-10 h-full">
+          <div
+            className="bg-white rounded w-fit mx-2 p-2"
+            style={{
+              fontFamily:
+                "'游明朝 Medium','Yu Mincho',YuMincho,'Hiragino Mincho Pro',serif",
+            }}
+          >
+            <h1 className="text-3xl text-my-color md:text-4xl">読書日より</h1>
+            <hr className="mt-1" />
+            <p className="text-slate-500 text-sm md:text-base">
+              登録不要で簡単に書籍を共有することができます。
+            </p>
+          </div>
+          <div className="bg-white rounded py-4 px-2">
+            <p className="text-red-600 text-center">{errorText}</p>
+
+            <div className="w-full">
+              <div className="relative mb-1">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <FontAwesomeIcon icon={faSearch} />
+                </div>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  inputMode="text"
+                  placeholder="ISBN、書籍タイトル または URL..."
+                  value={editingTitle}
+                  onChange={(e) => {
+                    setEditingTitle(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key == "Enter") {
+                      e.preventDefault();
+                      e.currentTarget.blur();
+                      let searchText = editingTitle;
+
+                      //amazon URLチェック
+                      let res = convertUrl2Isbn13(searchText);
+                      if (res.isbn != "") {
+                        location.href = makeSharePageUrl(
+                          res.isbn,
+                          "openbd",
+                          ""
+                        );
+                        return;
+                      } else if (res.error == "KINDLE") {
+                        setAmazonUrlErrorText(notsupportedKindleText);
+                        return;
+                      } else if (searchText.startsWith("http")) {
+                        setAmazonUrlErrorText("無効なURLです。");
+                        return;
+                      }
+
+                      //ISBNチェック
+                      if (searchText.startsWith("978")) {
+                        location.href = makeSharePageUrl(
+                          searchText,
+                          "openbd",
+                          ""
+                        );
+                        return;
+                      }
+                      modalRef.current?.openModal(searchText);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+
+            <p
+              className={
+                "text-secondary text-center text-xs " +
+                classNames({
+                  hidden: amazonUrlErrorText != "",
+                })
+              }
+            >
+              <FontAwesomeIcon icon={faBarcode} className="px-1" />
+              バーコードからISBNを読み取る機能は、アプリをダウンロードすると利用可能です!
+            </p>
+            <div className="mb-2">
+              <p className="text-red-600 text-center">{amazonUrlErrorText}</p>
+
+              <div
+                className={
+                  "p-10 mx-auto " +
+                  classNames({
+                    hidden: !(amazonUrlErrorText == notsupportedKindleText),
+                  })
+                }
+              >
+                <img
+                  src="https://i.gyazo.com/c13353fcbacce087b7dd3a42985d19c0.png"
+                  style={{
+                    maxHeight: "89px",
+                    width: "100%",
+                    objectFit: "contain",
+                  }}
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+          <p className="pt-2 px-2 text-white text-end opacity-90">
+            <small>
+              Painted by{" "}
+              <a href="https://www.midjourney.com/" className="underline">
+                Midjourney
+              </a>
+              .
+            </small>
           </p>
         </div>
+
         <div className="absolute py-4 px-2 h-full w-full top-0 right-0">
           <div className="relative h-full w-full">
             <img
@@ -75,99 +170,12 @@ function SearchBookFields({ errorText }: Props) {
               src="https://hello.sn-10.net/apps/books/mid_thumbnail.webp"
               alt="Painted by Midjourney"
             />
-            <p className="absolute bottom-0 right-0 p-2 text-white opacity-90">
-              <small>
-                Painted by{" "}
-                <a href="https://www.midjourney.com/" className="underline">
-                  Midjourney
-                </a>
-                .
-              </small>
-            </p>
           </div>
         </div>
       </div>
-      <hr className="mb-4" />
-      <h3 className="pt-5 text-xl pb-2 text-slate-700">
-        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-        <span className="ml-1">次の方法で書籍を共有することができます。</span>
-      </h3>
-      <p className="text-red-600">{errorText}</p>
+      <SearchGoogleBooksModal ref={modalRef} />
 
-      <div className="mb-4">
-        <div className="flex items-end">
-          <div className="w-full">
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              inputMode="text"
-              placeholder="ISBN、書籍タイトル または Amazon URL を入力"
-              value={editingTitle}
-              onChange={(e) => {
-                setEditingTitle(e.target.value);
-              }}
-            />
-          </div>
-          <SearchBookButton
-            buttonText="調べる"
-            editingText={editingTitle}
-            onClick={() => {
-              let searchText = editingTitle;
-
-              //amazon URLチェック
-              let res = convertUrl2Isbn13(searchText);
-              if (res.isbn != "") {
-                location.href = makeSharePageUrl(res.isbn, "openbd", "");
-                return;
-              } else if (res.error == "KINDLE") {
-                setAmazonUrlErrorText(notsupportedKindleText);
-                return;
-              } else if (searchText.startsWith("http")) {
-                setAmazonUrlErrorText("無効なURLです。");
-                return;
-              }
-
-              //ISBNチェック
-              if (searchText.startsWith("978")) {
-                location.href = makeSharePageUrl(searchText, "openbd", "");
-                return;
-              }
-              modalRef.current?.openModal(searchText);
-            }}
-          />
-        </div>
-        <p className="text-left text-secondary ml-1">
-          <small>
-            タイトルで書籍が見つからない場合はISBNで検索をお試しください。
-            <br />
-            <FontAwesomeIcon icon={faBarcode} />
-            バーコードからISBNを読み取る機能は、アプリをダウンロードすると利用可能です!
-          </small>
-        </p>
-        <SearchGoogleBooksModal ref={modalRef} />
-      </div>
-      <div className="mb-4">
-        <p className="text-red-600">{amazonUrlErrorText}</p>
-
-        <div
-          className={
-            "p-10 mx-auto " +
-            classNames({
-              hidden: !(amazonUrlErrorText == notsupportedKindleText),
-            })
-          }
-        >
-          <img
-            src="https://i.gyazo.com/c13353fcbacce087b7dd3a42985d19c0.png"
-            style={{
-              maxHeight: "89px",
-              width: "100%",
-              objectFit: "contain",
-            }}
-            alt=""
-          />
-        </div>
-      </div>
-      <p className="text-left text-secondary">
+      <p className="text-center text-secondary">
         <Link href="/ja/help/find">
           <a className="underline">
             <FontAwesomeIcon icon={faQuestion} className="mr-2" />
