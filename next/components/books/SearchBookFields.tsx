@@ -1,3 +1,7 @@
+import {
+  existFlutterInAppWebView,
+  requestBarcodeReader,
+} from "@/libs/flutter/flutter_inappwebview";
 import { searchBook } from "@/libs/search_books";
 import { makeSharePageUrl } from "@/utils/links";
 import {
@@ -34,6 +38,7 @@ function SearchBookButton({
     );
   else return <span></span>;
 }
+
 type Props = { errorText: string };
 function SearchBookFields({ errorText }: Props) {
   const [editingTitle, setEditingTitle] = useState<string>("");
@@ -41,6 +46,30 @@ function SearchBookFields({ errorText }: Props) {
   const modalRef = useRef<SearchGoogleBooksModalRefType>(null);
   let notsupportedKindleText =
     "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
+  async function search(searchText: string) {
+    let isbn: string | null = null;
+    //amazon URLチェック(ISBNを取得できるかどうか)
+    let res = convertUrl2Isbn13(searchText);
+    if (res.isbn != "") isbn = res.isbn;
+    else if (res.error == "KINDLE") {
+      setAmazonUrlErrorText(notsupportedKindleText);
+      return;
+    } else if (searchText.startsWith("http")) {
+      setAmazonUrlErrorText("無効なURLです。");
+      return;
+    }
+
+    //ISBNチェック
+    if (searchText.startsWith("978")) isbn = searchText;
+
+    //isbn or タイトル検索
+    if (isbn) {
+      let bookData = await searchBook(isbn);
+      if (bookData) {
+        location.href = makeSharePageUrl(bookData.isbn, bookData.from, "");
+      } else setAmazonUrlErrorText("書籍を見つけることができませんでした...");
+    } else modalRef.current?.openModal(searchText);
+  }
   return (
     <div className="text-center mt-2 mx-auto" style={{ maxWidth: "1250px" }}>
       <div
@@ -67,8 +96,8 @@ function SearchBookFields({ errorText }: Props) {
           <div className="bg-slate-100 rounded py-4 px-2">
             <p className="text-red-600 text-center">{errorText}</p>
 
-            <div className="w-full">
-              <div className="relative mb-1">
+            <div className="flex justify-end items-center w-full">
+              <div className="relative mb-1 w-full">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <FontAwesomeIcon icon={faSearch} />
                 </div>
@@ -84,47 +113,33 @@ function SearchBookFields({ errorText }: Props) {
                     if (e.key == "Enter") {
                       e.preventDefault();
                       e.currentTarget.blur();
-                      let searchText = editingTitle;
-                      let isbn: string | null = null;
-                      //amazon URLチェック(ISBNを取得できるかどうか)
-                      let res = convertUrl2Isbn13(searchText);
-                      if (res.isbn != "") isbn = res.isbn;
-                      else if (res.error == "KINDLE") {
-                        setAmazonUrlErrorText(notsupportedKindleText);
-                        return;
-                      } else if (searchText.startsWith("http")) {
-                        setAmazonUrlErrorText("無効なURLです。");
-                        return;
-                      }
-
-                      //ISBNチェック
-                      if (searchText.startsWith("978")) isbn = searchText;
-
-                      //isbn or タイトル検索
-                      if (isbn) {
-                        let bookData = await searchBook(isbn);
-                        if (bookData) {
-                          location.href = makeSharePageUrl(
-                            bookData.isbn,
-                            bookData.from,
-                            ""
-                          );
-                        } else
-                          setAmazonUrlErrorText(
-                            "書籍を見つけることができませんでした..."
-                          );
-                      } else modalRef.current?.openModal(searchText);
+                      search(editingTitle);
                     }
                   }}
                 />
               </div>
+              <button
+                className={
+                  "bg-my-color text-white font-bold rounded-lg ml-1 h-8 w-8 " +
+                  classNames({
+                    hidden: !existFlutterInAppWebView(),
+                  })
+                }
+                onClick={async () => {
+                  let isbn = await requestBarcodeReader();
+                  if (isbn != "") search(isbn);
+                }}
+              >
+                <FontAwesomeIcon icon={faBarcode} />
+              </button>
             </div>
 
             <p
               className={
                 "text-secondary text-center text-xs " +
                 classNames({
-                  hidden: amazonUrlErrorText != "",
+                  hidden:
+                    amazonUrlErrorText != "" || existFlutterInAppWebView(),
                 })
               }
             >
