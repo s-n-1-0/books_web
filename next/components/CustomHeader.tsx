@@ -1,21 +1,17 @@
+import { existFlutterInAppWebView } from "@/libs/flutter/flutter_inappwebview";
 import classNames from "classnames";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 type Props = {
   isMenu?: Boolean;
 };
 function CustomHeader({ isMenu = true }: Props) {
-  const router = useRouter();
-  const { noheader: _noheader } = router.query;
-  const isHeader = !(typeof _noheader == "string");
-  const [isLoadedQuery, setIsLoadedQuery] = useState(false);
+  const [isHeader, setIsHeader] = useState(false);
   let [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
-    if (!router.isReady) return;
-    setIsLoadedQuery(true);
-  }, [router.isReady, router.query]);
-  if (!isLoadedQuery || !isHeader) return <></>;
+    setIsHeader(!existFlutterInAppWebView());
+  }, []);
+  if (!isHeader) return <></>;
   let menuClassNames = classNames(
     "w-full",
     "flex-grow",

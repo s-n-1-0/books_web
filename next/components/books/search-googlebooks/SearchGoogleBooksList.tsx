@@ -48,10 +48,7 @@ function RightCellElement({ bookData }: RightCellElementProps) {
     </div>
   );
 }
-type Props = {
-  isNoheader: boolean;
-};
-function _SearchGoogleBooksList({ isNoheader }: Props, ref: Ref<unknown>) {
+function _SearchGoogleBooksList(ref: Ref<unknown>) {
   const [googleBooksResults, setGoogleBooksResults] = useState<
     GoogleBooksApiBookData[]
   >([]);
@@ -102,8 +99,7 @@ function _SearchGoogleBooksList({ isNoheader }: Props, ref: Ref<unknown>) {
                   let url = makeSharePageUrl(
                     item.volumeInfo.industryIdentifiers[0].identifier,
                     "googlebooks",
-                    "",
-                    isNoheader
+                    ""
                   );
                   window.open(url, "_blank");
                 }}
