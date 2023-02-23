@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { convertUrl2Isbn13 } from "asin2isbn";
+import classNames from "classnames";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import SearchGoogleBooksModal, {
@@ -35,9 +36,7 @@ function SearchBookButton({
 }
 type Props = { errorText: string };
 function SearchBookFields({ errorText }: Props) {
-  const [editingIsbn, setEdittingIsbn] = useState<string>("");
   const [editingTitle, setEditingTitle] = useState<string>("");
-  const [editingAmazonUrl, setEdittingAmazonUrl] = useState<string>("");
   const [amazonUrlErrorText, setAmazonUrlErrorText] = useState<string>("");
   const modalRef = useRef<SearchGoogleBooksModalRefType>(null);
   let notsupportedKindleText =
@@ -94,50 +93,14 @@ function SearchBookFields({ errorText }: Props) {
         <span className="ml-1">次の方法で書籍を共有することができます。</span>
       </h3>
       <p className="text-red-600">{errorText}</p>
+
       <div className="mb-4">
         <div className="flex items-end">
           <div className="w-full">
-            <label className="block text-gray-700 text-sm font-bold mb-2 text-left">
-              ISBNで共有
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              inputMode="email"
-              placeholder="9784798056920"
-              value={editingIsbn}
-              onChange={(e) => {
-                setEdittingIsbn(e.target.value);
-              }}
-            />
-          </div>
-          <SearchBookButton
-            buttonText="共有"
-            editingText={editingIsbn}
-            onClick={() => {
-              location.href = makeSharePageUrl(editingIsbn, "openbd", "");
-            }}
-          />
-        </div>
-        <p className="text-left text-secondary">
-          <small>
-            🎉
-            <span className="ml-1">
-              <FontAwesomeIcon icon={faBarcode} />
-              バーコードからISBNを読み取る機能は、アプリをダウンロードすると利用可能です!
-            </span>
-          </small>
-        </p>
-      </div>
-      <div className="mb-4">
-        <div className="flex items-end">
-          <div className="w-full">
-            <label className="block text-gray-700 text-sm font-bold mb-2 text-left">
-              タイトルで調べる
-            </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               inputMode="text"
-              placeholder="この素晴らしい..."
+              placeholder="ISBN、書籍タイトル または Amazon URL を入力"
               value={editingTitle}
               onChange={(e) => {
                 setEditingTitle(e.target.value);
@@ -148,67 +111,61 @@ function SearchBookFields({ errorText }: Props) {
             buttonText="調べる"
             editingText={editingTitle}
             onClick={() => {
-              modalRef.current?.openModal(editingTitle);
+              let searchText = editingTitle;
+
+              //amazon URLチェック
+              let res = convertUrl2Isbn13(searchText);
+              if (res.isbn != "") {
+                location.href = makeSharePageUrl(res.isbn, "openbd", "");
+                return;
+              } else if (res.error == "KINDLE") {
+                setAmazonUrlErrorText(notsupportedKindleText);
+                return;
+              } else if (searchText.startsWith("http")) {
+                setAmazonUrlErrorText("無効なURLです。");
+                return;
+              }
+
+              //ISBNチェック
+              if (searchText.startsWith("978")) {
+                location.href = makeSharePageUrl(searchText, "openbd", "");
+                return;
+              }
+              modalRef.current?.openModal(searchText);
             }}
           />
         </div>
-        <p className="text-left text-secondary">
+        <p className="text-left text-secondary ml-1">
           <small>
-            タイトル検索で書籍が見つからない場合はISBN検索をお試しください。
+            タイトルで書籍が見つからない場合はISBNで検索をお試しください。
+            <br />
+            <FontAwesomeIcon icon={faBarcode} />
+            バーコードからISBNを読み取る機能は、アプリをダウンロードすると利用可能です!
           </small>
         </p>
         <SearchGoogleBooksModal ref={modalRef} />
       </div>
       <div className="mb-4">
-        <div className="flex items-end">
-          <div className="w-full">
-            <label className="block text-gray-700 text-sm mb-2 text-left">
-              <span className="font-bold">Amazon URLで共有</span>
-              <small className="ml-2 text-secondary">
-                商品ページのURLを張り付けてください
-              </small>
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              inputMode="url"
-              placeholder="https://www.amazon.co.jp/dp/4088831209/..."
-              value={editingAmazonUrl}
-              onChange={(e) => {
-                setEdittingAmazonUrl(e.target.value);
-              }}
-            />
-          </div>
-          <SearchBookButton
-            buttonText="共有"
-            editingText={editingAmazonUrl}
-            onClick={() => {
-              let res = convertUrl2Isbn13(editingAmazonUrl);
-              if (res.isbn != "")
-                location.href = makeSharePageUrl(res.isbn, "openbd", "");
-              else if (res.error == "KINDLE") {
-                setAmazonUrlErrorText(notsupportedKindleText);
-              } else setAmazonUrlErrorText("無効なURLです。");
+        <p className="text-red-600">{amazonUrlErrorText}</p>
+
+        <div
+          className={
+            "p-10 mx-auto " +
+            classNames({
+              hidden: !(amazonUrlErrorText == notsupportedKindleText),
+            })
+          }
+        >
+          <img
+            src="https://i.gyazo.com/c13353fcbacce087b7dd3a42985d19c0.png"
+            style={{
+              maxHeight: "89px",
+              width: "100%",
+              objectFit: "contain",
             }}
+            alt=""
           />
         </div>
-        <p className="text-red-600">{amazonUrlErrorText}</p>
-        {(() => {
-          if (amazonUrlErrorText == notsupportedKindleText)
-            return (
-              <div className="p-10 mx-auto">
-                <img
-                  src="https://i.gyazo.com/c13353fcbacce087b7dd3a42985d19c0.png"
-                  style={{
-                    maxHeight: "89px",
-                    width: "100%",
-                    objectFit: "contain",
-                  }}
-                  alt=""
-                />
-              </div>
-            );
-          return;
-        })()}
       </div>
       <p className="text-left text-secondary">
         <Link href="/ja/help/find">
