@@ -1,3 +1,4 @@
+import { searchBook } from "@/libs/search_books";
 import { makeSharePageUrl } from "@/utils/links";
 import {
   faBarcode,
@@ -79,22 +80,16 @@ function SearchBookFields({ errorText }: Props) {
                   onChange={(e) => {
                     setEditingTitle(e.target.value);
                   }}
-                  onKeyDown={(e) => {
+                  onKeyDown={async (e) => {
                     if (e.key == "Enter") {
                       e.preventDefault();
                       e.currentTarget.blur();
                       let searchText = editingTitle;
-
-                      //amazon URLチェック
+                      let isbn: string | null = null;
+                      //amazon URLチェック(ISBNを取得できるかどうか)
                       let res = convertUrl2Isbn13(searchText);
-                      if (res.isbn != "") {
-                        location.href = makeSharePageUrl(
-                          res.isbn,
-                          "openbd",
-                          ""
-                        );
-                        return;
-                      } else if (res.error == "KINDLE") {
+                      if (res.isbn != "") isbn = res.isbn;
+                      else if (res.error == "KINDLE") {
                         setAmazonUrlErrorText(notsupportedKindleText);
                         return;
                       } else if (searchText.startsWith("http")) {
@@ -103,15 +98,22 @@ function SearchBookFields({ errorText }: Props) {
                       }
 
                       //ISBNチェック
-                      if (searchText.startsWith("978")) {
-                        location.href = makeSharePageUrl(
-                          searchText,
-                          "openbd",
-                          ""
-                        );
-                        return;
-                      }
-                      modalRef.current?.openModal(searchText);
+                      if (searchText.startsWith("978")) isbn = searchText;
+
+                      //isbn or タイトル検索
+                      if (isbn) {
+                        let bookData = await searchBook(isbn);
+                        if (bookData) {
+                          location.href = makeSharePageUrl(
+                            bookData.isbn,
+                            bookData.from,
+                            ""
+                          );
+                        } else
+                          setAmazonUrlErrorText(
+                            "書籍を見つけることができませんでした..."
+                          );
+                      } else modalRef.current?.openModal(searchText);
                     }
                   }}
                 />
