@@ -12,6 +12,7 @@ type Props = {
   url?: URL;
   bookData?: BookData;
   headText?: string;
+  onClickTitle?: (bookData: BookData) => void;
   position: "top" | "bottom" | "center";
   makeRightElement?: (bookData: BookData) => JSX.Element;
 };
@@ -21,6 +22,7 @@ export function BookCell({
   position,
   headText,
   onClick,
+  onClickTitle,
   makeRightElement,
 }: Props) {
   const context: BookCacheContextType = useContext(BookCacheContext);
@@ -57,7 +59,20 @@ export function BookCell({
             })()}
 
             <div className="pl-0.5 line-clamp-2">
-              <span className="text-sm sm:text-base">{bookData.title}</span>
+              <span
+                className={
+                  "text-sm sm:text-base " +
+                  classNames({
+                    underline: onClickTitle,
+                    "cursor-pointer": onClickTitle,
+                  })
+                }
+                onClick={() => {
+                  if (onClickTitle) onClickTitle(bookData);
+                }}
+              >
+                {bookData.title}
+              </span>
               <br />
               <small className="text-secondary">ISBN : {bookData.isbn}</small>
             </div>

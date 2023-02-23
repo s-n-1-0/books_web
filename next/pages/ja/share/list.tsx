@@ -22,6 +22,7 @@ import {
   BookData,
   checkSharePageUrl,
   makeShareListPageUrl,
+  makeSharePageUrl,
   makeSharePageUrlFromSearchParams,
 } from "@/utils/links";
 import { makeMarkdownSharePageLinks } from "@/utils/markdown";
@@ -327,6 +328,16 @@ function MainContent() {
                       </BookCellRightMenu>
                     );
                   }}
+                  onClickTitle={
+                    existFlutterInAppWebView()
+                      ? undefined
+                      : (book) => {
+                          let comment = x.searchParams.get("comment") ?? "";
+                          window.open(
+                            makeSharePageUrl(book.isbn, book.from, comment)
+                          );
+                        }
+                  }
                 />
               );
             });
