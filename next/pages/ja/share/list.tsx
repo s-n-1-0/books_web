@@ -16,6 +16,7 @@ import {
   SelectedStoreContextType,
   StoreType,
 } from "@/contexts/selected_store_context";
+import { existFlutterInAppWebView } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import {
   BookData,
@@ -257,19 +258,25 @@ function MainContent() {
             if (isEditMode)
               return (
                 <span>
-                  <button
-                    className="mr-1 text-blue-500 underline mb-1"
-                    onClick={() => {
-                      window.location.href = makeShareListPageUrl(
-                        bookList,
-                        selectedStore,
-                        listTitle
-                      );
-                    }}
+                  <span
+                    className={classNames({
+                      hidden: existFlutterInAppWebView(),
+                    })}
                   >
-                    一瞬保存(リロード)
-                  </button>
-                  /
+                    <button
+                      className="mr-1 text-blue-500 underline mb-1"
+                      onClick={() => {
+                        window.location.href = makeShareListPageUrl(
+                          bookList,
+                          selectedStore,
+                          listTitle
+                        );
+                      }}
+                    >
+                      一時保存(リロード)
+                    </button>
+                    /
+                  </span>
                   <button
                     className="mx-1 text-blue-500 underline mb-1"
                     onClick={() => {
