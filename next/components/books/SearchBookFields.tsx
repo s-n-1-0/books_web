@@ -76,6 +76,7 @@ function SearchBookFields({ errorText }: Props) {
         className="py-10 text-start px-3 bg-gray-100 relative mx-auto"
         style={{
           height: "80vh",
+          minHeight: "500px",
           maxHeight: "800px",
         }}
       >
@@ -93,7 +94,12 @@ function SearchBookFields({ errorText }: Props) {
               登録不要で簡単に書籍を共有することができます。
             </p>
           </div>
-          <div className="bg-slate-100 rounded py-4 px-2">
+          <div
+            className="bg-slate-100 rounded py-4 px-2 lg:px-4 mx-auto w-full"
+            style={{
+              maxWidth: "800px",
+            }}
+          >
             <p className="text-red-600 text-center">{errorText}</p>
 
             <div className="flex justify-end items-center w-full">
