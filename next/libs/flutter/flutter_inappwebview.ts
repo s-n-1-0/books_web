@@ -19,7 +19,13 @@ export function sendMessage(message: FlutterInAppWebViewMessage): boolean {
   }
   return false;
 }
-
+export async function requestBarcodeReader() {
+  let view = window.flutter_inappwebview;
+  if (view) {
+    let text = await view.callHandler("requestBarcodeReader");
+    return typeof text == "string" ? text : "";
+  } else return "";
+}
 export function existFlutterInAppWebView() {
   return window.flutter_inappwebview != null;
 }
