@@ -61,11 +61,14 @@ function CustomHeader({ isMenu = true }: Props) {
                     </Link>
                   </div>
                   <div className="my-2">
-                    <Link href="/ja/share/list" className="w-fit lg:flex-grow">
-                      <a className=" inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-my-color hover:bg-white">
+                    <span className="w-fit lg:flex-grow">
+                      <a
+                        href="/ja/share/list"
+                        className=" inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-my-color hover:bg-white"
+                      >
                         リストを作成
                       </a>
-                    </Link>
+                    </span>
                   </div>
                 </div>
               </div>
