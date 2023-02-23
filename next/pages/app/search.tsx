@@ -28,7 +28,7 @@ const Search: NextPage = () => {
       ></CustomHead>
       <main>
         <div className="w-full px-2 py-3">
-          <SearchGoogleBooksList ref={listRef} isNoheader={true} />
+          <SearchGoogleBooksList ref={listRef} />
         </div>
       </main>
 

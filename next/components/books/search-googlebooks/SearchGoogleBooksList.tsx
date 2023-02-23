@@ -48,7 +48,7 @@ function RightCellElement({ bookData }: RightCellElementProps) {
     </div>
   );
 }
-function _SearchGoogleBooksList(ref: Ref<unknown>) {
+function _SearchGoogleBooksList(_: any, ref: Ref<unknown>) {
   const [googleBooksResults, setGoogleBooksResults] = useState<
     GoogleBooksApiBookData[]
   >([]);
