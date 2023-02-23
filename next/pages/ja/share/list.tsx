@@ -162,9 +162,9 @@ function MainContent() {
         books = [url];
       }
       if (books.length > 0) setBookList(books);
-      setIsEditMode(bookList.length == 0);
+      setIsEditMode(books.length == 0);
     } catch {}
-  }, [_books, bookList.length, router.isReady]);
+  }, [_books, router.isReady]);
   let clickAddButton = () => {
     let copyErrorText =
       "コピーしているURLが有効ではありません。\n追加する書籍の情報画面にある「この本を共有する」を押して書籍URLをコピーした状態で押してください。";
