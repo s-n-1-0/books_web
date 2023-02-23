@@ -42,9 +42,9 @@ function SearchBookFields({ errorText }: Props) {
   let notsupportedKindleText =
     "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
   return (
-    <div className="text-center mt-4 mx-auto" style={{ maxWidth: "1250px" }}>
+    <div className="text-center mt-2 mx-auto" style={{ maxWidth: "1250px" }}>
       <div
-        className="py-10 text-start px-4 bg-gray-100 relative mx-auto"
+        className="py-10 text-start px-3 bg-gray-100 relative mx-auto"
         style={{
           height: "80vh",
           maxHeight: "800px",
@@ -64,7 +64,7 @@ function SearchBookFields({ errorText }: Props) {
               登録不要で簡単に書籍を共有することができます。
             </p>
           </div>
-          <div className="bg-white rounded py-4 px-2">
+          <div className="bg-slate-100 rounded py-4 px-2">
             <p className="text-red-600 text-center">{errorText}</p>
 
             <div className="w-full">
@@ -165,7 +165,7 @@ function SearchBookFields({ errorText }: Props) {
           </p>
         </div>
 
-        <div className="absolute py-4 px-2 h-full w-full top-0 right-0">
+        <div className="absolute py-3 px-1 h-full w-full top-0 right-0">
           <div className="relative h-full w-full">
             <img
               className="object-cover ml-auto z-0 rounded-md h-full w-full"
