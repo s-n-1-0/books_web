@@ -2,10 +2,11 @@ import BookComment, {
   BookCommentRefType,
 } from "@/components/books/BookComment";
 import BookThumbnail from "@/components/books/BookThumbnail";
-import SearchBookFields from "@/components/books/SearchBookFields";
+
 import CustomHead from "@/components/CustomHead";
 import Header from "@/components/CustomHeader";
 import ProcessingView from "@/components/ProcessingView";
+import SharePageStartPanel from "@/components/SharePageStartPanel";
 import StoreLinks from "@/components/stores/StoreLinks";
 import TweetButton from "@/components/TweetButton";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
@@ -65,7 +66,7 @@ const Home: NextPage = () => {
 
   function makeMainContent() {
     if (isHello || errorText != "") {
-      return <SearchBookFields errorText={errorText}></SearchBookFields>;
+      return <SharePageStartPanel errorText={errorText} />;
     }
     if (!bookData) {
       return (
