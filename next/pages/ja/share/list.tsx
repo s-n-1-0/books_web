@@ -1,21 +1,21 @@
 import { BookCell } from "@/components/books/BookCell";
 import CustomHead from "@/components/CustomHead";
 import Header from "@/components/CustomHeader";
-import AmazonLink from "@/components/stores/AmazonLink";
-import HontoLink from "@/components/stores/HontoLink";
-import KinokuniyaLink from "@/components/stores/KinokuniyaLink";
-import TweetButton from "@/components/TweetButton";
 import {
   BookCacheContext,
   BookCacheContextProvider,
   BookCacheContextType,
-} from "@/contexts/book_cache_context";
+} from "@/components/providers/BookCacheContextProvider";
 import {
   SelectedStoreContext,
   SelectedStoreContextProvider,
   SelectedStoreContextType,
   StoreType,
-} from "@/contexts/selected_store_context";
+} from "@/components/providers/SelectedStoreContextProvider";
+import AmazonLink from "@/components/stores/AmazonLink";
+import HontoLink from "@/components/stores/HontoLink";
+import KinokuniyaLink from "@/components/stores/KinokuniyaLink";
+import TweetButton from "@/components/TweetButton";
 import { existFlutterInAppWebView } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import {
