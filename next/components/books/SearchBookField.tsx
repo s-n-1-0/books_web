@@ -3,7 +3,7 @@ import {
   requestBarcodeReader,
 } from "@/libs/flutter/flutter_inappwebview";
 import { searchBook } from "@/libs/search_books";
-import { makeSharePageUrl } from "@/utils/links";
+import { BookData, makeSharePageUrl } from "@/utils/links";
 import { faBarcode, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { convertUrl2Isbn13 } from "asin2isbn";
@@ -11,8 +11,12 @@ import classNames from "classnames";
 import { useContext, useState } from "react";
 import { SearchGoogleBooksModalContext } from "../providers/SearchGoogleBooksModalContextProvider";
 
-type Props = { errorText: string };
-function SearchBookField({ errorText }: Props) {
+type Props = {
+  errorText: string;
+  /** このプロパティを使用するとBookDataを返す代わりに書籍情報ページへの遷移を行いません */
+  getBookData?: ((book: BookData) => void) | null;
+};
+function SearchBookField({ errorText, getBookData }: Props) {
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [amazonUrlErrorText, setAmazonUrlErrorText] = useState<string>("");
   const googleBooksModalContext = useContext(SearchGoogleBooksModalContext);
@@ -38,9 +42,10 @@ function SearchBookField({ errorText }: Props) {
     if (isbn) {
       let bookData = await searchBook(isbn);
       if (bookData) {
-        location.href = makeSharePageUrl(bookData.isbn, bookData.from, "");
+        if (getBookData) getBookData(bookData);
+        else location.href = makeSharePageUrl(bookData.isbn, bookData.from, "");
       } else setAmazonUrlErrorText("書籍を見つけることができませんでした...");
-    } else googleBooksModalContext.openModal(searchText);
+    } else googleBooksModalContext.openModal(searchText, getBookData);
   }
   return (
     <div className="bg-slate-100 px-2 lg:px-4 rounded">

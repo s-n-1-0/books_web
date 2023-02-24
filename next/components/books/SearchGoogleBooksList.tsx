@@ -15,12 +15,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { forwardRef, Ref, useImperativeHandle, useState } from "react";
 import ProcessingView from "../ProcessingView";
+import TwButton from "../TwButton";
 import { BookCell } from "./BookCell";
 
-type RightCellElementProps = {
+type RightDefaultCellElementProps = {
   bookData: BookData;
 };
-function RightCellElement({ bookData }: RightCellElementProps) {
+function RightDefaultCellElement({ bookData }: RightDefaultCellElementProps) {
   const [isCopied, setIsCopied] = useState(false);
   return (
     <div
@@ -48,7 +49,11 @@ function RightCellElement({ bookData }: RightCellElementProps) {
     </div>
   );
 }
-function _SearchGoogleBooksList(_: any, ref: Ref<unknown>) {
+type Props = {
+  /** このプロパティが使用された場合SearchGoogleBookListは選択モードになります。 */
+  selectModeFunc?: ((book: BookData) => void) | null;
+};
+function _SearchGoogleBooksList({ selectModeFunc }: Props, ref: Ref<unknown>) {
   const [googleBooksResults, setGoogleBooksResults] = useState<
     GoogleBooksApiBookData[]
   >([]);
@@ -96,6 +101,7 @@ function _SearchGoogleBooksList(_: any, ref: Ref<unknown>) {
               <BookCell
                 key={item.id}
                 onClick={() => {
+                  if (selectModeFunc) return;
                   let url = makeSharePageUrl(
                     item.volumeInfo.industryIdentifiers[0].identifier,
                     "googlebooks",
@@ -107,7 +113,24 @@ function _SearchGoogleBooksList(_: any, ref: Ref<unknown>) {
                 position={position}
                 headText={String(i + 1)}
                 makeRightElement={() => {
-                  return <RightCellElement bookData={bookData} />;
+                  if (selectModeFunc)
+                    return (
+                      <div className="flex items-center h-full">
+                        <TwButton
+                          color={{
+                            color: "bg-neutral-700",
+                            hoverColor: "hover:bg-neutral-900",
+                          }}
+                          onClick={() => {
+                            console.log(selectModeFunc);
+                            selectModeFunc(bookData);
+                          }}
+                        >
+                          <span>選択</span>
+                        </TwButton>
+                      </div>
+                    );
+                  return <RightDefaultCellElement bookData={bookData} />;
                 }}
               />
             );
@@ -125,6 +148,6 @@ function _SearchGoogleBooksList(_: any, ref: Ref<unknown>) {
   );
 }
 export let SearchGoogleBooksList = forwardRef(_SearchGoogleBooksList);
-export type SearchGoogleBooksListRefType = {
+export type SearchGoogleBooksListRefType = Props & {
   search: (title: string) => Promise<void>;
 };
