@@ -13,10 +13,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { convertUrl2Isbn13 } from "asin2isbn";
 import classNames from "classnames";
 import Link from "next/link";
-import { useRef, useState } from "react";
-import SearchGoogleBooksModal, {
-  SearchGoogleBooksModalRefType,
-} from "./search-googlebooks/SearchGoogleBooksModal";
+import { useContext, useState } from "react";
+import { SearchGoogleBooksModalContext } from "../providers/SearchGoogleBooksModalContextProvider";
 type SearchBookButtonProps = {
   buttonText: string;
   editingText: string;
@@ -43,7 +41,7 @@ type Props = { errorText: string };
 function SearchBookFields({ errorText }: Props) {
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [amazonUrlErrorText, setAmazonUrlErrorText] = useState<string>("");
-  const modalRef = useRef<SearchGoogleBooksModalRefType>(null);
+  const googleBooksModalContext = useContext(SearchGoogleBooksModalContext);
   let notsupportedKindleText =
     "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
   async function search(searchText: string) {
@@ -68,7 +66,7 @@ function SearchBookFields({ errorText }: Props) {
       if (bookData) {
         location.href = makeSharePageUrl(bookData.isbn, bookData.from, "");
       } else setAmazonUrlErrorText("書籍を見つけることができませんでした...");
-    } else modalRef.current?.openModal(searchText);
+    } else googleBooksModalContext.openModal(searchText);
   }
   return (
     <div className="text-center mt-2 mx-auto" style={{ maxWidth: "1250px" }}>
@@ -196,7 +194,6 @@ function SearchBookFields({ errorText }: Props) {
           </div>
         </div>
       </div>
-      <SearchGoogleBooksModal ref={modalRef} />
 
       <p className="text-center text-secondary">
         <Link href="/ja/help/find">

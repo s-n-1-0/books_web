@@ -14,8 +14,8 @@ import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { forwardRef, Ref, useImperativeHandle, useState } from "react";
-import ProcessingView from "../../ProcessingView";
-import { BookCell } from "../BookCell";
+import ProcessingView from "../ProcessingView";
+import { BookCell } from "./BookCell";
 
 type RightCellElementProps = {
   bookData: BookData;
