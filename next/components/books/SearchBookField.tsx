@@ -29,6 +29,7 @@ function SearchBookField({ errorText, getBookData: _getBookData }: Props) {
       }
     : undefined;
   async function search(searchText: string) {
+    if (searchText == "") return;
     let isbn: string | null = null;
     try {
       let url = new URL(searchText);
