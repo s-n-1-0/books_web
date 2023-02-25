@@ -201,7 +201,14 @@ function MainContent() {
           注意
         </div>
         <div className="border border-t-0 border-yellow-400 rounded-b bg-yellow-100 px-4 py-3 text-yellow-700">
-          <p>リストの内容を変更すると共有URLも更新されます!</p>
+          <ul className="list-disc px-4">
+            <li>リストの内容を変更すると共有URLも更新されます!</li>
+            <li>
+              <b>このページは再読み込みすると元に戻ります。</b>
+              <br />
+              リストの編集完了後、「共有URLを生成」を押してリストURLをメモ帳やNotionなどで保管してください。
+            </li>
+          </ul>
         </div>
       </div>
       {(() => {
