@@ -1,4 +1,4 @@
-import { StoreType } from "@/contexts/selected_store_context";
+import { StoreType } from "@/components/providers/SelectedStoreContextProvider";
 import { GoogleBooksApiBookData } from "@/Interfaces/googlebooks/volumes";
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
 import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";

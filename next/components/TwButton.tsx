@@ -7,7 +7,7 @@ type ButtonColor = {
 type Props = {
   children: ReactNode;
   color?: ButtonColor;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 function TwButton({

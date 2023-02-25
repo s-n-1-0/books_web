@@ -1,4 +1,4 @@
-import { StoreType } from "@/contexts/selected_store_context";
+import { StoreType } from "@/components/providers/SelectedStoreContextProvider";
 import { BookData, makeShareListPageUrl, makeSharePageUrl } from "./links";
 interface MarkdownSharePageLinkData {
   bookData: BookData;
