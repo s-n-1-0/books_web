@@ -3,7 +3,7 @@ import {
   requestBarcodeReader,
 } from "@/libs/flutter/flutter_inappwebview";
 import { searchBook } from "@/libs/search_books";
-import { BookData, makeSharePageUrl } from "@/utils/links";
+import { BookData, checkSharePageUrl, makeSharePageUrl } from "@/utils/links";
 import { faBarcode, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { convertUrl2Isbn13 } from "asin2isbn";
@@ -24,16 +24,25 @@ function SearchBookField({ errorText, getBookData }: Props) {
     "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
   async function search(searchText: string) {
     let isbn: string | null = null;
-    //amazon URLチェック(ISBNを取得できるかどうか)
-    let res = convertUrl2Isbn13(searchText);
-    if (res.isbn != "") isbn = res.isbn;
-    else if (res.error == "KINDLE") {
-      setAmazonUrlErrorText(notsupportedKindleText);
-      return;
-    } else if (searchText.startsWith("http")) {
-      setAmazonUrlErrorText("無効なURLです。");
-      return;
-    }
+
+    try {
+      let url = new URL(searchText);
+      //共有URLならそのまま返す
+      if (checkSharePageUrl(url)) {
+        isbn = url.searchParams.get("isbn") ?? null;
+      } else {
+        //amazon URLチェック(ISBNを取得できるかどうか)
+        let res = convertUrl2Isbn13(searchText);
+        if (res.isbn != "") isbn = res.isbn;
+        else if (res.error == "KINDLE") {
+          setAmazonUrlErrorText(notsupportedKindleText);
+          return;
+        } else if (searchText.startsWith("http")) {
+          setAmazonUrlErrorText("無効なURLです。");
+          return;
+        }
+      }
+    } catch {}
 
     //ISBNチェック
     if (searchText.startsWith("978")) isbn = searchText;
