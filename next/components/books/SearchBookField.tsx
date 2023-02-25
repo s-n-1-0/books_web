@@ -16,15 +16,20 @@ type Props = {
   /** このプロパティを使用するとBookDataを返す代わりに書籍情報ページへの遷移を行いません */
   getBookData?: ((book: BookData) => void) | null;
 };
-function SearchBookField({ errorText, getBookData }: Props) {
+function SearchBookField({ errorText, getBookData: _getBookData }: Props) {
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [amazonUrlErrorText, setAmazonUrlErrorText] = useState<string>("");
   const googleBooksModalContext = useContext(SearchGoogleBooksModalContext);
   let notsupportedKindleText =
     "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
+  let getBookData = _getBookData
+    ? (bookData: BookData) => {
+        setEditingTitle("");
+        _getBookData(bookData);
+      }
+    : undefined;
   async function search(searchText: string) {
     let isbn: string | null = null;
-
     try {
       let url = new URL(searchText);
       //共有URLならそのまま返す
