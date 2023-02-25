@@ -27,5 +27,9 @@ export async function requestBarcodeReader() {
   } else return "";
 }
 export function existFlutterInAppWebView() {
-  return window.flutter_inappwebview != null;
+  try {
+    return window.flutter_inappwebview != null;
+  } catch {
+    return false;
+  }
 }

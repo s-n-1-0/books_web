@@ -1,21 +1,22 @@
 import { BookCell } from "@/components/books/BookCell";
+import SearchBookField from "@/components/books/SearchBookField";
 import CustomHead from "@/components/CustomHead";
 import Header from "@/components/CustomHeader";
-import AmazonLink from "@/components/stores/AmazonLink";
-import HontoLink from "@/components/stores/HontoLink";
-import KinokuniyaLink from "@/components/stores/KinokuniyaLink";
-import TweetButton from "@/components/TweetButton";
 import {
   BookCacheContext,
   BookCacheContextProvider,
   BookCacheContextType,
-} from "@/contexts/book_cache_context";
+} from "@/components/providers/BookCacheContextProvider";
 import {
   SelectedStoreContext,
   SelectedStoreContextProvider,
   SelectedStoreContextType,
   StoreType,
-} from "@/contexts/selected_store_context";
+} from "@/components/providers/SelectedStoreContextProvider";
+import AmazonLink from "@/components/stores/AmazonLink";
+import HontoLink from "@/components/stores/HontoLink";
+import KinokuniyaLink from "@/components/stores/KinokuniyaLink";
+import TweetButton from "@/components/TweetButton";
 import { existFlutterInAppWebView } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import {
@@ -26,7 +27,7 @@ import {
   makeSharePageUrlFromSearchParams,
 } from "@/utils/links";
 import { makeMarkdownSharePageLinks } from "@/utils/markdown";
-import { faCopy, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { NextPage } from "next";
@@ -165,35 +166,24 @@ function MainContent() {
       setIsEditMode(books.length == 0);
     } catch {}
   }, [_books, router.isReady]);
-  let clickAddButton = () => {
-    let copyErrorText =
-      "コピーしているURLが有効ではありません。\n追加する書籍の情報画面にある「この本を共有する」を押して書籍URLをコピーした状態で押してください。";
-    flutterClipboard
-      .readText()
-      .then((text) => {
-        if (text) {
-          try {
-            let url = new URL(text);
-            if (!checkSharePageUrl(url)) {
-              setErrorText(copyErrorText);
-              return;
-            }
-            let newBookList = Array.from(
-              new Set([...bookList.map((x) => x.href), url.href]) //重複削除
-            ).map((x) => new URL(x));
-            setBookList(newBookList);
-            setErrorText("");
-          } catch {
-            setErrorText(copyErrorText);
-          }
-        }
-      })
-      .catch(() => {
-        setErrorText(
-          "× ブラウザなどの設定からこのサイトに貼り付け許可を与えてください。 ×"
-        );
-      });
+  let copyErrorText =
+    "コピーしているURLが有効ではありません。\n追加する書籍の情報画面にある「この本を共有する」を押して書籍URLをコピーした状態で押してください。";
+  let appendBookList = (url: URL) => {
+    try {
+      if (!checkSharePageUrl(url)) {
+        setErrorText(copyErrorText);
+        return;
+      }
+      let newBookList = Array.from(
+        new Set([...bookList.map((x) => x.href), url.href]) //重複削除
+      ).map((x) => new URL(x));
+      setBookList(newBookList);
+      setErrorText("");
+    } catch {
+      setErrorText(copyErrorText);
+    }
   };
+
   return (
     <div className=" mx-auto mt-1 " style={{ maxWidth: "1200px" }}>
       {(() => {
@@ -211,7 +201,14 @@ function MainContent() {
           注意
         </div>
         <div className="border border-t-0 border-yellow-400 rounded-b bg-yellow-100 px-4 py-3 text-yellow-700">
-          <p>リストの内容を変更すると共有URLも更新されます!</p>
+          <ul className="list-disc px-4">
+            <li>リストの内容を変更すると共有URLも更新されます!</li>
+            <li>
+              <b>このページは再読み込みすると元に戻ります。</b>
+              <br />
+              リストの編集完了後、「共有URLを生成」を押してリストURLをコピーし、メモ帳やNotionなどで保管してください。
+            </li>
+          </ul>
         </div>
       </div>
       {(() => {
@@ -249,11 +246,7 @@ function MainContent() {
           </h2>
         );
       })()}
-      <div
-        className={classNames({
-          hidden: bookList.length == 0,
-        })}
-      >
+      <div>
         <p className="text-end">
           {(() => {
             if (isEditMode)
@@ -347,35 +340,25 @@ function MainContent() {
               "w-full px-4 py-2 rounded-b-lg text-center my-2 cursor-pointer " +
               classNames(editModeClass)
             }
-            onClick={clickAddButton}
           >
-            <FontAwesomeIcon icon={faPlus} className="mr-1" />
-            リストに追加
+            <div>
+              <p className="text-secondary">
+                リストに追加する書籍を検索 (書籍共有URLも入力できます)
+              </p>
+              <SearchBookField
+                errorText=""
+                getBookData={(book) => {
+                  appendBookList(
+                    new URL(makeSharePageUrl(book.isbn, book.from, ""))
+                  );
+                }}
+              />
+            </div>
           </li>
         </ul>
       </div>
       <div className="text-center m-3">
         <div className="w-full mt-1">
-          {(() => {
-            if (bookList.length > 0) return;
-            //bookListが0の場合のボタン
-            return (
-              <div>
-                <button
-                  onClick={clickAddButton}
-                  className="mx-auto bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 border-b-4 border-orange-700 hover:border-orange-500 rounded"
-                >
-                  <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                  リストに追加
-                </button>
-                <p className="text-secondary">
-                  <small>
-                    書籍ページの「この本を共有する」を押した後↑を押すと、リストに書籍が追加されます。
-                  </small>
-                </p>
-              </div>
-            );
-          })()}
           <p
             className={classNames({
               "text-end": true,

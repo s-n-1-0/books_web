@@ -1,10 +1,10 @@
-import {
-  BookCacheContext,
-  BookCacheContextType,
-} from "@/contexts/book_cache_context";
 import { BookData, convertSharePageUrl2BookData } from "@/utils/links";
 import classNames from "classnames";
 import { useContext, useEffect, useState } from "react";
+import {
+  BookCacheContext,
+  BookCacheContextType,
+} from "../providers/BookCacheContextProvider";
 import BookThumbnail from "./BookThumbnail";
 
 type Props = {

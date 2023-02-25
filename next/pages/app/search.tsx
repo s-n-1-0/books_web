@@ -1,7 +1,7 @@
 import {
   SearchGoogleBooksList,
   SearchGoogleBooksListRefType,
-} from "@/components/books/search-googlebooks/SearchGoogleBooksList";
+} from "@/components/books/SearchGoogleBooksList";
 import CustomHead from "@/components/CustomHead";
 import { NextPage } from "next";
 import { useRouter } from "next/router";

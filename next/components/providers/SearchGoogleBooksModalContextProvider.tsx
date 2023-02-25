@@ -1,17 +1,41 @@
+import { BookData } from "@/utils/links";
 import { faSearch, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { forwardRef, Ref, useImperativeHandle, useRef, useState } from "react";
+import {
+  createContext,
+  forwardRef,
+  ReactNode,
+  Ref,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import {
   SearchGoogleBooksList,
   SearchGoogleBooksListRefType,
-} from "./SearchGoogleBooksList";
+} from "../books/SearchGoogleBooksList";
 function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [searchTitle, setSearchTitle] = useState<string>("");
 
   const googlebooksListRef = useRef<SearchGoogleBooksListRefType>(null);
-  async function openModal(title: string) {
+  const [selectModeFunc2, setSelectModeFunc2] = useState<
+    () => (((book: BookData) => void) | null) | undefined
+  >(() => undefined);
+  async function openModal(
+    title: string,
+    selectModeFunc: ((book: BookData) => void) | null = null
+  ) {
     setIsOpen(true);
+
+    setSelectModeFunc2(() =>
+      selectModeFunc
+        ? (bookData: BookData) => {
+            setIsOpen(false);
+            selectModeFunc(bookData);
+          }
+        : undefined
+    );
     setSearchTitle(title);
     process.nextTick(() => {
       googlebooksListRef.current?.search(title);
@@ -56,14 +80,52 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
           />
         </div>
         <hr className="mb-3" />
-        <SearchGoogleBooksList ref={googlebooksListRef} isNoheader={false} />
+        <SearchGoogleBooksList
+          ref={googlebooksListRef}
+          selectModeFunc={selectModeFunc2}
+        />
       </div>
     </div>
   );
 }
 let SearchGoogleBooksModal = forwardRef(_SearchGoogleBooksModal);
-export type SearchGoogleBooksModalRefType = {
-  openModal: (title: string) => void;
+export interface SearchGoogleBooksModalContextType {
+  openModal: (
+    title: string,
+    selectModeFunc: ((book: BookData) => void) | null | undefined
+  ) => void;
   closeModal: () => void;
+}
+
+export const SearchGoogleBooksModalContext =
+  createContext<SearchGoogleBooksModalContextType>({
+    openModal: (
+      title: string,
+      selectModeFunc: ((book: BookData) => void) | null | undefined = null
+    ) => {},
+    closeModal: () => {},
+  });
+
+export const SearchGoogleBooksModalContextProvider = ({
+  children,
+}: {
+  children?: ReactNode;
+}) => {
+  const modalRef = useRef<SearchGoogleBooksModalContextType>(null);
+
+  const newContext: SearchGoogleBooksModalContextType = {
+    openModal(title, selectModeFunc) {
+      modalRef.current?.openModal(title, selectModeFunc);
+    },
+    closeModal() {
+      modalRef.current?.closeModal;
+    },
+  };
+
+  return (
+    <SearchGoogleBooksModalContext.Provider value={newContext}>
+      <SearchGoogleBooksModal ref={modalRef} />
+      {children}
+    </SearchGoogleBooksModalContext.Provider>
+  );
 };
-export default SearchGoogleBooksModal;
