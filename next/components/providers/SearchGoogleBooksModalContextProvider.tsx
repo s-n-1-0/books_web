@@ -27,7 +27,7 @@ function _SearchGoogleBooksModal(_: any, ref: Ref<unknown>) {
     selectModeFunc: ((book: BookData) => void) | null = null
   ) {
     setIsOpen(true);
-
+    window.scroll({ top: 0 });
     setSelectModeFunc2(() =>
       selectModeFunc
         ? (bookData: BookData) => {
