@@ -1,8 +1,8 @@
 import { StoreType } from "@/components/providers/SelectedStoreContextProvider";
 import { GoogleBooksApiBookData } from "@/Interfaces/googlebooks/volumes";
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
-import { searchGoogleBooksApiByIsbn } from "@/libs/googlebooks";
-import * as openbd from "@/libs/openbd";
+import { searchGoogleBooksApiByIsbn } from "@/libs/search_books/googlebooks";
+import * as openbd from "@/libs/search_books/openbd";
 
 export type SharePageFromDb = "openbd" | "googlebooks";
 export function makeSharePageUrl(

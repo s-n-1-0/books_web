@@ -4,7 +4,7 @@ import {
 } from "@/Interfaces/googlebooks/volumes";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
-import { searchGoogleBooksApi } from "@/libs/googlebooks";
+import { searchGoogleBooksApi } from "@/libs/search_books/googlebooks";
 import {
   BookData,
   convertGoogleBooksData2BookData,
