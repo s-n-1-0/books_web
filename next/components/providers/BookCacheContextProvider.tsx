@@ -1,4 +1,4 @@
-import { BookData } from "@/utils/links";
+import { BookData } from "@/libs/search_books";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 export interface BookCacheContextType {

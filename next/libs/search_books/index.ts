@@ -1,7 +1,17 @@
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
-import { BookData, convertGoogleBooksData2BookData } from "@/utils/links";
+import { convertGoogleBooksData2BookData } from "@/utils/links";
 import { searchGoogleBooksApiByIsbn } from "./googlebooks";
 import * as openbd from "./openbd";
+export type BookDbType = "openbd" | "googlebooks";
+export interface BookData {
+  title: string;
+  author: string;
+  thumbnail: string;
+  isbn: string;
+  publisher: string;
+  description: string;
+  from: BookDbType;
+}
 /**
  * ISBNを用いて可能な限り探索します。(サムネイルがあるOpenBD優先)
  */

@@ -1,13 +1,13 @@
 import { StoreType } from "@/components/providers/SelectedStoreContextProvider";
 import { GoogleBooksApiBookData } from "@/Interfaces/googlebooks/volumes";
 import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
+import { BookData, BookDbType } from "@/libs/search_books";
 import { searchGoogleBooksApiByIsbn } from "@/libs/search_books/googlebooks";
 import * as openbd from "@/libs/search_books/openbd";
 
-export type SharePageFromDb = "openbd" | "googlebooks";
 export function makeSharePageUrl(
   isbn: string,
-  from: SharePageFromDb,
+  from: BookDbType,
   comment: string
 ) {
   const params = new URLSearchParams();
@@ -37,15 +37,7 @@ export function makeShareListPageUrl(
   params.append("title", title);
   return `${location.origin}/ja/share/list?${params.toString()}`;
 }
-export interface BookData {
-  title: string;
-  author: string;
-  thumbnail: string;
-  isbn: string;
-  publisher: string;
-  description: string;
-  from: SharePageFromDb;
-}
+
 export function convertGoogleBooksData2BookData({
   volumeInfo,
 }: GoogleBooksApiBookData): BookData {

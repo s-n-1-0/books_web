@@ -1,4 +1,4 @@
-import { BookData } from "@/utils/links";
+import { BookData } from "@/libs/search_books";
 import { faSearch, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

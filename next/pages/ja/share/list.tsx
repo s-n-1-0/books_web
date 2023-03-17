@@ -19,8 +19,8 @@ import KinokuniyaLink from "@/components/stores/KinokuniyaLink";
 import TweetButton from "@/components/TweetButton";
 import { existFlutterInAppWebView } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
+import { BookData } from "@/libs/search_books";
 import {
-  BookData,
   checkSharePageUrl,
   makeShareListPageUrl,
   makeSharePageUrl,

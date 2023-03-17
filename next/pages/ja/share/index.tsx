@@ -11,8 +11,8 @@ import StoreLinks from "@/components/stores/StoreLinks";
 import TweetButton from "@/components/TweetButton";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
+import { BookData } from "@/libs/search_books";
 import {
-  BookData,
   convertSharePageParams2BookData,
   makeShareListPageUrl,
   makeSharePageUrl,
