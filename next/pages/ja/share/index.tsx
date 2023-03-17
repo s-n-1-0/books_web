@@ -11,12 +11,8 @@ import StoreLinks from "@/components/stores/StoreLinks";
 import TweetButton from "@/components/TweetButton";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
-import { BookData } from "@/libs/search_books";
-import {
-  convertSharePageParams2BookData,
-  makeShareListPageUrl,
-  makeSharePageUrl,
-} from "@/utils/links";
+import { BookData, searchBook } from "@/libs/search_books";
+import { makeShareListPageUrl, makeSharePageUrl } from "@/utils/links";
 import { makeMarkdownSharePageLink } from "@/utils/markdown";
 import { faCopy, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -47,7 +43,7 @@ const Home: NextPage = () => {
     if (typeof isbn == "string") {
       setIsHello(false);
       let fromDb = typeof from == "string" ? from : "";
-      convertSharePageParams2BookData(isbn, fromDb)
+      searchBook(isbn, fromDb)
         .then((bookData) => {
           if (bookData) {
             setBookData(bookData);

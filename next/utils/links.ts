@@ -1,9 +1,6 @@
 import { StoreType } from "@/components/providers/SelectedStoreContextProvider";
 import { GoogleBooksApiBookData } from "@/Interfaces/googlebooks/volumes";
-import { OpenBDGetResponseData } from "@/Interfaces/openbd/get";
-import { BookData, BookDbType } from "@/libs/search_books";
-import { searchGoogleBooksApiByIsbn } from "@/libs/search_books/googlebooks";
-import * as openbd from "@/libs/search_books/openbd";
+import { BookData, BookDbType, searchBook } from "@/libs/search_books";
 
 export function makeSharePageUrl(
   isbn: string,
@@ -58,39 +55,5 @@ export function convertGoogleBooksData2BookData({
 export function convertSharePageUrl2BookData(url: URL) {
   let isbn = url.searchParams.get("isbn") ?? "";
   let from = url.searchParams.get("from") ?? "";
-  return convertSharePageParams2BookData(isbn, from);
-}
-/**
- * URL Paramsから書籍情報を取得します。
- */
-export async function convertSharePageParams2BookData(
-  isbn: string,
-  from: string
-): Promise<BookData | null> {
-  switch (from) {
-    case "opendb":
-    default:
-      return openbd.get(isbn).then((res: { data: OpenBDGetResponseData }) => {
-        let resBookData = res.data?.[0];
-        if (resBookData) {
-          return {
-            title: resBookData.summary.title,
-            author: resBookData.summary.author,
-            isbn: resBookData.summary.isbn,
-            publisher: resBookData.summary.publisher,
-            thumbnail: resBookData.summary.cover,
-            description:
-              resBookData.onix.CollateralDetail.TextContent?.[0].Text ?? "",
-            from: "openbd",
-          };
-        } else return null;
-      });
-    case "googlebooks":
-      return searchGoogleBooksApiByIsbn(isbn).then((book) => {
-        if (book) {
-          return convertGoogleBooksData2BookData(book);
-        } else return null;
-      });
-  }
-  return Promise.resolve(null);
+  return searchBook(isbn, from);
 }
