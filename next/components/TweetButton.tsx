@@ -21,11 +21,9 @@ function TweetButton({ text, url = encodeURIComponent(location.href) }: Props) {
       css={buttonStyle}
       className="h-fit py-2 px-3 rounded-full"
       onClick={() => {
-        let twitterUrl =
-          "https://twitter.com/share?text=" +
-          encodeURIComponent(text + " - Share Books") +
-          "&url=" +
-          encodeURIComponent(url);
+        let twitterUrl = `https://twitter.com/share?text=${encodeURIComponent(
+          text
+        )}&url=${encodeURIComponent(url)}&hashtags=ShareBooks`;
         if (
           !sendMessage({
             key: "completedSharing",

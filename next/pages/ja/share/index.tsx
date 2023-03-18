@@ -11,26 +11,38 @@ import StoreLinks from "@/components/stores/StoreLinks";
 import TweetButton from "@/components/TweetButton";
 import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
-import {
-  BookData,
-  convertSharePageParams2BookData,
-  makeShareListPageUrl,
-  makeSharePageUrl,
-} from "@/utils/links";
+import { BookData, searchBookByIsbn } from "@/libs/search_books";
+import { makeShareListPageUrl, makeSharePageUrl } from "@/utils/links";
 import { makeMarkdownSharePageLink } from "@/utils/markdown";
-import { faCopy, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCaretDown,
+  faCopy,
+  faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { convertIsbn } from "asin2isbn";
+import classNames from "classnames";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-
+interface DisplayBookData extends BookData {
+  isbn10: string;
+  isbn13: string;
+}
 const Home: NextPage = () => {
   const router = useRouter();
   const { isbn, from, comment } = router.query;
 
-  const [bookData, setBookData] = useState<BookData | null>(null);
+  const [bookData, _setBookData] = useState<DisplayBookData | null>(null);
+  const setBookData = (book: BookData) => {
+    _setBookData({
+      ...book,
+      ...convertIsbn(book.isbn)!,
+    });
+  };
   const [errorText, setErrorText] = useState<string>("");
   const [isHello, setIsHello] = useState<boolean>(false);
+  const [isShowIsbnList, setIsShowIsbnList] = useState(false);
   const [clickedShareButtonText, setClickedShareButtonText] = useState("");
   const commentRef = useRef<BookCommentRefType>(null);
   function updateQueryComment() {
@@ -47,7 +59,7 @@ const Home: NextPage = () => {
     if (typeof isbn == "string") {
       setIsHello(false);
       let fromDb = typeof from == "string" ? from : "";
-      convertSharePageParams2BookData(isbn, fromDb)
+      searchBookByIsbn(isbn, fromDb)
         .then((bookData) => {
           if (bookData) {
             setBookData(bookData);
@@ -86,33 +98,57 @@ const Home: NextPage = () => {
               </span>
             );
           })()}
-          <span className="text-3xl">{bookData.title}</span>
-        </div>
-        <p className="text-secondary text-center">
-          <span className="text-xl">ISBN : {bookData.isbn}</span>
-          <button
-            className="text-sm bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded ml-2"
-            onClick={() => {
-              flutterClipboard.writeText(bookData.isbn);
-            }}
-          >
-            コピー
-          </button>
-        </p>
-        <p className="text-center">
-          {(() => {
-            if (bookData.author == "") return;
-            return <span>著者: {bookData.author}</span>;
-          })()}
-          {(() => {
-            if (bookData.publisher == "") return;
-            let splitText = bookData.author != "" ? " / " : "";
-            return (
-              <span>
-                {splitText}出版社 :{bookData.publisher}
+          <div>
+            <span className="text-3xl">{bookData.title}</span>
+            <p className="text-center">
+              <span
+                className={classNames({
+                  hidden: bookData.author == "",
+                })}
+              >
+                著者: {bookData.author}
               </span>
-            );
-          })()}
+              <span
+                className={classNames({
+                  hidden: bookData.author == "" || bookData.publisher == "",
+                })}
+              >
+                {" "}
+                /{" "}
+              </span>
+              <span
+                className={classNames({
+                  hidden: bookData.publisher == "",
+                })}
+              >
+                出版社 :{bookData.publisher}
+              </span>
+            </p>
+          </div>
+        </div>
+        <p className="text-secondary flex content-center justify-center items-center">
+          <span className="pr-2">ISBN</span>
+          <p className="flex flex-col">
+            <span>
+              10桁 : {bookData.isbn10}{" "}
+              <button
+                onClick={() => {
+                  setIsShowIsbnList(!isShowIsbnList);
+                }}
+                className={
+                  "text-xl " +
+                  classNames({
+                    hidden: isShowIsbnList,
+                  })
+                }
+              >
+                <FontAwesomeIcon icon={faCaretDown} />
+              </button>
+            </span>
+            <span className={classNames({ hidden: !isShowIsbnList })}>
+              13桁 : {bookData.isbn13}
+            </span>
+          </p>
         </p>
 
         <p className="text-center mt-1 line-clamp-5">{bookData.description}</p>
@@ -161,9 +197,9 @@ const Home: NextPage = () => {
                         ? userComment.slice(0, 70) + "..."
                         : userComment) +
                       "\n\n" +
-                      `書籍「${bookData.title}」の紹介`;
+                      `書籍「${bookData.title}」`;
                   } else {
-                    twText = `書籍「${bookData.title}」の紹介です。`;
+                    twText = `書籍「${bookData.title}」`;
                   }
                   let twUrl = makeSharePageUrl(
                     bookData.isbn,

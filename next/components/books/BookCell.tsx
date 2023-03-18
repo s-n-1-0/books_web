@@ -1,4 +1,5 @@
-import { BookData, convertSharePageUrl2BookData } from "@/utils/links";
+import { BookData } from "@/libs/search_books";
+import { convertSharePageUrl2BookData } from "@/utils/links";
 import classNames from "classnames";
 import { useContext, useEffect, useState } from "react";
 import {
