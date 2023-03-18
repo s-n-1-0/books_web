@@ -71,7 +71,7 @@ export function extractSearchData(anyText: string): SearchData {
     //共有URLの場合
     if (checkSharePageUrl(url)) {
       let isbn = url.searchParams.get("isbn") ?? null;
-      let isbn13 = isbn ? (isbn.length == 10 ? convertIsbn(isbn) : isbn) : null;
+      let isbn13 = isbn ? convertIsbn(isbn)?.isbn13 ?? null : null;
       retData = {
         isbn13,
         title: null,
@@ -96,7 +96,11 @@ export function extractSearchData(anyText: string): SearchData {
     if (anyText.startsWith("978"))
       retData = { isbn13: anyText, title: null, format: "ISBN" };
     else if (anyText.startsWith("40") && anyText.length == 10)
-      retData = { isbn13: convertIsbn(anyText), title: null, format: "ISBN" };
+      retData = {
+        isbn13: convertIsbn(anyText)!.isbn13,
+        title: null,
+        format: "ISBN",
+      };
   }
   return retData;
 }
