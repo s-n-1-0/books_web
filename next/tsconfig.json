@@ -22,5 +22,5 @@
     "types": ["@emotion/react/types/css-prop"]
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "jest.config.js"]
 }
