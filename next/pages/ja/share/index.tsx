@@ -98,7 +98,33 @@ const Home: NextPage = () => {
               </span>
             );
           })()}
-          <span className="text-3xl">{bookData.title}</span>
+          <div>
+            <span className="text-3xl">{bookData.title}</span>
+            <p className="text-center">
+              <span
+                className={classNames({
+                  hidden: bookData.author == "",
+                })}
+              >
+                著者: {bookData.author}
+              </span>
+              <span
+                className={classNames({
+                  hidden: bookData.author == "" || bookData.publisher == "",
+                })}
+              >
+                {" "}
+                /{" "}
+              </span>
+              <span
+                className={classNames({
+                  hidden: bookData.publisher == "",
+                })}
+              >
+                出版社 :{bookData.publisher}
+              </span>
+            </p>
+          </div>
         </div>
         <p className="text-secondary flex content-center justify-center items-center">
           <span className="pr-2">ISBN</span>
@@ -123,21 +149,6 @@ const Home: NextPage = () => {
               13桁 : {bookData.isbn13}
             </span>
           </p>
-        </p>
-        <p className="text-center">
-          {(() => {
-            if (bookData.author == "") return;
-            return <span>著者: {bookData.author}</span>;
-          })()}
-          {(() => {
-            if (bookData.publisher == "") return;
-            let splitText = bookData.author != "" ? " / " : "";
-            return (
-              <span>
-                {splitText}出版社 :{bookData.publisher}
-              </span>
-            );
-          })()}
         </p>
 
         <p className="text-center mt-1 line-clamp-5">{bookData.description}</p>
