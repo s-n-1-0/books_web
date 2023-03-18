@@ -18,6 +18,10 @@ export interface BookData {
   from: BookDbType;
 }
 
+export function checkIsbn10(text: string) {
+  return text.length == 10 && !isNaN(Number(text.slice(0, -1)));
+}
+
 function convertBookDbType(from: string): BookDbType | "" {
   switch (from) {
     case "openbd":
@@ -93,9 +97,9 @@ export function extractSearchData(anyText: string): SearchData {
   } catch {
     //非URL処理
     //ISBNチェック(10桁、13桁)
-    if (anyText.startsWith("978"))
+    if (anyText.startsWith("978") && anyText.length == 13)
       retData = { isbn13: anyText, title: null, format: "ISBN" };
-    else if (anyText.startsWith("40") && anyText.length == 10)
+    else if (checkIsbn10(anyText))
       retData = {
         isbn13: convertIsbn(anyText)!.isbn13,
         title: null,

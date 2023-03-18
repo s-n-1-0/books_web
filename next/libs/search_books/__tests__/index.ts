@@ -3,7 +3,7 @@
  * SearchDataのformatパターン分のテストを実施すること
  */
 import { expect, test } from "@jest/globals";
-import { extractSearchData, SearchData } from "../index";
+import { checkIsbn10, extractSearchData, SearchData } from "../index";
 let makeAnsObj = (ans: SearchData) => ans; //予測変換用関数
 test("extractSearchData : ISBN", () => {
   //isbn10
@@ -75,4 +75,11 @@ test("extractSearchData : エラーケース", () => {
       format: "Other URL",
     })
   );
+});
+
+test("checkIsbn10", () => {
+  expect(checkIsbn10("X")).toBe(false);
+  expect(checkIsbn10("47992156X3")).toBe(false);
+  expect(checkIsbn10("4799215663")).toBe(true);
+  expect(checkIsbn10("479921566X")).toBe(true);
 });
