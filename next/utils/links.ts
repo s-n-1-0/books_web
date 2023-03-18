@@ -1,6 +1,6 @@
 import { StoreType } from "@/components/providers/SelectedStoreContextProvider";
 import { GoogleBooksApiBookData } from "@/Interfaces/googlebooks/volumes";
-import { BookData, BookDbType, searchBook } from "@/libs/search_books";
+import { BookData, BookDbType, searchBookByIsbn } from "@/libs/search_books";
 
 export function makeSharePageUrl(
   isbn: string,
@@ -55,5 +55,5 @@ export function convertGoogleBooksData2BookData({
 export function convertSharePageUrl2BookData(url: URL) {
   let isbn = url.searchParams.get("isbn") ?? "";
   let from = url.searchParams.get("from") ?? "";
-  return searchBook(isbn, from);
+  return searchBookByIsbn(isbn, from);
 }

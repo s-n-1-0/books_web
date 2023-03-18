@@ -2,11 +2,13 @@ import {
   existFlutterInAppWebView,
   requestBarcodeReader,
 } from "@/libs/flutter/flutter_inappwebview";
-import { BookData, searchBook } from "@/libs/search_books";
-import { checkSharePageUrl, makeSharePageUrl } from "@/utils/links";
+import {
+  BookData,
+  notsupportedKindleText,
+  searchBook as _searchBook,
+} from "@/libs/search_books";
 import { faBarcode, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { convertUrl2Isbn13 } from "asin2isbn";
 import classNames from "classnames";
 import { useContext, useState } from "react";
 import { SearchGoogleBooksModalContext } from "../providers/SearchGoogleBooksModalContextProvider";
@@ -20,47 +22,20 @@ function SearchBookField({ errorText, getBookData: _getBookData }: Props) {
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [amazonUrlErrorText, setAmazonUrlErrorText] = useState<string>("");
   const googleBooksModalContext = useContext(SearchGoogleBooksModalContext);
-  let notsupportedKindleText =
-    "Kindle(電子書籍)のURLは現在非対応です。Amazonの商品ページで紙の書籍を選択してください。";
-  let getBookData = _getBookData
-    ? (bookData: BookData) => {
-        setEditingTitle("");
-        _getBookData(bookData);
-      }
-    : undefined;
-  async function search(searchText: string) {
-    if (searchText == "") return;
-    let isbn: string | null = null;
-    try {
-      let url = new URL(searchText);
-      //共有URLならそのまま返す
-      if (checkSharePageUrl(url)) {
-        isbn = url.searchParams.get("isbn") ?? null;
-      } else {
-        //amazon URLチェック(ISBNを取得できるかどうか)
-        let res = convertUrl2Isbn13(searchText);
-        if (res.isbn != "") isbn = res.isbn;
-        else if (res.error == "KINDLE") {
-          setAmazonUrlErrorText(notsupportedKindleText);
-          return;
-        } else if (searchText.startsWith("http")) {
-          setAmazonUrlErrorText("無効なURLです。");
-          return;
+
+  async function searchBook(searchText: string) {
+    let getBookData = _getBookData
+      ? (bookData: BookData) => {
+          setEditingTitle("");
+          _getBookData(bookData);
         }
-      }
-    } catch {}
-
-    //ISBNチェック
-    if (searchText.startsWith("978")) isbn = searchText;
-
-    //isbn or タイトル検索
-    if (isbn) {
-      let bookData = await searchBook(isbn);
-      if (bookData) {
-        if (getBookData) getBookData(bookData);
-        else location.href = makeSharePageUrl(bookData.isbn, bookData.from, "");
-      } else setAmazonUrlErrorText("書籍を見つけることができませんでした...");
-    } else googleBooksModalContext.openModal(searchText, getBookData);
+      : undefined;
+    let errorText = await _searchBook(
+      searchText,
+      googleBooksModalContext,
+      getBookData
+    );
+    if (errorText != "") setAmazonUrlErrorText(errorText);
   }
   return (
     <div className="bg-slate-100 px-2 lg:px-4 rounded">
@@ -83,7 +58,7 @@ function SearchBookField({ errorText, getBookData: _getBookData }: Props) {
               if (e.key == "Enter") {
                 e.preventDefault();
                 e.currentTarget.blur();
-                search(editingTitle);
+                searchBook(editingTitle);
               }
             }}
           />
@@ -97,7 +72,7 @@ function SearchBookField({ errorText, getBookData: _getBookData }: Props) {
           }
           onClick={async () => {
             let isbn = await requestBarcodeReader();
-            if (isbn != "") search(isbn);
+            if (isbn != "") searchBook(isbn);
           }}
         >
           <FontAwesomeIcon icon={faBarcode} />
