@@ -162,8 +162,17 @@ export async function searchBookByIsbn(
   if (!resBookData && (from == "" || from == "googlebooks")) {
     //未指定(=openbdにない場合)またはgooglebooks指定なら
     let googleBooksData = await searchGoogleBooksApiByIsbn(isbn);
-    if (googleBooksData)
+    if (googleBooksData) {
       resBookData = convertGoogleBooksData2BookData(googleBooksData);
+      if (from == "googlebooks" && resBookData.thumbnail == "") {
+        //googlebooks指定で検索したが、サムネイルが見つからなかった場合openbdでチェックする
+        let openbdBookData = openbd.convertResponseData2BookData(
+          await openbd.get(isbn)
+        );
+        resBookData.thumbnail = openbdBookData?.thumbnail ?? "";
+      }
+    }
   }
+
   return resBookData;
 }
