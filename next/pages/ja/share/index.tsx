@@ -197,9 +197,9 @@ const Home: NextPage = () => {
                         ? userComment.slice(0, 70) + "..."
                         : userComment) +
                       "\n\n" +
-                      `書籍「${bookData.title}」の紹介`;
+                      `書籍「${bookData.title}」`;
                   } else {
-                    twText = `書籍「${bookData.title}」の紹介です。`;
+                    twText = `書籍「${bookData.title}」`;
                   }
                   let twUrl = makeSharePageUrl(
                     bookData.isbn,
