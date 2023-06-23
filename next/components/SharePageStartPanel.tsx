@@ -52,7 +52,7 @@ function SharePageStartPanel({ errorText }: Props) {
           <div className="relative h-full w-full">
             <img
               className="object-cover ml-auto z-0 rounded-md h-full w-full"
-              src="https://hello.sn-10.net/apps/books/mid_thumbnail.webp"
+              src="/mid_thumbnail.webp"
               alt="Painted by Midjourney"
             />
           </div>
