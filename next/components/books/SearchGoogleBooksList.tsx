@@ -2,7 +2,7 @@ import {
   GoogleBooksApiBookData,
   GoogleBooksApiVolumesResponseData,
 } from "@/Interfaces/googlebooks/volumes";
-import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
+import { FlutterInAppWebViewCommunicator } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import { BookData } from "@/libs/search_books";
 import { searchGoogleBooksApi } from "@/libs/search_books/googlebooks";
@@ -13,7 +13,7 @@ import {
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { forwardRef, Ref, useImperativeHandle, useState } from "react";
+import { Ref, forwardRef, useImperativeHandle, useState } from "react";
 import ProcessingView from "../ProcessingView";
 import TwButton from "../TwButton";
 import { BookCell } from "./BookCell";
@@ -26,11 +26,11 @@ function RightDefaultCellElement({ bookData }: RightDefaultCellElementProps) {
   return (
     <div
       className="flex flex-col justify-end"
-      onClick={(e) => {
+      onClick={async (e) => {
         flutterClipboard.writeText(
           makeSharePageUrl(bookData.isbn, bookData.from, "")
         );
-        sendMessage({
+        (await FlutterInAppWebViewCommunicator.build()).sendMessage({
           key: "completedSharing",
           data: { type: "default", url: "" },
         });

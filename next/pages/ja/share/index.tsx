@@ -9,7 +9,7 @@ import ProcessingView from "@/components/ProcessingView";
 import SharePageStartPanel from "@/components/SharePageStartPanel";
 import StoreLinks from "@/components/stores/StoreLinks";
 import TweetButton from "@/components/TweetButton";
-import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
+import { FlutterInAppWebViewCommunicator } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import { BookData, searchBookByIsbn } from "@/libs/search_books";
 import { makeShareListPageUrl, makeSharePageUrl } from "@/utils/links";
@@ -53,9 +53,13 @@ const Home: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comment]);
   const [userComment, setUserComment] = useState<string>(updateQueryComment());
-
+  const [flutterInAppWebView, setFlutterInAppWebView] =
+    useState<FlutterInAppWebViewCommunicator | null>();
   useEffect(() => {
     if (!router.isReady) return;
+    FlutterInAppWebViewCommunicator.build().then((f) =>
+      setFlutterInAppWebView(f)
+    );
     if (typeof isbn == "string") {
       setIsHello(false);
       let fromDb = typeof from == "string" ? from : "";
@@ -169,7 +173,7 @@ const Home: NextPage = () => {
                 flutterClipboard.writeText(
                   makeSharePageUrl(bookData.isbn, bookData.from, userComment)
                 );
-                sendMessage({
+                flutterInAppWebView?.sendMessage({
                   key: "completedSharing",
                   data: { type: "default", url: "" },
                 });
@@ -221,7 +225,7 @@ const Home: NextPage = () => {
                         isWriteSiteName: true,
                       })
                     );
-                    sendMessage({
+                    flutterInAppWebView?.sendMessage({
                       key: "completedSharing",
                       data: { type: "default", url: "" },
                     });

@@ -1,11 +1,11 @@
 import {
   existFlutterInAppWebView,
-  requestBarcodeReader,
+  FlutterInAppWebViewCommunicator,
 } from "@/libs/flutter/flutter_inappwebview";
 import {
+  searchBook as _searchBook,
   BookData,
   notsupportedKindleText,
-  searchBook as _searchBook,
 } from "@/libs/search_books";
 import { faBarcode, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -71,7 +71,9 @@ function SearchBookField({ errorText, getBookData: _getBookData }: Props) {
             })
           }
           onClick={async () => {
-            let isbn = await requestBarcodeReader();
+            let isbn = await (
+              await FlutterInAppWebViewCommunicator.build()
+            ).requestBarcodeReader();
             if (isbn != "") searchBook(isbn);
           }}
         >

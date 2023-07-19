@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
+import { FlutterInAppWebViewCommunicator } from "@/libs/flutter/flutter_inappwebview";
 import { css } from "@emotion/react";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,12 +20,13 @@ function TweetButton({ text, url = encodeURIComponent(location.href) }: Props) {
     <button
       css={buttonStyle}
       className="h-fit py-2 px-3 rounded-full"
-      onClick={() => {
+      onClick={async () => {
+        let flutterInAppWebView = await FlutterInAppWebViewCommunicator.build();
         let twitterUrl = `https://twitter.com/share?text=${encodeURIComponent(
           text
         )}&url=${encodeURIComponent(url)}&hashtags=ShareBooks`;
         if (
-          !sendMessage({
+          !flutterInAppWebView.sendMessage({
             key: "completedSharing",
             data: { type: "twitter", url: twitterUrl },
           })
