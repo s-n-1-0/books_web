@@ -1,3 +1,5 @@
+import { BookData } from "../search_books";
+
 interface Window {
   flutter_inappwebview: any;
 }
@@ -40,6 +42,13 @@ export class FlutterInAppWebViewCommunicator {
     let view = window.flutter_inappwebview;
     if (view) {
       let text = await view.callHandler("requestBarcodeReader");
+      return typeof text == "string" ? text : "";
+    } else return "";
+  }
+  async requestCardGeneration(bookData: BookData) {
+    let view = window.flutter_inappwebview;
+    if (view) {
+      let text = await view.callHandler("requestCardGeneration", bookData);
       return typeof text == "string" ? text : "";
     } else return "";
   }

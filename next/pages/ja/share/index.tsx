@@ -17,6 +17,7 @@ import { makeMarkdownSharePageLink } from "@/utils/markdown";
 import {
   faCaretDown,
   faCopy,
+  faImage,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -234,6 +235,16 @@ const Home: NextPage = () => {
                 >
                   <FontAwesomeIcon icon={faCopy} className="mr-1" />
                   <span>マークダウン形式で共有</span>
+                </button>
+                <button
+                  onClick={async () => {
+                    //TODO: webからのアクセスは非表示かアプリに誘導する
+                    flutterInAppWebView?.requestCardGeneration(bookData);
+                  }}
+                  className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded-full inline-flex items-center m-2"
+                >
+                  <FontAwesomeIcon icon={faImage} className="mr-1" />
+                  <span>カードを作成</span>
                 </button>
               </div>
               <small className="text-secondary">
