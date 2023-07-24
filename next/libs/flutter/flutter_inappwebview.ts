@@ -13,6 +13,9 @@ export interface FlutterInAppWebViewMessageCompletedSharingType {
   type: "default" | "twitter";
   url: string; //twitterの場合twitterリンク
 }
+export interface FlutterInAppWebViewBookCardData extends BookData {
+  comment: string;
+}
 export class FlutterInAppWebViewCommunicator {
   buildNumber: number | null = null;
   constructor(buildNumber: number | null) {
@@ -45,7 +48,8 @@ export class FlutterInAppWebViewCommunicator {
       return typeof text == "string" ? text : "";
     } else return "";
   }
-  async requestCardGeneration(bookData: BookData) {
+
+  async requestCardGeneration(bookData: FlutterInAppWebViewBookCardData) {
     let view = window.flutter_inappwebview;
     if (view) {
       let text = await view.callHandler("requestCardGeneration", bookData);

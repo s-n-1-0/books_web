@@ -239,7 +239,10 @@ const Home: NextPage = () => {
                 <button
                   onClick={async () => {
                     //TODO: webからのアクセスは非表示かアプリに誘導する
-                    flutterInAppWebView?.requestCardGeneration(bookData);
+                    flutterInAppWebView?.requestCardGeneration({
+                      ...bookData,
+                      comment: userComment,
+                    });
                   }}
                   className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded-full inline-flex items-center m-2"
                 >
