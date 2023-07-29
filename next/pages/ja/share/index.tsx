@@ -3,8 +3,8 @@ import BookComment, {
 } from "@/components/books/BookComment";
 import BookThumbnail from "@/components/books/BookThumbnail";
 
-import CustomHead from "@/components/CustomHead";
-import Header from "@/components/CustomHeader";
+import CustomHead from "@/components/commons/CustomHead";
+import Header from "@/components/commons/CustomHeader";
 import ProcessingView from "@/components/ProcessingView";
 import { LinkContext } from "@/components/providers/LinkProvider";
 import SharePageStartPanel from "@/components/SharePageStartPanel";

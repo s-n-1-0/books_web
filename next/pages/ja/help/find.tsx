@@ -1,5 +1,5 @@
-import CustomHead from "@/components/CustomHead";
-import Header from "@/components/CustomHeader";
+import CustomHead from "@/components/commons/CustomHead";
+import Header from "@/components/commons/CustomHeader";
 import {
   faBarcode,
   faMagnifyingGlass,
