@@ -1,3 +1,4 @@
+import { Footer } from "@/components/commons/CustomFooter";
 import CustomHead from "@/components/commons/CustomHead";
 import Header from "@/components/commons/CustomHeader";
 import {
@@ -77,14 +78,7 @@ const Home: NextPage = () => {
         </div>
       </main>
 
-      <footer>
-        <hr />
-        <p className="text-center">
-          <a className="underline" href="https://hello.sn-10.net">
-            sn-10.net
-          </a>
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 };

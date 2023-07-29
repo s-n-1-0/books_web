@@ -2,6 +2,7 @@ import {
   SearchGoogleBooksList,
   SearchGoogleBooksListRefType,
 } from "@/components/books/SearchGoogleBooksList";
+import { Footer } from "@/components/commons/CustomFooter";
 import CustomHead from "@/components/commons/CustomHead";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -32,14 +33,7 @@ const Search: NextPage = () => {
         </div>
       </main>
 
-      <footer>
-        <hr />
-        <p className="text-center">
-          <a className="underline" href="https://hello.sn-10.net">
-            sn-10.net
-          </a>
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 };

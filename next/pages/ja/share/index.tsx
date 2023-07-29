@@ -2,6 +2,7 @@ import BookComment, {
   BookCommentRefType,
 } from "@/components/books/BookComment";
 import BookThumbnail from "@/components/books/BookThumbnail";
+import { Footer } from "@/components/commons/CustomFooter";
 
 import CustomHead from "@/components/commons/CustomHead";
 import Header from "@/components/commons/CustomHeader";
@@ -309,14 +310,7 @@ const Home: NextPage = () => {
       <main>
         <div className="w-full px-2 ">{makeMainContent()}</div>
       </main>
-      <footer>
-        <hr />
-        <p className="text-center">
-          <a className="underline" href="https://hello.sn-10.net">
-            sn-10.net
-          </a>
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 };

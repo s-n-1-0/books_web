@@ -1,5 +1,6 @@
 import { BookCell } from "@/components/books/BookCell";
 import SearchBookField from "@/components/books/SearchBookField";
+import { Footer } from "@/components/commons/CustomFooter";
 import CustomHead from "@/components/commons/CustomHead";
 import Header from "@/components/commons/CustomHeader";
 import {
@@ -473,14 +474,7 @@ let List: NextPage = () => {
             </div>
           </main>
 
-          <footer>
-            <hr />
-            <p className="text-center">
-              <a className="underline" href="https://hello.sn-10.net">
-                sn-10.net
-              </a>
-            </p>
-          </footer>
+          <Footer />
         </div>
       </BookCacheContextProvider>
     </SelectedStoreContextProvider>
