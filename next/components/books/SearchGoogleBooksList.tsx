@@ -6,16 +6,20 @@ import { FlutterInAppWebViewCommunicator } from "@/libs/flutter/flutter_inappweb
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import { BookData } from "@/libs/search_books";
 import { searchGoogleBooksApi } from "@/libs/search_books/googlebooks";
-import {
-  convertGoogleBooksData2BookData,
-  makeSharePageUrl,
-} from "@/utils/links";
+import { convertGoogleBooksData2BookData } from "@/utils/links";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { Ref, forwardRef, useImperativeHandle, useState } from "react";
+import {
+  Ref,
+  forwardRef,
+  useContext,
+  useImperativeHandle,
+  useState,
+} from "react";
 import ProcessingView from "../ProcessingView";
 import TwButton from "../TwButton";
+import { LinkContext } from "../providers/LinkProvider";
 import { BookCell } from "./BookCell";
 
 type RightDefaultCellElementProps = {
@@ -23,12 +27,13 @@ type RightDefaultCellElementProps = {
 };
 function RightDefaultCellElement({ bookData }: RightDefaultCellElementProps) {
   const [isCopied, setIsCopied] = useState(false);
+  const linkContext = useContext(LinkContext);
   return (
     <div
       className="flex flex-col justify-end"
       onClick={async (e) => {
         flutterClipboard.writeText(
-          makeSharePageUrl(bookData.isbn, bookData.from, "")
+          linkContext.makeSharePageUrl(bookData.isbn, bookData.from, "")
         );
         (await FlutterInAppWebViewCommunicator.build()).sendMessage({
           key: "completedSharing",
@@ -54,6 +59,7 @@ type Props = {
   selectModeFunc?: ((book: BookData) => void) | null;
 };
 function _SearchGoogleBooksList({ selectModeFunc }: Props, ref: Ref<unknown>) {
+  const linkContext = useContext(LinkContext);
   const [googleBooksResults, setGoogleBooksResults] = useState<
     GoogleBooksApiBookData[]
   >([]);
@@ -102,7 +108,7 @@ function _SearchGoogleBooksList({ selectModeFunc }: Props, ref: Ref<unknown>) {
                 key={item.id}
                 onClick={() => {
                   if (selectModeFunc) return;
-                  let url = makeSharePageUrl(
+                  let url = linkContext.makeSharePageUrl(
                     item.volumeInfo.industryIdentifiers[0].identifier,
                     "googlebooks",
                     ""

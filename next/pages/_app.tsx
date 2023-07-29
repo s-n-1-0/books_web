@@ -1,3 +1,4 @@
+import { LinkContextProvider } from "@/components/providers/LinkProvider";
 import { SearchGoogleBooksModalContextProvider } from "@/components/providers/SearchGoogleBooksModalContextProvider";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -7,9 +8,11 @@ config.autoAddCss = false;
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <SearchGoogleBooksModalContextProvider>
-      <Component {...pageProps} />
-    </SearchGoogleBooksModalContextProvider>
+    <LinkContextProvider>
+      <SearchGoogleBooksModalContextProvider>
+        <Component {...pageProps} />
+      </SearchGoogleBooksModalContextProvider>
+    </LinkContextProvider>
   );
 }
 

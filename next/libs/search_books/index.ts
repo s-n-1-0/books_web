@@ -1,8 +1,8 @@
+import { LinkContextType } from "@/components/providers/LinkProvider";
 import { SearchGoogleBooksModalContextType } from "@/components/providers/SearchGoogleBooksModalContextProvider";
 import {
   checkSharePageUrl,
   convertGoogleBooksData2BookData,
-  makeSharePageUrl,
 } from "@/utils/links";
 import { convertIsbn, convertUrl2Isbn13 } from "asin2isbn";
 import { searchGoogleBooksApiByIsbn } from "./googlebooks";
@@ -116,6 +116,7 @@ export function extractSearchData(anyText: string): SearchData {
 export async function searchBook(
   anyText: string,
   googleBooksModalContext: SearchGoogleBooksModalContextType,
+  linkContext: LinkContextType,
   getBookData: ((book: BookData) => void) | null | undefined
 ): Promise<string> {
   let errorText = "";
@@ -128,7 +129,12 @@ export async function searchBook(
       let bookData = await searchBookByIsbn(searchData.isbn13!);
       if (bookData) {
         if (getBookData) getBookData(bookData);
-        else location.href = makeSharePageUrl(bookData.isbn, bookData.from, "");
+        else
+          location.href = linkContext.makeSharePageUrl(
+            bookData.isbn,
+            bookData.from,
+            ""
+          );
       } else errorText = "書籍を見つけることができませんでした...";
       break;
     case "Title":

@@ -6,13 +6,14 @@ import BookThumbnail from "@/components/books/BookThumbnail";
 import CustomHead from "@/components/CustomHead";
 import Header from "@/components/CustomHeader";
 import ProcessingView from "@/components/ProcessingView";
+import { LinkContext } from "@/components/providers/LinkProvider";
 import SharePageStartPanel from "@/components/SharePageStartPanel";
 import StoreLinks from "@/components/stores/StoreLinks";
 import TweetButton from "@/components/TweetButton";
 import { FlutterInAppWebViewCommunicator } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import { BookData, searchBookByIsbn } from "@/libs/search_books";
-import { makeShareListPageUrl, makeSharePageUrl } from "@/utils/links";
+import { makeShareListPageUrl } from "@/utils/links";
 import { makeMarkdownSharePageLink } from "@/utils/markdown";
 import {
   faCaretDown,
@@ -25,7 +26,7 @@ import { convertIsbn } from "asin2isbn";
 import classNames from "classnames";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 interface DisplayBookData extends BookData {
   isbn10: string;
   isbn13: string;
@@ -33,7 +34,7 @@ interface DisplayBookData extends BookData {
 const Home: NextPage = () => {
   const router = useRouter();
   const { isbn, from, comment } = router.query;
-
+  const linkContext = useContext(LinkContext);
   const [bookData, _setBookData] = useState<DisplayBookData | null>(null);
   const setBookData = (book: BookData) => {
     _setBookData({
@@ -172,7 +173,11 @@ const Home: NextPage = () => {
                 setClickedShareButtonText("共有URLをコピーしました。");
                 commentRef?.current?.finishEditing();
                 flutterClipboard.writeText(
-                  makeSharePageUrl(bookData.isbn, bookData.from, userComment)
+                  linkContext.makeSharePageUrl(
+                    bookData.isbn,
+                    bookData.from,
+                    userComment
+                  )
                 );
                 flutterInAppWebView?.sendMessage({
                   key: "completedSharing",
@@ -206,7 +211,7 @@ const Home: NextPage = () => {
                   } else {
                     twText = `書籍「${bookData.title}」`;
                   }
-                  let twUrl = makeSharePageUrl(
+                  let twUrl = linkContext.makeSharePageUrl(
                     bookData.isbn,
                     bookData.from,
                     userComment
@@ -220,11 +225,14 @@ const Home: NextPage = () => {
                     );
                     commentRef?.current?.finishEditing();
                     flutterClipboard.writeText(
-                      makeMarkdownSharePageLink({
-                        bookData,
-                        comment: userComment,
-                        isWriteSiteName: true,
-                      })
+                      makeMarkdownSharePageLink(
+                        {
+                          bookData,
+                          comment: userComment,
+                          isWriteSiteName: true,
+                        },
+                        linkContext
+                      )
                     );
                     flutterInAppWebView?.sendMessage({
                       key: "completedSharing",
@@ -259,7 +267,11 @@ const Home: NextPage = () => {
               href={makeShareListPageUrl(
                 [
                   new URL(
-                    makeSharePageUrl(bookData.isbn, bookData.from, userComment)
+                    linkContext.makeSharePageUrl(
+                      bookData.isbn,
+                      bookData.from,
+                      userComment
+                    )
                   ),
                 ],
                 "amazon",
