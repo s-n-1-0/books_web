@@ -146,14 +146,16 @@ function MainContent() {
         books = Array.from(new Set(_books)).map(
           (params) =>
             new URL(
-              linkContext.makeSharePageUrlFromSearchParams(
+              linkContext.makeUrlFromSearchParams(
+                "/ja/share",
                 new URLSearchParams(params)
               )
             )
         );
       } else if (typeof _books == "string") {
         let url = new URL(
-          linkContext.makeSharePageUrlFromSearchParams(
+          linkContext.makeUrlFromSearchParams(
+            "/ja/share",
             new URLSearchParams(_books)
           )
         );
