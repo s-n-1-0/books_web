@@ -253,7 +253,12 @@ const Home: NextPage = () => {
                       comment: userComment,
                     });
                   }}
-                  className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded-full inline-flex items-center m-2"
+                  className={
+                    classNames({
+                      hidden: !linkContext.checkExperimental(),
+                    }) +
+                    " bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded-full inline-flex items-center m-2"
+                  }
                 >
                   <FontAwesomeIcon icon={faImage} className="mr-1" />
                   <span>カードを作成</span>
