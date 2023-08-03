@@ -1,21 +1,7 @@
 import { StoreType } from "@/components/providers/SelectedStoreContextProvider";
 import { GoogleBooksApiBookData } from "@/Interfaces/googlebooks/volumes";
-import { BookData, BookDbType, searchBookByIsbn } from "@/libs/search_books";
+import { BookData, searchBookByIsbn } from "@/libs/search_books";
 
-export function makeSharePageUrl(
-  isbn: string,
-  from: BookDbType,
-  comment: string
-) {
-  const params = new URLSearchParams();
-  params.append("isbn", isbn);
-  params.append("from", from);
-  if (comment != "") params.append("comment", encodeURIComponent(comment));
-  return makeSharePageUrlFromSearchParams(params);
-}
-export function makeSharePageUrlFromSearchParams(params: URLSearchParams) {
-  return `${location.origin}/ja/share?${params.toString()}`;
-}
 export function checkSharePageUrl(url: URL) {
   if (!url.href.startsWith(location.origin)) return false;
   return !(

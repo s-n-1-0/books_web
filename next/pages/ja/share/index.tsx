@@ -2,21 +2,24 @@ import BookComment, {
   BookCommentRefType,
 } from "@/components/books/BookComment";
 import BookThumbnail from "@/components/books/BookThumbnail";
+import { Footer } from "@/components/commons/CustomFooter";
 
-import CustomHead from "@/components/CustomHead";
-import Header from "@/components/CustomHeader";
+import CustomHead from "@/components/commons/CustomHead";
+import Header from "@/components/commons/CustomHeader";
 import ProcessingView from "@/components/ProcessingView";
+import { LinkContext } from "@/components/providers/LinkProvider";
 import SharePageStartPanel from "@/components/SharePageStartPanel";
 import StoreLinks from "@/components/stores/StoreLinks";
 import TweetButton from "@/components/TweetButton";
-import { sendMessage } from "@/libs/flutter/flutter_inappwebview";
+import { FlutterInAppWebViewCommunicator } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import { BookData, searchBookByIsbn } from "@/libs/search_books";
-import { makeShareListPageUrl, makeSharePageUrl } from "@/utils/links";
+import { makeShareListPageUrl } from "@/utils/links";
 import { makeMarkdownSharePageLink } from "@/utils/markdown";
 import {
   faCaretDown,
   faCopy,
+  faImage,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,7 +27,7 @@ import { convertIsbn } from "asin2isbn";
 import classNames from "classnames";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 interface DisplayBookData extends BookData {
   isbn10: string;
   isbn13: string;
@@ -32,7 +35,7 @@ interface DisplayBookData extends BookData {
 const Home: NextPage = () => {
   const router = useRouter();
   const { isbn, from, comment } = router.query;
-
+  const linkContext = useContext(LinkContext);
   const [bookData, _setBookData] = useState<DisplayBookData | null>(null);
   const setBookData = (book: BookData) => {
     _setBookData({
@@ -53,9 +56,13 @@ const Home: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comment]);
   const [userComment, setUserComment] = useState<string>(updateQueryComment());
-
+  const [flutterInAppWebView, setFlutterInAppWebView] =
+    useState<FlutterInAppWebViewCommunicator | null>();
   useEffect(() => {
     if (!router.isReady) return;
+    FlutterInAppWebViewCommunicator.build().then((f) =>
+      setFlutterInAppWebView(f)
+    );
     if (typeof isbn == "string") {
       setIsHello(false);
       let fromDb = typeof from == "string" ? from : "";
@@ -167,9 +174,13 @@ const Home: NextPage = () => {
                 setClickedShareButtonText("共有URLをコピーしました。");
                 commentRef?.current?.finishEditing();
                 flutterClipboard.writeText(
-                  makeSharePageUrl(bookData.isbn, bookData.from, userComment)
+                  linkContext.makeSharePageUrl(
+                    bookData.isbn,
+                    bookData.from,
+                    userComment
+                  )
                 );
-                sendMessage({
+                flutterInAppWebView?.sendMessage({
                   key: "completedSharing",
                   data: { type: "default", url: "" },
                 });
@@ -201,7 +212,7 @@ const Home: NextPage = () => {
                   } else {
                     twText = `書籍「${bookData.title}」`;
                   }
-                  let twUrl = makeSharePageUrl(
+                  let twUrl = linkContext.makeSharePageUrl(
                     bookData.isbn,
                     bookData.from,
                     userComment
@@ -215,13 +226,16 @@ const Home: NextPage = () => {
                     );
                     commentRef?.current?.finishEditing();
                     flutterClipboard.writeText(
-                      makeMarkdownSharePageLink({
-                        bookData,
-                        comment: userComment,
-                        isWriteSiteName: true,
-                      })
+                      makeMarkdownSharePageLink(
+                        {
+                          bookData,
+                          comment: userComment,
+                          isWriteSiteName: true,
+                        },
+                        linkContext
+                      )
                     );
-                    sendMessage({
+                    flutterInAppWebView?.sendMessage({
                       key: "completedSharing",
                       data: { type: "default", url: "" },
                     });
@@ -230,6 +244,24 @@ const Home: NextPage = () => {
                 >
                   <FontAwesomeIcon icon={faCopy} className="mr-1" />
                   <span>マークダウン形式で共有</span>
+                </button>
+                <button
+                  onClick={async () => {
+                    //TODO: webからのアクセスは非表示かアプリに誘導する
+                    flutterInAppWebView?.requestCardGeneration({
+                      ...bookData,
+                      comment: userComment,
+                    });
+                  }}
+                  className={
+                    classNames({
+                      hidden: !linkContext.checkExperimental(),
+                    }) +
+                    " bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded-full inline-flex items-center m-2"
+                  }
+                >
+                  <FontAwesomeIcon icon={faImage} className="mr-1" />
+                  <span>カードを作成</span>
                 </button>
               </div>
               <small className="text-secondary">
@@ -241,7 +273,11 @@ const Home: NextPage = () => {
               href={makeShareListPageUrl(
                 [
                   new URL(
-                    makeSharePageUrl(bookData.isbn, bookData.from, userComment)
+                    linkContext.makeSharePageUrl(
+                      bookData.isbn,
+                      bookData.from,
+                      userComment
+                    )
                   ),
                 ],
                 "amazon",
@@ -279,14 +315,7 @@ const Home: NextPage = () => {
       <main>
         <div className="w-full px-2 ">{makeMainContent()}</div>
       </main>
-      <footer>
-        <hr />
-        <p className="text-center">
-          <a className="underline" href="https://hello.sn-10.net">
-            sn-10.net
-          </a>
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 };

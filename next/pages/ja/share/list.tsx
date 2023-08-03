@@ -1,12 +1,14 @@
 import { BookCell } from "@/components/books/BookCell";
 import SearchBookField from "@/components/books/SearchBookField";
-import CustomHead from "@/components/CustomHead";
-import Header from "@/components/CustomHeader";
+import { Footer } from "@/components/commons/CustomFooter";
+import CustomHead from "@/components/commons/CustomHead";
+import Header from "@/components/commons/CustomHeader";
 import {
   BookCacheContext,
   BookCacheContextProvider,
   BookCacheContextType,
 } from "@/components/providers/BookCacheContextProvider";
+import { LinkContext } from "@/components/providers/LinkProvider";
 import {
   SelectedStoreContext,
   SelectedStoreContextProvider,
@@ -20,12 +22,7 @@ import TweetButton from "@/components/TweetButton";
 import { existFlutterInAppWebView } from "@/libs/flutter/flutter_inappwebview";
 import flutterClipboard from "@/libs/flutter/flutter_inappwebview_clipboard";
 import { BookData } from "@/libs/search_books";
-import {
-  checkSharePageUrl,
-  makeShareListPageUrl,
-  makeSharePageUrl,
-  makeSharePageUrlFromSearchParams,
-} from "@/utils/links";
+import { checkSharePageUrl, makeShareListPageUrl } from "@/utils/links";
 import { makeMarkdownSharePageLinks } from "@/utils/markdown";
 import { faCopy, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -106,6 +103,7 @@ function MainContent() {
   const router = useRouter();
   const { store: _store, books: _books, title: _title } = router.query;
   const context: BookCacheContextType = useContext(BookCacheContext);
+  const linkContext = useContext(LinkContext);
   const { selectedStore, setSelectedStore }: SelectedStoreContextType =
     useContext(SelectedStoreContext);
   const [bookList, setBookList] = useState<URL[]>([]);
@@ -148,12 +146,18 @@ function MainContent() {
         books = Array.from(new Set(_books)).map(
           (params) =>
             new URL(
-              makeSharePageUrlFromSearchParams(new URLSearchParams(params))
+              linkContext.makeUrlFromSearchParams(
+                "/ja/share",
+                new URLSearchParams(params)
+              )
             )
         );
       } else if (typeof _books == "string") {
         let url = new URL(
-          makeSharePageUrlFromSearchParams(new URLSearchParams(_books))
+          linkContext.makeUrlFromSearchParams(
+            "/ja/share",
+            new URLSearchParams(_books)
+          )
         );
         if (
           url.pathname.split("/")?.[2] !== "share" ||
@@ -327,7 +331,11 @@ function MainContent() {
                       : (book) => {
                           let comment = x.searchParams.get("comment") ?? "";
                           window.open(
-                            makeSharePageUrl(book.isbn, book.from, comment)
+                            linkContext.makeSharePageUrl(
+                              book.isbn,
+                              book.from,
+                              comment
+                            )
                           );
                         }
                   }
@@ -349,7 +357,9 @@ function MainContent() {
                 errorText=""
                 getBookData={(book) => {
                   appendBookList(
-                    new URL(makeSharePageUrl(book.isbn, book.from, ""))
+                    new URL(
+                      linkContext.makeSharePageUrl(book.isbn, book.from, "")
+                    )
                   );
                 }}
               />
@@ -424,7 +434,8 @@ function MainContent() {
                         };
                       }),
                       selectedStore,
-                      listTitle
+                      listTitle,
+                      linkContext
                     )
                   );
                 }}
@@ -465,14 +476,7 @@ let List: NextPage = () => {
             </div>
           </main>
 
-          <footer>
-            <hr />
-            <p className="text-center">
-              <a className="underline" href="https://hello.sn-10.net">
-                sn-10.net
-              </a>
-            </p>
-          </footer>
+          <Footer />
         </div>
       </BookCacheContextProvider>
     </SelectedStoreContextProvider>

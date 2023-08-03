@@ -1,9 +1,11 @@
-import CustomHead from "@/components/CustomHead";
-import Header from "@/components/CustomHeader";
+import CustomHead from "@/components/commons/CustomHead";
+import Header from "@/components/commons/CustomHeader";
+import { LinkContext } from "@/components/providers/LinkProvider";
 import { NextPage } from "next";
 import Link from "next/link";
-
+import { useContext } from "react";
 const Home: NextPage = () => {
+  const linkContext = useContext(LinkContext);
   return (
     <div>
       <CustomHead
@@ -15,7 +17,7 @@ const Home: NextPage = () => {
       <main>
         <div className="w-full px-2 py-3 text-center">
           <div className="py-20">
-            <Link href="/ja/share">
+            <Link href={linkContext.makeUrlFromSearchParams("/ja/share")}>
               <a className="inline-block text-xl px-4 py-2 leading-none border rounded border-black hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">
                 本を探す
               </a>
@@ -23,15 +25,6 @@ const Home: NextPage = () => {
           </div>
         </div>
       </main>
-
-      <footer>
-        <hr />
-        <p className="text-center">
-          <a className="underline" href="https://hello.sn-10.net">
-            sn-10.net
-          </a>
-        </p>
-      </footer>
     </div>
   );
 };

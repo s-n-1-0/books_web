@@ -1,16 +1,17 @@
 import {
   existFlutterInAppWebView,
-  requestBarcodeReader,
+  FlutterInAppWebViewCommunicator,
 } from "@/libs/flutter/flutter_inappwebview";
 import {
+  searchBook as _searchBook,
   BookData,
   notsupportedKindleText,
-  searchBook as _searchBook,
 } from "@/libs/search_books";
 import { faBarcode, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { useContext, useState } from "react";
+import { LinkContext } from "../providers/LinkProvider";
 import { SearchGoogleBooksModalContext } from "../providers/SearchGoogleBooksModalContextProvider";
 
 type Props = {
@@ -22,6 +23,7 @@ function SearchBookField({ errorText, getBookData: _getBookData }: Props) {
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [amazonUrlErrorText, setAmazonUrlErrorText] = useState<string>("");
   const googleBooksModalContext = useContext(SearchGoogleBooksModalContext);
+  const linkContext = useContext(LinkContext);
 
   async function searchBook(searchText: string) {
     let getBookData = _getBookData
@@ -33,6 +35,7 @@ function SearchBookField({ errorText, getBookData: _getBookData }: Props) {
     let errorText = await _searchBook(
       searchText,
       googleBooksModalContext,
+      linkContext,
       getBookData
     );
     if (errorText != "") setAmazonUrlErrorText(errorText);
@@ -71,7 +74,9 @@ function SearchBookField({ errorText, getBookData: _getBookData }: Props) {
             })
           }
           onClick={async () => {
-            let isbn = await requestBarcodeReader();
+            let isbn = await (
+              await FlutterInAppWebViewCommunicator.build()
+            ).requestBarcodeReader();
             if (isbn != "") searchBook(isbn);
           }}
         >

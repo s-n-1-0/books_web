@@ -1,16 +1,24 @@
 import { existFlutterInAppWebView } from "@/libs/flutter/flutter_inappwebview";
 import classNames from "classnames";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { LinkContext } from "../providers/LinkProvider";
 type Props = {
   isMenu?: Boolean;
 };
 function CustomHeader({ isMenu = true }: Props) {
   const [isHeader, setIsHeader] = useState(false);
-  let [isOpen, setIsOpen] = useState(false);
+  const [headerTitle, setHeaderTitle] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const linkContext = useContext(LinkContext);
   useEffect(() => {
     setIsHeader(!existFlutterInAppWebView());
   }, []);
+  useEffect(() => {
+    setHeaderTitle(
+      linkContext.checkExperimental() ? "🧪 実験的モード" : "Share Books"
+    );
+  }, [linkContext]);
   if (!isHeader) return <></>;
   let menuClassNames = classNames(
     "w-full",
@@ -29,7 +37,7 @@ function CustomHeader({ isMenu = true }: Props) {
         <div className="flex items-center flex-shrink-0 text-white mr-6">
           <Link href="/ja/share">
             <a className="font-semibold text-xl tracking-tight">
-              <span>Share Books</span>
+              <span>{headerTitle}</span>
             </a>
           </Link>
         </div>
