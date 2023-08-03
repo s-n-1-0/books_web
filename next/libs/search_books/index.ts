@@ -4,7 +4,13 @@ import {
   checkSharePageUrl,
   convertGoogleBooksData2BookData,
 } from "@/utils/links";
-import { convertIsbn, convertUrl2Isbn13 } from "asin2isbn";
+import {
+  convertAsin2Isbn13,
+  convertIsbn,
+  convertUrl2Asin,
+  convertUrl2Isbn13,
+} from "asin2isbn";
+import axios from "axios";
 import { searchGoogleBooksApiByIsbn } from "./googlebooks";
 import * as openbd from "./openbd";
 export type BookDbType = "openbd" | "googlebooks";
@@ -59,7 +65,7 @@ export interface SearchData {
  * @param anyText
  * @returns
  */
-export function extractSearchData(anyText: string): SearchData {
+export async function extractSearchData(anyText: string): Promise<SearchData> {
   //特に抽出されない場合はそのままanyTextがタイトルになる
   let retData: SearchData = {
     isbn13: null,
@@ -90,8 +96,28 @@ export function extractSearchData(anyText: string): SearchData {
           title: null,
           format: "Valid Amazon URL",
         };
-      } else if (res.error == "KINDLE") retData = makeEmptySearchData("Kindle");
-      else if (anyText.startsWith("http"))
+      } else if (res.error == "KINDLE") {
+        let isUnsupported = true;
+        try {
+          console.log(convertUrl2Asin(anyText));
+          const resData = (
+            await axios.get(
+              "https://rails-books-app.onrender.com/amazon_books/convert?asin=" +
+                convertUrl2Asin(anyText)
+            )
+          ).data;
+          if (resData["paper_asin"]) {
+            const res = convertAsin2Isbn13(resData["paper_asin"]);
+            retData = {
+              isbn13: res.isbn,
+              title: null,
+              format: "Valid Amazon URL",
+            };
+          }
+          isUnsupported = false;
+        } catch {}
+        if (isUnsupported) retData = makeEmptySearchData("Other URL");
+      } else if (anyText.startsWith("http"))
         retData = makeEmptySearchData("Other URL");
     }
   } catch {
@@ -121,7 +147,7 @@ export async function searchBook(
 ): Promise<string> {
   let errorText = "";
   if (anyText == "") return "";
-  const searchData = extractSearchData(anyText);
+  const searchData = await extractSearchData(anyText);
   switch (searchData.format) {
     case "ISBN":
     case "MySite":
@@ -141,9 +167,6 @@ export async function searchBook(
       googleBooksModalContext.openModal(anyText, getBookData);
       break;
     /* 以下、エラー扱いになるフォーマット */
-    case "Kindle":
-      errorText = notsupportedKindleText;
-      break;
     case "Other URL":
       errorText = "無効なURLです。";
       break;
